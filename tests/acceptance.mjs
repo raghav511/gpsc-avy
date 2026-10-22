@@ -1,5 +1,5 @@
 // GPSCavy acceptance tests (SPEC.md §10). Plain Playwright library, no test runner needed.
-//   node tests/acceptance.mjs --base http://localhost:8765/gpsc-avy/ --profile pixel|iphone|desktop
+//   node tests/acceptance.mjs --base http://localhost:8765/gpsc-avy/ --profile pixel|iphone|desktop|ipad|ipadland|ipadmobile  (iPad profiles run in WebKit)
 // Exit code 0 when every check passes.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -7,14 +7,18 @@ import os from 'node:os';
 import { fileURLToPath } from 'node:url';
 
 const pwPath = process.env.PLAYWRIGHT || 'playwright';
-const { chromium } = await import(pwPath).catch(() => import('/opt/npm-tools/node_modules/playwright/index.mjs'));
+const PW = await import(pwPath).catch(() => import('/opt/npm-tools/node_modules/playwright/index.mjs'));
 const ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const args = Object.fromEntries(process.argv.slice(2).join(' ').split('--').filter(Boolean).map(s => s.trim().split(/\s+/)));
 const BASE = args.base || 'http://localhost:8765/gpsc-avy/';
 const PROFILES = {
   pixel: { viewport: { width: 412, height: 923 }, deviceScaleFactor: 2.625, isMobile: true, hasTouch: true, userAgent: 'Mozilla/5.0 (Linux; Android 16; Pixel 10a) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36' },
   iphone: { viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true, userAgent: 'Mozilla/5.0 (Linux; Android 14; SM-S911B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36' },
-  desktop: { viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1, isMobile: false, hasTouch: false }
+  desktop: { viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1, isMobile: false, hasTouch: false },
+  // iPad (9th generation), iPadOS 26 Safari: 810x1080 CSS px portrait, DPR 2. Safari on iPad sends a Mac desktop user agent by default.
+  ipad: { engine: 'webkit', viewport: { width: 810, height: 1080 }, deviceScaleFactor: 2, isMobile: false, hasTouch: true, userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.1 Safari/605.1.15' },
+  ipadland: { engine: 'webkit', viewport: { width: 1080, height: 810 }, deviceScaleFactor: 2, isMobile: false, hasTouch: true, userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.1 Safari/605.1.15' },
+  ipadmobile: { engine: 'webkit', viewport: { width: 810, height: 1080 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, userAgent: 'Mozilla/5.0 (iPad; CPU OS 26_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.1 Mobile/15E148 Safari/604.1' }
 };
 const prof = args.profile || 'pixel';
 const DATA = JSON.parse(fs.readFileSync(path.join(ROOT, 'content/data/sets.json'), 'utf8'));
@@ -36,8 +40,9 @@ async function section(name, fn) {
   }
 }
 
-const browser = await chromium.launch();
-const ctx = await browser.newContext(Object.assign({ acceptDownloads: true, serviceWorkers: 'block' }, PROFILES[prof]));
+const { engine = 'chromium', ...profOpts } = PROFILES[prof];
+const browser = await PW[args.engine || engine].launch();
+const ctx = await browser.newContext(Object.assign({ acceptDownloads: true, serviceWorkers: 'block' }, profOpts));
 await ctx.addInitScript(() => { window.__gpscTest = 1; });
 const page = await ctx.newPage();
 const errors = [];

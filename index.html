@@ -15,7 +15,10 @@
 <meta property="og:description" content="GPSC CBRT Homoeopathic Physician: 25 mocks, level tests, GK and English drills, Topic 5–10 notes.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png" sizes="192x192">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+<meta name="apple-mobile-web-app-title" content="GPSCavy">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
 <link rel="preload" href="fonts/jakarta-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="data/index.json" as="fetch" crossorigin>
 <link rel="modulepreload" href="js/core.js">
@@ -366,6 +369,26 @@ body[data-screen=study] .nfoot~.bnav{display:none}
 .pb footer{padding:20px 0;border-top:1px solid var(--line);font-size:.85rem;color:var(--muted)}
 .pad.sub{padding:20px 16px}
 @media (min-width:900px){.pad,.ph,.hhead{max-width:820px}.rq{max-width:820px}}
+/* tablets (iPad 9th gen: 810x1080 portrait, 1080x810 landscape) */
+.qcol{display:flex;flex-direction:column;gap:12px;min-width:0}
+#a2hs:empty{display:none}
+@media (min-width:740px){
+  .pad,.ph,.hhead{max-width:1000px}
+  .fab-wrap{max-width:560px}
+  .pad.home{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+  .pad.home>*{min-width:0}
+  .pad.home>.hero,.pad.home>#a2hs,.pad.home>.resume,.pad.home>.two{grid-column:1/-1}
+  .pad.home>.card:not(.today):not(.sync){grid-row:span 2}
+  .list:not(.flat){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .list:not(.flat)>*{min-width:0}
+  .rq{max-width:840px}
+}
+@media (min-width:960px) and (orientation:landscape){
+  .rq.split{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);max-width:1240px;column-gap:24px;align-items:start}
+  .rq.split>.qh{grid-column:1/-1}
+  .rq.split>.passage{position:sticky;top:calc(var(--st) + 84px)}
+  .rq.split>.passage div{max-height:calc(100dvh - var(--st) - 250px)}
+}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 @media print{.bnav,.nfoot,.toc,.nhd .nrow{display:none}}
 </style>

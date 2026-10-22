@@ -183,7 +183,7 @@ function homeScreen() {
   const dl = daysLeft();
   app.innerHTML =
     '<header class="hhead"><div class="brand"><span class="logo" aria-hidden="true">G</span><span><b>GPSCavy</b><small>Homoeopathic Physician · CBRT</small></span></div><a class="ib white" href="#/search" aria-label="Search questions, notes and sets">' + ICON.search + '</a></header>' +
-    '<main class="pad stack">' +
+    '<main class="pad stack home">' +
     '<section class="hero"><div><p class="hk">Exam on Sunday, 1 November</p><p class="hd">' + (dl === 0 ? 'Exam day' : dl + (dl === 1 ? ' day left' : ' days left')) + '</p><p class="hs">60 marks · 75 minutes · 5 sections</p></div>' +
     '<a class="badge" href="#/progress" aria-label="Last score ' + (last ? last.score : '–') + ' of ' + (last ? last.total : 60) + ', see progress"><small>Last score</small><b>' + (last ? last.score : '–') + '</b><small>of ' + (last ? last.total : 60) + '</small></a></section>' +
     '<div id="a2hs"></div>' + resume +
@@ -212,7 +212,7 @@ function fillAcc(el, home) {
 function syncCard() {
   const ls = settings.lastSync;
   return '<section class="card sync"><div class="ch2"><span class="ic ic-grn">' + ICON.sync + '</span><span class="rt"><span class="ttl">Back up and sync progress</span><span class="sub">' +
-    (ls ? 'Last ' + esc(ls.what) + ' ' + day(ls.at) + ' · ' : '') + H.length + (H.length === 1 ? ' attempt' : ' attempts') + ' on this phone</span></span></div>' +
+    (ls ? 'Last ' + esc(ls.what) + ' ' + day(ls.at) + ' · ' : '') + H.length + (H.length === 1 ? ' attempt' : ' attempts') + ' on this device</span></span></div>' +
     '<div class="two"><button type="button" class="btn grn" data-act="down">' + ICON.down + '<span>Download progress</span></button><button type="button" class="btn grn-o" data-act="up">' + ICON.up + '<span>Upload progress</span></button></div></section>';
 }
 document.addEventListener('click', e => {
@@ -514,8 +514,8 @@ export function openDownload() {
     (ip ? '<span>· ' + esc((setInfo(ip.set) || { name: 'A custom test' }).name) + ', in progress at question ' + ((ip.cur || 0) + 1) + (f.inProgress.length > 1 ? ' (+' + (f.inProgress.length - 1) + ' more)' : '') + '</span>' : '') +
     '<span>· ' + wl + ' incorrect ' + (wl === 1 ? 'question' : 'questions') + ' to revise' + (f.customTests.length ? ', ' + f.customTests.length + ' saved tests' : '') + '</span></div>' +
     (canShare ? '<button type="button" class="wide grn" id="dShare" data-focus>Share on WhatsApp</button>' : '') +
-    '<button type="button" class="wide ' + (canShare ? 'sec' : 'grn') + '" id="dSave"' + (canShare ? '' : ' data-focus') + '>Save to phone</button>' +
-    '<p class="sub">Upload this file in the GPSC CBRT Mock Exam page, in this app on another phone, or attach it in a chat with Claude.</p>', { label: 'Download progress' });
+    '<button type="button" class="wide ' + (canShare ? 'sec' : 'grn') + '" id="dSave"' + (canShare ? '' : ' data-focus') + '>Save to this device</button>' +
+    '<p class="sub">Upload this file in the GPSC CBRT Mock Exam page, in this app on another phone or iPad, or attach it in a chat with Claude.</p>', { label: 'Download progress' });
   const done = how => { settings.lastSync = { at: new Date().toISOString(), what: 'backup' }; saveSettings(); closeSheet(); toast(how); };
   const save = () => {
     try {
@@ -531,11 +531,12 @@ export function openDownload() {
       .then(() => done('Shared ' + name), e => { if (e && e.name === 'AbortError') return; save(); });
   };
 }
+const IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 export function openUpload(given) {
   const draw = (inner, title) => sheet('<div class="shh"><h2>' + (title || 'Upload progress') + '</h2><button type="button" class="ib" data-close aria-label="Close">' + ICON.close + '</button></div>' + inner, { label: 'Upload progress' });
   const pick = () => {
-    const el = draw('<p>Pick a progress file from WhatsApp, Downloads or Files. Nothing on this phone is deleted; new attempts are added.</p>' +
-      '<p class="sub">Easiest from WhatsApp: open the chat, press and hold the file, tap Share, then choose GPSCavy.</p>' +
+    const el = draw('<p>Pick a progress file from WhatsApp, Downloads or Files. Nothing on this device is deleted; new attempts are added.</p>' +
+      (IOS ? '<p class="sub">On iPad: in WhatsApp, open the file, tap Share, then Save to Files. Then tap the box below and pick it from Files.</p>' : '<p class="sub">Easiest from WhatsApp: open the chat, press and hold the file, tap Share, then choose GPSCavy.</p>') +
       '<label class="fileb pickf"><span class="jb">JSON</span><span class="rt"><span class="ttl">Choose a GPSC-progress file</span><span class="sub">Saved by this app or the Mock Exam page</span></span><input type="file" id="upf"></label>');
     el.querySelector('#upf').onchange = e => { const f = e.target.files && e.target.files[0]; if (f) read(f); };
   };
@@ -552,7 +553,7 @@ export function openUpload(given) {
         '<div class="three"><div class="t-grn"><b>' + plan.add.length + '</b><span>new attempts</span></div><div><b>' + plan.had + '</b><span>already here</span></div><div class="t-amb"><b>' + plan.prog.length + '</b><span>in progress</span></div></div>' +
         (plan.add.length ? '<span class="sub">New: ' + esc(plan.add.slice(0, 8).map(a => a.setName.replace('Practice ', '') + ' (' + a.score + ')').join(', ')) + (plan.add.length > 8 ? '…' : '') + '</span>' : '') +
         (plan.unknown ? '<span class="sub">' + plan.unknown + ' for tests this app does not have</span>' : '') + '</div>' +
-        '<button type="button" class="wide grn" id="merge" data-focus>Add to this phone</button><button type="button" class="wide sec" id="other">Choose a different file</button>', 'Check before adding');
+        '<button type="button" class="wide grn" id="merge" data-focus>Add to this device</button><button type="button" class="wide sec" id="other">Choose a different file</button>', 'Check before adding');
       el.querySelector('#other').onclick = pick;
       el.querySelector('#merge').onclick = () => { const msg = applyMerge(plan); closeSheet(); toast(msg, null, 4200); render(); };
     };

@@ -16,7 +16,7 @@ export async function route(r, me, api) {
   if (a === 'test') return testRoute(decodeURIComponent(id || ''), r, me);
   await getKeys();
   const at = findAttempt(decodeURIComponent(id || ''));
-  if (!at) { app.innerHTML = topbar('Attempt not found', '') + '<main class="pad"><div class="card"><p>This attempt is not on this phone. Upload a progress file that has it, or open it on the phone where you took the test.</p><a class="btn pri" href="#/tests/mine">My tests</a></div></main>' + navHtml('tests'); return; }
+  if (!at) { app.innerHTML = topbar('Attempt not found', '') + '<main class="pad"><div class="card"><p>This attempt is not on this device. Upload a progress file that has it, or open it on the device where you took the test.</p><a class="btn pri" href="#/tests/mine">My tests</a></div></main>' + navHtml('tests'); return; }
   if (a === 'result') return resultScreen(at, me);
   if (a === 'review') return reviewScreen(at, r, me);
 }
@@ -168,7 +168,7 @@ function runner(set, S, me) {
       const open = passOpen[q.passage] !== false;
       h += '<details class="passage"' + (open ? ' open' : '') + ' data-p="' + esc(q.passage) + '"><summary>' + esc(p.title) + ' · questions ' + Math.min(...ns) + '–' + Math.max(...ns) + '</summary><div>' + p.paras.map(t => '<p>' + esc(t) + '</p>').join('') + '</div></details>';
     }
-    h += '<p class="qt" id="qt">' + esc(q.q) + '</p><div class="opts" role="group" aria-labelledby="qt">';
+    h += '<div class="qcol"><p class="qt" id="qt">' + esc(q.q) + '</p><div class="opts" role="group" aria-labelledby="qt">';
     optsOf(q).forEach((t, i) => {
       const L = L5[i];
       let cls = a === L ? ' sel' : '';
@@ -178,6 +178,8 @@ function runner(set, S, me) {
     h += '</div>';
     if (locked) h += '<div class="fb ' + (a === q.ans ? 'ok' : 'no') + '"><b>' + (a === q.ans ? 'Correct' : 'Not quite · answer ' + q.ans) + '</b><span>' + esc(q.why) + '</span></div>';
     if (exam) h += '<button type="button" class="mark' + (S.flags[n] ? ' on' : '') + '" id="rFlag" aria-pressed="' + !!S.flags[n] + '">' + ICON.flag + (S.flags[n] ? 'Marked for review' : 'Mark for review') + '</button>';
+    h += '</div>';
+    rq.classList.toggle('split', !!(q.passage && set.passages[q.passage]));
     rq.innerHTML = h; rq.dataset.n = n;
     $('#rPrev').disabled = S.cur === 0;
     $('#rClr').disabled = !a || locked;
