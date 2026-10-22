@@ -1,0 +1,627 @@
+// GPSCavy app shell: router, Home, Tests, drills, custom builder, Progress, progress-file sync.
+import {
+  $, $$, esc, fmt, day, daysLeft, idle, lsGet, lsSet, settings, saveSettings, getIndex, getMeta, getKeys, getPool, setInfo, IDX, KEYS,
+  H, loadAttempts, saveAttempts, findAttempt, cleanAttempt, grade, tokens, listInProgress, loadState, stateKey, remaining, stats, weakest,
+  DRILL_FOR, wrongList, customs, saveCustom, deleteCustom, toast, hideToast, sheet, closeSheet, sheetOpen, ICON, navHtml, topbar, bar, lvlChip,
+  SECS, SEC, LV, LVL, TOPIC_NAMES, prefetchSet, findDef, CKEY
+} from './core.js';
+
+const app = $('#app');
+let cur = null;          // current screen {hash, unmount, onPop}
+let depth = 0;
+const scrolls = new Map();
+let runnerMod = null, studyMod = null;
+const loadRunner = () => runnerMod || (runnerMod = import('./runner.js'));
+const loadStudy = () => studyMod || (studyMod = import('./study.js'));
+
+// ---------- routing ----------
+export function parse(h) {
+  h = (h || location.hash || '#/').replace(/^#/, '');
+  const [p, qs] = h.split('?');
+  const q = {}; (qs || '').split('&').forEach(kv => { if (!kv) return; const [k, v] = kv.split('='); q[decodeURIComponent(k)] = decodeURIComponent(v || ''); });
+  return { path: p.split('/').filter(Boolean), q, hash: '#' + (h.startsWith('/') ? h : '/' + h) };
+}
+export function parentOf(hash) {
+  const { path } = parse(hash);
+  const [a, b, c] = path;
+  if (!a) return null;
+  if (a === 'tests' || a === 'study' && !b || a === 'progress' || a === 'search') return '#/';
+  if (a === 'drills') return '#/tests/drills';
+  if (a === 'custom') return '#/tests';
+  if (a === 'test') return testParent(b);
+  if (a === 'result') { const at = findAttempt(b); return at ? testParent(at.set) : '#/tests'; }
+  if (a === 'review') return '#/result/' + b;
+  if (a === 'study') {
+    if (/^topic\d+$/.test(b)) return '#/study/core';
+    if (b === 'playbook') return c === 'gk' ? '#/study/gk' : c === 'english-grammar' ? '#/study/gram' : c === 'english-comp' ? '#/study/comp' : '#/study';
+    if (b === 'wrong' && c) return '#/study/wrong';
+    return '#/study';
+  }
+  return '#/';
+}
+export function testParent(id) {
+  if (!id) return '#/tests';
+  if (id.startsWith('custom-')) return '#/tests/mine';
+  if (id.startsWith('quiz-topic')) return '#/study/topic' + id.slice(10);
+  if (id.startsWith('lvl-')) return '#/tests/level';
+  if (id.startsWith('gkd')) return '#/drills/gk';
+  if (id === 'end1' || id === 'end2') return '#/drills/en';
+  if (id === 'end3' || id === 'end4' || id.startsWith('compd')) return '#/drills/comp';
+  return '#/tests';
+}
+export function go(hash, replace) {
+  if (hash === location.hash && !replace) { render(); return; }
+  remember();
+  if (replace) history.replaceState({ d: depth }, '', hash);
+  else { depth++; history.pushState({ d: depth }, '', hash); }
+  render();
+}
+export function back() {
+  if (closeSheet()) return;
+  if (cur && cur.onBack && cur.onBack()) return;
+  if (depth > 0) history.back();
+  else go(parentOf(location.hash) || '#/', true);
+}
+function remember() { scrolls.set(location.hash, window.scrollY); }
+window.addEventListener('popstate', e => {
+  const d = (e.state && e.state.d) || 0;
+  // a sheet open, or a running test: Back closes the sheet / asks before leaving
+  if (sheetOpen()) { closeSheet(); history.pushState({ d: depth }, '', cur.hash); return; }
+  if (cur && cur.onPop && cur.onPop()) { history.pushState({ d: depth }, '', cur.hash); return; }
+  depth = d;
+  render(true);
+});
+
+// A hash typed or opened from outside (e.g. a shared link while the app is open)
+window.addEventListener('hashchange', () => {
+  if (cur && parse().hash === cur.hash) return;
+  if (!history.state || history.state.d == null) { depth++; history.replaceState({ d: depth }, '', location.hash); }
+  render();
+});
+
+async function render(restore) {
+  const r = parse();
+  if (cur && cur.hash === r.hash && cur.live) return;
+  if (cur && cur.unmount) { try { cur.unmount(); } catch (e) { } }
+  closeSheet(true); hideToast();
+  cur = { hash: r.hash };
+  const me = cur;
+  const [a, b] = r.path;
+  document.body.dataset.screen = a || 'home';
+  try {
+    if (!a) homeScreen(r);
+    else if (a === 'tests') await testsScreen(r);
+    else if (a === 'drills') await drillsScreen(r);
+    else if (a === 'custom') { r.restore = restore; await customScreen(r); }
+    else if (a === 'progress') await progressScreen(r);
+    else if (a === 'test' || a === 'result' || a === 'review') { const m = await loadRunner(); if (me !== cur) return; await m.route(r, me, api); }
+    else if (a === 'study' || a === 'search') { const m = await loadStudy(); if (me !== cur) return; await m.route(r, me, api); }
+    else homeScreen(r);
+  } catch (e) {
+    console.warn(e);
+    app.innerHTML = topbar('Not found', '') + '<main class="pad"><div class="card"><p>This page could not be opened. ' + esc(e.message || '') + '</p><p><a class="btn pri" href="#/">Go home</a></p></div></main>' + navHtml('');
+  }
+  if (me !== cur) return;
+  const y = restore ? scrolls.get(r.hash) : 0;
+  window.scrollTo(0, y || 0);
+}
+export const api = { go, back, parse, parentOf, testParent, render, openDownload, openUpload, loadRunner, loadStudy };
+
+// Links: same-document hash links navigate through the router so every screen gets a history entry.
+document.addEventListener('click', e => {
+  const t = e.target;
+  const bk = t.closest('[data-back]');
+  if (bk) { e.preventDefault(); back(); return; }
+  const a = t.closest('a[href^="#/"]');
+  if (a && !e.defaultPrevented && !a.target) {
+    e.preventDefault();
+    const href = a.getAttribute('href');
+    const nav = a.dataset.nav;
+    if (nav && cur && cur.hash === href) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    go(href, !!a.dataset.replace);
+  }
+});
+// Prefetch a set file the moment a finger lands on its card.
+const pf = e => { const el = e.target.closest && e.target.closest('[data-pf]'); if (el) { prefetchSet(el.dataset.pf); loadRunner(); } };
+document.addEventListener('touchstart', pf, { passive: true });
+document.addEventListener('pointerdown', pf, { passive: true });
+
+// ---------- helpers ----------
+const practice = () => IDX.sets.filter(s => s.num);
+const levelSets = () => IDX.sets.filter(s => s.lvlset);
+const gkDrills = () => IDX.sets.filter(s => s.id.startsWith('gkd'));
+const enDrills = () => IDX.sets.filter(s => s.id === 'end1' || s.id === 'end2');
+const compDrills = () => IDX.sets.filter(s => s.id === 'end3' || s.id === 'end4' || s.id.startsWith('compd'));
+function attemptsOf(id) { return H.filter(a => a.set === id); }
+function bestOf(id) { const m = attemptsOf(id); if (!m.length) return null; return m.reduce((b, a) => (a.score > b.score ? a : b), m[0]); }
+function liveState(id) { const st = loadState(id); return st && st.phase === 'exam' ? st : null; }
+export function nextMock() {
+  const ps = practice();
+  const todo = ps.find(s => !attemptsOf(s.id).length && !liveState(s.id));
+  if (todo) return todo.id;
+  const live = ps.find(s => liveState(s.id)); if (live) return live.id;
+  // least recently attempted
+  let best = ps[0], bt = '9';
+  ps.forEach(s => { const l = attemptsOf(s.id)[0]; const t = l ? l.submittedAt : ''; if (t < bt) { bt = t; best = s; } });
+  return best.id;
+}
+function setRow(s, opts) {
+  opts = opts || {};
+  const st = liveState(s.id), b = bestOf(s.id), lv = s.level ? LVL[s.level] : '';
+  let meta, pill, cls = '';
+  if (st) {
+    const done = Object.keys(st.answers || {}).length;
+    meta = (lv ? lv + ' · ' : '') + 'in progress · ' + done + '/' + s.n + ' answered';
+    pill = '<span class="pill pill-res">Resume</span>'; cls = ' live';
+  } else if (b) {
+    meta = (lv ? lv + ' · ' : '') + 'best ' + b.score + '/' + b.total + ' · ' + day(b.submittedAt);
+    pill = '<span class="pill pill-done">' + b.score + '</span>';
+  } else {
+    meta = (lv ? lv + ' · ' : '') + s.n + ' Q · ' + s.min + ' min · not attempted';
+    pill = '<span class="pill pill-go ' + (opts.tone || '') + '">Start</span>';
+  }
+  if (opts.meta) meta = opts.meta(s, st, b) || meta;
+  const badge = opts.badge ? opts.badge(s) : String(s.num || '');
+  const badgeCls = opts.badgeCls || ('lvb-' + (s.level ? { easy: 'E', intermediate: 'I', hard: 'H' }[s.level] : 'I'));
+  return '<a class="row' + cls + '" href="#/test/' + s.id + '" data-pf="' + s.id + '"><span class="num ' + badgeCls + '">' + esc(badge) + '</span><span class="rt"><span class="ttl">' + esc(opts.name ? opts.name(s) : s.name) + '</span><span class="sub">' + esc(meta) + '</span></span>' + pill + '</a>';
+}
+
+// ---------- Home ----------
+function homeScreen() {
+  const st = listInProgress()[0];
+  const last = H[0];
+  let resume = '';
+  if (st) {
+    const info = setInfo(st.set) || findDef(st.set) && { name: findDef(st.set).name, n: findDef(st.set).refs.length } || { name: st.set, n: 0 };
+    const total = info.n || (st.def ? st.def.refs.length : 0) || 60;
+    const done = Object.keys(st.answers || {}).length;
+    const left = st.mode === 'learn' ? 'learn mode' : fmt(remaining(st)) + ' left';
+    resume = '<a class="card resume" href="#/test/' + esc(st.set) + '" data-pf="' + esc(st.set) + '"><span class="ic ic-amb">' + ICON.play + '</span><span class="rt"><span class="ttl">Resume ' + esc(info.name) + '</span><span class="sub">' + done + ' of ' + total + ' answered · at question ' + ((st.cur || 0) + 1) + ' · ' + left + '</span>' + bar(done / total * 100, 'amb') + '</span></a>';
+  }
+  const tday = Math.floor((Date.now() + 19800000) / 86400000) % 6 + 5;
+  const tnames = { 5: 'Anatomy & Physiology', 6: 'Pathology', 7: 'Practice of Medicine', 8: 'Obs, Gynae & Paeds', 9: 'Surgery', 10: 'Community & Forensic' };
+  const dl = daysLeft();
+  app.innerHTML =
+    '<header class="hhead"><div class="brand"><span class="logo" aria-hidden="true">G</span><span><b>GPSCavy</b><small>Homoeopathic Physician · CBRT</small></span></div><a class="ib white" href="#/search" aria-label="Search questions, notes and sets">' + ICON.search + '</a></header>' +
+    '<main class="pad stack">' +
+    '<section class="hero"><div><p class="hk">Exam on Sunday, 1 November</p><p class="hd">' + (dl === 0 ? 'Exam day' : dl + (dl === 1 ? ' day left' : ' days left')) + '</p><p class="hs">60 marks · 75 minutes · 5 sections</p></div>' +
+    '<a class="badge" href="#/progress" aria-label="Last score ' + (last ? last.score : '–') + ' of ' + (last ? last.total : 60) + ', see progress"><small>Last score</small><b>' + (last ? last.score : '–') + '</b><small>of ' + (last ? last.total : 60) + '</small></a></section>' +
+    '<div id="a2hs"></div>' + resume +
+    '<div class="two"><a class="big dark" href="#/test/' + nextMock() + '" data-pf="' + nextMock() + '"><b>Full mock</b><small>60 Q · 75 min</small></a><a class="big sun" href="#/custom"><b>Pick subjects</b><small>custom test</small></a></div>' +
+    '<section class="card"><div class="ch"><h2 class="label">Your accuracy by section</h2><a class="lnk" href="#/progress">All progress</a></div><div id="acc" class="acc"><p class="sub">Loading…</p></div></section>' +
+    '<section class="card today"><span class="ic ic-core">' + ICON.book + '</span><span class="rt"><span class="ttl">Today\'s read: Topic ' + tday + ' ' + tnames[tday] + '</span><span class="sub">then a quick-check quiz · <a href="#/test/quiz-topic' + tday + '">Quiz</a></span></span><a class="lnk" href="#/study/topic' + tday + '">Open</a></section>' +
+    syncCard() +
+    '</main>' + navHtml('home');
+  installHint();
+  getKeys().then(() => { if (cur && cur.hash === '#/') fillAcc($('#acc'), true); });
+}
+function accRows(s, showBest) {
+  return SECS.map(k => {
+    const b = s.sec[k], p = b.n ? Math.round(b.c / b.n * 100) : null;
+    return '<div class="arow"><span>' + SEC[k].name + '</span>' + bar(p || 0, 's-' + k) + '<b>' + (p == null ? '–' : p + '%') + '</b>' +
+      (showBest && b.n ? '<small>best ' + Math.round(b.best * 100) + '% · avg ' + Math.round(b.pcts.reduce((x, y) => x + y, 0) / b.pcts.length * 100) + '%</small>' : '') + '</div>';
+  }).join('');
+}
+function fillAcc(el, home) {
+  if (!el) return;
+  if (!H.length) { el.innerHTML = '<p class="sub">No attempts yet. Take a full mock or a drill and your accuracy for each section shows here.</p>'; return; }
+  const s = stats(), w = weakest(s);
+  el.innerHTML = accRows(s, !home) + (w ? (home ? '<p class="sub">Weakest: ' + SEC[w].long + '. <a class="lnk" href="' + DRILL_FOR[w][0] + '">Practise ' + DRILL_FOR[w][1] + '</a></p>'
+    : '<a class="wide sun" href="' + DRILL_FOR[w][0] + '">Practise weakest: ' + DRILL_FOR[w][1] + '</a>') : '');
+}
+function syncCard() {
+  const ls = settings.lastSync;
+  return '<section class="card sync"><div class="ch2"><span class="ic ic-grn">' + ICON.sync + '</span><span class="rt"><span class="ttl">Back up and sync progress</span><span class="sub">' +
+    (ls ? 'Last ' + esc(ls.what) + ' ' + day(ls.at) + ' · ' : '') + H.length + (H.length === 1 ? ' attempt' : ' attempts') + ' on this phone</span></span></div>' +
+    '<div class="two"><button type="button" class="btn grn" data-act="down">' + ICON.down + '<span>Download progress</span></button><button type="button" class="btn grn-o" data-act="up">' + ICON.up + '<span>Upload progress</span></button></div></section>';
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const act = b.dataset.act;
+  if (act === 'down') openDownload();
+  else if (act === 'up') openUpload();
+});
+
+// ---------- install hint ----------
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; installHint(); });
+function installHint() {
+  const el = $('#a2hs'); if (!el) return;
+  const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  const mobile = /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent);
+  if (standalone || !mobile || settings.a2hs) { el.innerHTML = ''; return; }
+  el.innerHTML = '<div class="card hint"><span class="rt"><span class="ttl">Add GPSCavy to your home screen</span><span class="sub">' +
+    (deferredPrompt ? 'Opens in one tap and works offline.' : 'In Chrome tap ⋮, then <b>Add to Home screen</b> or <b>Install app</b>. It then opens in one tap and works offline.') +
+    '</span></span>' + (deferredPrompt ? '<button type="button" class="btn pri sm" id="a2hsGo">Install</button>' : '') + '<button type="button" class="ib" id="a2hsX" aria-label="Dismiss">' + ICON.close + '</button></div>';
+  const x = $('#a2hsX'); if (x) x.onclick = () => { settings.a2hs = 1; saveSettings(); el.innerHTML = ''; };
+  const g = $('#a2hsGo'); if (g) g.onclick = () => { deferredPrompt.prompt(); deferredPrompt.userChoice.finally(() => { deferredPrompt = null; settings.a2hs = 1; saveSettings(); el.innerHTML = ''; }); };
+}
+
+// ---------- Tests ----------
+const TABS = [['', 'Mock sets'], ['level', 'By level'], ['drills', 'Drills'], ['mine', 'My tests']];
+const tf = { status: 'all', level: 'all' };
+async function testsScreen(r) {
+  const tab = r.path[1] || '';
+  const tabs = '<div class="seg4" role="tablist" aria-label="Test lists">' + TABS.map(t => '<a role="tab" href="#/tests' + (t[0] ? '/' + t[0] : '') + '" data-replace="1" aria-selected="' + (t[0] === tab) + '"' + (t[0] === tab ? ' class="on"' : '') + '>' + t[1] + '</a>').join('') + '</div>';
+  let body = '';
+  if (!tab) {
+    const ps = practice();
+    const done = ps.filter(s => attemptsOf(s.id).length).length;
+    const cnt = l => ps.filter(s => s.level === l).length;
+    const chips = [['all', 'All ' + ps.length], ['todo', 'To do · ' + (ps.length - done)], ['done', 'Done · ' + done]].map(c => '<button type="button" class="fchip' + (tf.status === c[0] ? ' on' : '') + '" aria-pressed="' + (tf.status === c[0]) + '" data-st="' + c[0] + '">' + c[1] + '</button>').join('');
+    const lchips = [['all', 'All levels'], ['easy', 'Easy · ' + cnt('easy')], ['intermediate', 'Intermediate · ' + cnt('intermediate')], ['hard', 'Hard · ' + cnt('hard')]].map(c => '<button type="button" class="lchip lc-' + c[0] + (tf.level === c[0] ? ' on' : '') + '" aria-pressed="' + (tf.level === c[0]) + '" data-lv="' + c[0] + '">' + c[1] + '</button>').join('');
+    let list = ps.filter(s => (tf.level === 'all' || s.level === tf.level) && (tf.status === 'all' || (tf.status === 'done') === !!attemptsOf(s.id).length));
+    list = list.filter(s => liveState(s.id)).concat(list.filter(s => !liveState(s.id)));
+    body = '<div class="chips">' + chips + '</div><div class="chips" role="group" aria-label="Filter by level">' + lchips + '</div><div class="list" id="tl">' +
+      (list.map(s => setRow(s, { meta: (s2, st, b) => null })).join('') || '<p class="empty">No sets match these filters.</p>') + '</div>';
+  } else if (tab === 'level') {
+    body = '<p class="sub pad0">Nine full 60-mark tests sorted by difficulty, three at each level. Start with Easy to build speed, then work up to Hard.</p>' +
+      ['easy', 'intermediate', 'hard'].map(l => '<h2 class="label lvh lv-' + { easy: 'E', intermediate: 'I', hard: 'H' }[l] + '">' + LVL[l] + '</h2><div class="list">' +
+        levelSets().filter(s => s.lvlset === l).map(s => setRow(s, { badge: s2 => s2.name.replace(/\D+/g, ''), meta: (s2, st, b) => mixText(s2.mix) + (st ? ' · in progress' : b ? ' · best ' + b.score + '/' + b.total : '') })).join('') + '</div>').join('');
+  } else if (tab === 'drills') {
+    body = '<div class="list">' +
+      drillCard('#/drills/gk', 'GK', 'gk', 'GK drills', gkDrills().length + ' drills · 25 questions each · 15 min') +
+      drillCard('#/drills/en', 'Gr', 'gram', 'English Grammar drills', enDrills().length + ' drills · 25 questions each · 15 min') +
+      drillCard('#/drills/comp', 'Rc', 'comp', 'English Comprehension drills', compDrills().length + ' drills · real GPSC passages · 25 min') +
+      drillCard('#/custom?sec=lr', 'LR', 'lr', 'Reasoning practice', 'Build a reasoning-only test from the bank') + '</div>';
+  } else if (tab === 'mine') {
+    const cs = Object.values(customs()).filter(c => c.saved).sort((a, b) => b.createdAt - a.createdAt);
+    body = '<h2 class="label">Saved tests</h2><div class="list">' + (cs.length ? cs.map(c => '<div class="row"><a class="rowa" href="#/test/' + c.id + '"><span class="num s-core-b">' + c.refs.length + '</span><span class="rt"><span class="ttl">' + esc(c.name) + '</span><span class="sub">' + c.refs.length + ' Q · ' + (c.mode === 'learn' ? 'learn mode' : c.minutes + ' min') + (attemptsOf(c.id).length ? ' · best ' + bestOf(c.id).score + '/' + c.refs.length : '') + '</span></span><span class="pill pill-go">Start</span></a><button type="button" class="ib" data-delc="' + c.id + '" aria-label="Delete ' + esc(c.name) + '">' + ICON.close + '</button></div>').join('')
+      : '<p class="empty">Tests you build by subject and save are kept here so you can retake them.</p>') + '</div>' +
+      '<h2 class="label">Past attempts</h2><div class="list cv">' + (H.length ? H.map(attRow).join('') : '<p class="empty">No attempts yet. Submit a test and it is listed here with its score, wrong answers and time used.</p>') + '</div>';
+  }
+  app.innerHTML = '<header class="ph"><h1>Tests</h1></header><main class="pad stack">' + tabs + body + '</main>' +
+    '<div class="fab-wrap"><a class="fab" href="#/custom">' + ICON.plus + 'Build a test by subject</a></div>' + navHtml('tests');
+  app.onclick = null;
+  const main = app.querySelector('main');
+  main.addEventListener('click', e => {
+    const s = e.target.closest('[data-st]'), l = e.target.closest('[data-lv]'), d = e.target.closest('[data-delc]');
+    if (s) { tf.status = s.dataset.st; testsScreen(r); }
+    else if (l) { tf.level = l.dataset.lv; testsScreen(r); }
+    else if (d) { deleteCustom(d.dataset.delc); toast('Removed from My tests'); testsScreen(r); }
+  });
+}
+function mixText(m) { return m ? ['E', 'I', 'H'].filter(k => m[k]).map(k => m[k] + ' ' + LV[k].toLowerCase()).join(' · ') : ''; }
+function drillCard(href, ic, sec, title, sub) { return '<a class="row" href="' + href + '"><span class="num s-' + sec + '-b">' + ic + '</span><span class="rt"><span class="ttl">' + title + '</span><span class="sub">' + sub + '</span></span><span class="chev">' + ICON.chev + '</span></a>'; }
+export function attRow(a) {
+  return '<a class="row" href="#/result/' + encodeURIComponent(a.id) + '"><span class="num sc">' + a.score + '</span><span class="rt"><span class="ttl">' + esc(a.setName) + '</span><span class="sub">' + day(a.submittedAt) + ' · ' + a.score + '/' + a.total + ' · ' + a.wrong + ' wrong · ' + fmt(a.usedMs) + (a.auto ? ' · time ran out' : '') + '</span></span><span class="chev">' + ICON.chev + '</span></a>';
+}
+
+// ---------- drill pickers ----------
+async function drillsScreen(r) {
+  const k = r.path[1];
+  let title, sub, list, tone, badge, sec, extra = '';
+  if (k === 'gk') { title = 'GK drills'; sec = 'gk'; list = gkDrills(); sub = list.length + ' drills · 25 questions each · 15 minutes'; badge = s => 'G' + s.id.slice(3); }
+  else if (k === 'en') { title = 'Grammar drills'; sec = 'gram'; list = enDrills(); sub = list.length + ' drills · 25 questions each · 15 minutes'; badge = s => 'E' + s.id.slice(3); }
+  else if (k === 'comp') { title = 'Comprehension drills'; sec = 'comp'; list = compDrills(); sub = list.length + ' drills · 25 questions each · 25 minutes'; badge = s => s.id.startsWith('compd') ? 'P' + s.id.slice(5) : 'E' + s.id.slice(3); }
+  else { go('#/tests/drills', true); return; }
+  const name = s => s.id === 'end1' ? 'Grammar drill 1' : s.id === 'end2' ? 'Grammar drill 2' : s.id === 'end3' ? 'Comprehension drill 1' : s.id === 'end4' ? 'Comprehension drill 2' : s.id.startsWith('gkd') ? 'GK drill ' + s.id.slice(3) : s.name;
+  const meta = (s, st, b) => (s.short || s.core || '') + ' · ' + s.n + ' Q · ' + s.min + ' min' + (st ? ' · in progress' : b ? ' · best ' + b.score + '/' + b.total : '');
+  const rows = list.map(s => setRow(s, { badge, badgeCls: 's-' + sec + '-b', name, meta, tone: 'pg-' + sec }));
+  let html = rows.join('');
+  if (k === 'comp') html = rows.slice(0, 2).join('') + '</div><h2 class="label">Passage drills from the 25 mock sets</h2><div class="list">' + rows.slice(2).join('');
+  app.innerHTML = topbar(title, sub) + '<main class="pad stack"><div class="list">' + html + '</div>' +
+    '<a class="lnk" href="#/study/' + (k === 'en' ? 'gram' : k) + '">Read the ' + (k === 'gk' ? 'GK' : 'English') + ' playbook first</a></main>' + navHtml('tests');
+}
+
+// ---------- custom builder ----------
+const CDEF = { comp: 10, gram: 5, gk: 10, lr: 10, core: 25 };
+let cb = null;
+async function customScreen(r) {
+  await getMeta();
+  if (!cb || !r.restore) {
+    cb = { secs: {}, topics: {}, diff: 'any', time: 'auto', custom: 30, mode: 'exam', norep: false };
+    for (let t = 1; t <= 10; t++) cb.topics[t] = true;
+    (r.q.sec ? r.q.sec.split(',') : []).forEach(s => { if (SEC[s]) cb.secs[s] = CDEF[s]; });
+    if (r.q.topics) { for (let t = 1; t <= 10; t++) cb.topics[t] = false; r.q.topics.split(',').forEach(t => (cb.topics[t] = true)); }
+  }
+  const pools = {};
+  function selected() { return SECS.filter(s => cb.secs[s]); }
+  function avail(s) {
+    const p = pools[s]; if (!p) return null;
+    return candidates(s).length;
+  }
+  function candidates(s) {
+    const p = pools[s]; if (!p) return [];
+    const allT = Object.values(cb.topics).every(Boolean);
+    const right = new Set();
+    if (cb.norep && KEYS) H.forEach(a => { const g = grade(a.set, a.answers); if (g) g.rows.forEach(x => { if (x.st === 'ok') right.add(x.cid); }); });
+    return p.q.filter(q => {
+      if (cb.diff !== 'any' && q[1] !== cb.diff) return false;
+      if (s === 'core' && !allT && !cb.topics[q[2]]) return false;
+      if (cb.norep && KEYS) { const i = q[0].lastIndexOf(':'); const t = tokens(q[0].slice(0, i)); if (t && right.has(t[+q[0].slice(i + 1) - 1].cid)) return false; }
+      return true;
+    });
+  }
+  function total() { return selected().reduce((n, s) => n + Math.min(cb.secs[s], avail(s) == null ? cb.secs[s] : avail(s)), 0); }
+  function minutes() { const t = total(); return cb.time === 'auto' ? Math.max(5, Math.round(75 * t / 60)) : Math.max(1, +cb.custom || 1); }
+  function name() {
+    const ss = selected();
+    let n = ss.map(s => s === 'core' ? coreName() : SEC[s].short || SEC[s].name).join(' + ');
+    if (cb.diff !== 'any') n += ' · ' + LV[cb.diff];
+    return 'Custom · ' + (n || 'empty');
+  }
+  function coreName() {
+    const ts = Object.keys(cb.topics).filter(t => cb.topics[t]).map(Number);
+    if (ts.length === 10) return 'Core';
+    if (ts.length && ts[ts.length - 1] - ts[0] === ts.length - 1) return 'Core ' + (ts.length === 1 ? ts[0] : ts[0] + '–' + ts[ts.length - 1]);
+    return 'Core ' + ts.join(',');
+  }
+  function draw() {
+    const ss = selected();
+    const secChips = SECS.map(s => '<button type="button" class="schip s-' + s + (cb.secs[s] ? ' on' : '') + '" aria-pressed="' + !!cb.secs[s] + '" data-sec="' + s + '"><i></i>' + SEC[s].name + '</button>').join('');
+    const counts = ss.map(s => {
+      const a = avail(s), step = s === 'comp' ? 5 : 5;
+      return '<div class="cnt s-' + s + '"><span class="dot"></span><span class="rt"><span class="ttl">' + SEC[s].name + '</span><span class="sub">' + (a == null ? 'checking the bank…' : a + ' in the bank') + (s === 'comp' ? ' · whole passages of 5' : '') + '</span></span>' +
+        '<button type="button" class="ib step" data-dec="' + s + '" aria-label="Fewer ' + SEC[s].name + ' questions">−</button><b class="cv" aria-live="polite">' + cb.secs[s] + '</b><button type="button" class="ib step" data-inc="' + s + '" aria-label="More ' + SEC[s].name + ' questions">+</button></div>';
+    }).join('');
+    const topics = cb.secs.core ? '<div class="ch"><h2 class="label">Core topics</h2><button type="button" class="lnk" data-alltopics>' + (Object.values(cb.topics).every(Boolean) ? 'Clear all' : 'Select all') + '</button></div><div class="chips">' +
+      Object.keys(TOPIC_NAMES).map(t => '<button type="button" class="tchip' + (cb.topics[t] ? ' on' : '') + '" aria-pressed="' + !!cb.topics[t] + '" data-topic="' + t + '">' + t + ' · ' + TOPIC_NAMES[t] + '</button>').join('') + '</div>' : '';
+    const seg = (key, opts) => '<div class="seg" role="group">' + opts.map(o => '<button type="button" class="' + (cb[key] === o[0] ? 'on' : '') + '" aria-pressed="' + (cb[key] === o[0]) + '" data-' + key + '="' + o[0] + '">' + o[1] + '</button>').join('') + '</div>';
+    const t = total();
+    app.innerHTML = topbar('Build a test', 'Questions are drawn from all 25 sets and drills') + '<main class="pad stack cbuild">' +
+      '<h2 class="label">Sections</h2><div class="sgrid">' + secChips + '</div>' +
+      (ss.length ? '<h2 class="label">Questions per section</h2><div class="stack8">' + counts + '</div>' : '<p class="sub">Pick one or more sections. The test contains only the sections you pick.</p>') +
+      topics +
+      '<h2 class="label">Difficulty</h2>' + seg('diff', [['any', 'Any'], ['E', 'Easy'], ['I', 'Medium'], ['H', 'Hard']]) +
+      '<h2 class="label">Time</h2>' + seg('time', [['auto', 'Auto · ' + Math.max(5, Math.round(75 * t / 60)) + ' min'], ['custom', 'Custom']]) +
+      (cb.time === 'custom' ? '<label class="inl">Minutes <input type="number" inputmode="numeric" min="1" max="300" value="' + cb.custom + '" id="cmin"></label>' : '') +
+      '<h2 class="label">Mode</h2>' + seg('mode', [['exam', 'Exam · timer, answers at the end'], ['learn', 'Learn · answer after each']]) +
+      '<label class="tog"><input type="checkbox" id="norep"' + (cb.norep ? ' checked' : '') + '><span><b>No repeats</b><small>Leave out questions you have already answered correctly</small></span></label>' +
+      '</main><div class="foot"><p class="sub">' + (ss.length ? esc(name().replace('Custom · ', '')) + ' · ' + t + ' questions · ' + (cb.mode === 'learn' ? 'learn mode' : minutes() + ' min') : 'No sections picked') + '</p>' +
+      '<div class="two"><button type="button" class="btn sec" id="csave"' + (t ? '' : ' disabled') + '>Save as my test</button><button type="button" class="btn pri" id="cgo"' + (t ? '' : ' disabled') + '>Start ' + t + ' questions</button></div></div>';
+    const m = app.querySelector('main');
+    m.onclick = e => {
+      const b = e.target.closest('button'); if (!b) return;
+      const d = b.dataset;
+      if (d.sec) { if (cb.secs[d.sec]) delete cb.secs[d.sec]; else { cb.secs[d.sec] = CDEF[d.sec]; loadPool(d.sec); } }
+      else if (d.inc) cb.secs[d.inc] = Math.min(cb.secs[d.inc] + 5, avail(d.inc) == null ? 100 : Math.max(5, avail(d.inc)));
+      else if (d.dec) cb.secs[d.dec] = Math.max(5, cb.secs[d.dec] - 5);
+      else if (d.topic) { cb.topics[d.topic] = !cb.topics[d.topic]; if (!Object.values(cb.topics).some(Boolean)) cb.topics[d.topic] = true; }
+      else if ('alltopics' in d) { const all = Object.values(cb.topics).every(Boolean); for (let i = 1; i <= 10; i++) cb.topics[i] = !all; if (all) cb.topics[1] = true; }
+      else if (d.diff) cb.diff = d.diff; else if (d.time) cb.time = d.time; else if (d.mode) cb.mode = d.mode;
+      else return;
+      const y = window.scrollY; draw(); window.scrollTo(0, y);
+    };
+    const nr = $('#norep'); nr.onchange = () => { cb.norep = nr.checked; if (cb.norep) getKeys().then(draw); else draw(); };
+    const cm = $('#cmin'); if (cm) cm.onchange = () => { cb.custom = Math.max(1, +cm.value || 1); draw(); };
+    $('#cgo').onclick = () => make(false);
+    $('#csave').onclick = () => make(true);
+  }
+  function loadPool(s) { if (pools[s]) return; getPool(s).then(p => { pools[s] = p; if (cur && cur.hash.startsWith('#/custom')) { const y = window.scrollY; draw(); window.scrollTo(0, y); } }); }
+  async function make(save) {
+    await getKeys();
+    const ss = selected();
+    await Promise.all(ss.map(s => getPool(s).then(p => (pools[s] = p))));
+    const refs = [];
+    ss.forEach(s => {
+      let c = candidates(s);
+      shuffle(c);
+      const want = cb.secs[s];
+      if (s === 'comp') {
+        const groups = new Map();
+        c.forEach(q => { const k = q[7] || q[0]; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(q); });
+        let n = 0;
+        for (const g of groups.values()) { if (n + g.length > want && n > 0) continue; g.sort((a, b) => +a[0].split(':')[1] - +b[0].split(':')[1]); g.forEach(q => refs.push([q[0], s])); n += g.length; if (n >= want) break; }
+      } else c.slice(0, want).forEach(q => refs.push([q[0], s]));
+    });
+    if (!refs.length) { toast('No questions match these choices'); return; }
+    const id = 'custom-' + Date.now().toString(36);
+    const def = { id, name: name(), minutes: minutes(), mode: cb.mode, refs, saved: !!save, createdAt: Date.now() };
+    saveCustom(def);
+    if (save) { toast('Saved to My tests'); go('#/tests/mine'); }
+    else go('#/test/' + id + '?go=1');
+  }
+  draw();
+  selected().forEach(loadPool);
+}
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+// ---------- Progress ----------
+async function progressScreen() {
+  const me = cur;
+  app.innerHTML = '<header class="ph"><h1>Progress</h1></header><main class="pad stack" id="pm"><p class="sub">Loading…</p></main>' + navHtml('progress');
+  await getKeys();
+  if (me !== cur) return;
+  const full = H.filter(a => a.total === 60);
+  const setsDone = new Set(full.map(a => a.set)).size;
+  const best = full.reduce((m, a) => Math.max(m, a.score), 0);
+  const avg = full.length ? Math.round(full.reduce((m, a) => m + a.score, 0) / full.length) : 0;
+  const s = stats();
+  const tiles = [['t-ind', setsDone, 'sets done'], ['t-grn', full.length ? best : '–', 'best /60'], ['t-amb', full.length ? avg : '–', 'average'], ['t-pnk', daysLeft(), 'days left']]
+    .map(t => '<div class="tile ' + t[0] + '"><b>' + t[1] + '</b><span>' + t[2] + '</span></div>').join('');
+  const lv = ['E', 'I', 'H'].map(k => { const b = s.lvl[k]; const p = b && b.n ? Math.round(b.c / b.n * 100) : null; return '<div class="arow"><span>' + lvlChip(k) + '</span>' + bar(p || 0, 'l-' + k) + '<b>' + (p == null ? '–' : p + '%') + '</b>' + (b ? '<small>' + b.c + ' of ' + b.n + ' right</small>' : '') + '</div>'; }).join('');
+  document.getElementById('pm').innerHTML =
+    '<div class="tiles">' + tiles + '</div>' +
+    '<section class="card"><h2 class="label">Score in each full mock, oldest first</h2>' + trend(full) + '</section>' +
+    '<section class="card"><h2 class="label">Accuracy by section, all attempts</h2><div class="acc" id="pacc"></div></section>' +
+    '<section class="card"><h2 class="label">By difficulty</h2><div class="acc">' + lv + '</div></section>' +
+    '<section class="card"><h2 class="label">Practice days</h2>' + heat() + '</section>' +
+    '<section class="card"><h2 class="label">Weak areas</h2>' + weakAreas(s) + '</section>' +
+    '<section class="card"><h2 class="label">Recent attempts</h2><div class="list flat cv">' + (H.length ? H.slice(0, 30).map(attRow).join('') : '<p class="empty">No attempts yet.</p>') + '</div>' + (H.length > 30 ? '<a class="lnk" href="#/tests/mine">All ' + H.length + ' attempts</a>' : '') + '</section>' +
+    syncCard();
+  fillAcc($('#pacc'), false);
+}
+function trend(full) {
+  const pts = full.slice().reverse().slice(-14);
+  if (pts.length < 2) return '<p class="sub">' + (pts.length ? 'One full mock so far: ' + pts[0].score + '/60. Take another to see your trend.' : 'Take two full mocks to see your score trend.') + '</p>';
+  const W = 320, Hh = 140, lo = Math.max(0, Math.min(...pts.map(p => p.score)) - 5), hi = Math.min(60, Math.max(...pts.map(p => p.score)) + 5);
+  const x = i => 30 + i * (W - 50) / (pts.length - 1), y = v => 12 + (Hh - 34) * (1 - (v - lo) / (hi - lo || 1));
+  const line = pts.map((p, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(p.score).toFixed(1)).join(' ');
+  const grid = [lo, Math.round((lo + hi) / 2), hi].map(v => '<line x1="26" x2="' + (W - 10) + '" y1="' + y(v) + '" y2="' + y(v) + '" class="gl"/><text x="2" y="' + (y(v) + 4) + '">' + v + '</text>').join('');
+  const last = pts[pts.length - 1], diff = last.score - pts[0].score;
+  return '<svg class="trend" viewBox="0 0 ' + W + ' ' + Hh + '" role="img" aria-label="Scores ' + pts.map(p => p.score).join(', ') + '">' + grid +
+    '<path d="' + line + '" class="ln"/>' + pts.map((p, i) => '<circle cx="' + x(i) + '" cy="' + y(p.score) + '" r="' + (i === pts.length - 1 ? 5 : 3.5) + '" class="' + (i === pts.length - 1 ? 'pl' : 'pt') + '"/>').join('') +
+    '<text x="' + (x(pts.length - 1) - 8) + '" y="' + (y(last.score) - 10) + '" class="lv">' + last.score + '</text>' +
+    '<text x="22" y="' + (Hh - 4) + '">' + day(pts[0].submittedAt) + '</text><text x="' + (W - 50) + '" y="' + (Hh - 4) + '">' + day(last.submittedAt) + '</text></svg>' +
+    '<p class="sub">' + (diff > 0 ? 'Up ' + diff + ' marks since your first mock here.' : diff < 0 ? 'Down ' + -diff + ' marks since your first mock here.' : 'Level with your first mock here.') + '</p>';
+}
+function heat() {
+  const per = {};
+  H.forEach(a => { const d = new Date(a.submittedAt); if (isNaN(d)) return; const k = d.toDateString(); per[k] = (per[k] || 0) + 1; });
+  const weeks = 10, today = new Date(); today.setHours(0, 0, 0, 0);
+  const start = new Date(today); start.setDate(start.getDate() - (weeks * 7 - 1) - ((today.getDay() + 6) % 7 === 6 ? 0 : 6 - (today.getDay() + 6) % 7));
+  let cells = '', days = 0;
+  for (let w = 0; w < weeks; w++) for (let d = 0; d < 7; d++) {
+    const dt = new Date(start); dt.setDate(start.getDate() + w * 7 + d);
+    const n = per[dt.toDateString()] || 0; if (n) days++;
+    const fut = dt > today;
+    cells += '<i class="h' + (fut ? 'f' : Math.min(3, n)) + '" style="grid-column:' + (w + 1) + ';grid-row:' + (d + 1) + '" title="' + dt.toDateString() + ': ' + n + '"></i>';
+  }
+  return '<div class="heat" role="img" aria-label="' + days + ' practice days in the last ' + weeks + ' weeks">' + cells + '</div><p class="sub">' + days + ' practice ' + (days === 1 ? 'day' : 'days') + ' in the last ' + weeks + ' weeks · darker means more tests that day</p>';
+}
+function weakAreas(s) {
+  const out = [];
+  SECS.forEach(k => { const b = s.sec[k]; if (b.n >= 5 && b.c / b.n < 0.65) out.push([b.c / b.n, '<a class="row" href="' + DRILL_FOR[k][0] + '"><span class="num s-' + k + '-b">' + Math.round(b.c / b.n * 100) + '%</span><span class="rt"><span class="ttl">' + SEC[k].long + '</span><span class="sub">Practise ' + DRILL_FOR[k][1] + '</span></span><span class="chev">' + ICON.chev + '</span></a>']); });
+  const tp = {};
+  H.forEach(a => { const g = grade(a.set, a.answers); if (g) g.rows.forEach(r => { if (r.sec === 'core' && r.topic) { const t = tp[r.topic] || (tp[r.topic] = { c: 0, n: 0 }); t.n++; if (r.st === 'ok') t.c++; } }); });
+  Object.keys(tp).forEach(t => { const b = tp[t]; if (b.n >= 4 && b.c / b.n < 0.6) out.push([b.c / b.n, '<a class="row" href="' + (t >= 5 ? '#/study/topic' + t : '#/custom?sec=core&topics=' + t) + '"><span class="num s-core-b">' + Math.round(b.c / b.n * 100) + '%</span><span class="rt"><span class="ttl">Core topic ' + t + ': ' + TOPIC_NAMES[t] + '</span><span class="sub">' + (t >= 5 ? 'Read the notes, then take the quiz' : 'Practise a topic ' + t + ' test') + ' · ' + b.c + ' of ' + b.n + ' right</span></span><span class="chev">' + ICON.chev + '</span></a>']); });
+  out.sort((a, b) => a[0] - b[0]);
+  return out.length ? '<div class="list flat">' + out.slice(0, 6).map(o => o[1]).join('') + '</div>' : '<p class="sub">' + (H.length ? 'No weak areas yet: every section and topic you have tried is at 65% or better.' : 'Weak sections and core topics show here once you have taken a few tests.') + '</p>';
+}
+
+// ---------- progress file ----------
+export function progressFile() {
+  const inProgress = listInProgress().map(st => {
+    const o = JSON.parse(JSON.stringify(st));
+    if (o.paused) o.endAt = Date.now() + (o.remainMs || 0); // the mock-exam page resumes while endAt is in the future
+    if (!o.def && o.set.startsWith('custom-')) o.def = findDef(o.set);
+    return o;
+  });
+  const best = {};
+  H.forEach(a => { if (!(a.set in best) || a.score > best[a.set]) best[a.set] = a.score; });
+  const cs = Object.values(customs()).filter(c => c.saved);
+  return {
+    format: 'gpsc-cbrt-progress', version: 1, exportedAt: new Date().toISOString(), exportedFrom: 'gpscavy-app',
+    note: 'GPSC CBRT progress. Open the GPSC CBRT Mock Exam page or the GPSCavy app and choose Upload progress.',
+    summary: { attempts: H.length, best },
+    attempts: H.map(a => { const o = { id: a.id, set: a.set, setName: a.setName, score: a.score, total: a.total, wrong: a.wrong, skipped: a.skipped, usedMs: a.usedMs, auto: a.auto, submittedAt: a.submittedAt, answers: a.answers };
+      if (a.flags) o.flags = a.flags; if (a.mode) o.mode = a.mode; if (a.set.startsWith('custom-')) o.def = a.def || findDef(a.set); return o; }),
+    inProgress, customTests: cs
+  };
+}
+const fname = () => 'GPSC-progress-' + new Date().toISOString().slice(0, 10) + '.json';
+export function openDownload() {
+  const f = progressFile(), text = JSON.stringify(f), name = fname();
+  const kb = Math.max(1, Math.round(text.length / 1024));
+  const file = typeof File === 'function' ? new File([text], name, { type: 'application/json' }) : null;
+  const canShare = !!(file && navigator.canShare && navigator.canShare({ files: [file] }));
+  const ip = f.inProgress[0];
+  const wl = wrongList().length;
+  const el = sheet('<div class="shh"><h2>Download progress</h2><button type="button" class="ib" data-close aria-label="Close">' + ICON.close + '</button></div>' +
+    '<div class="fileb"><span class="jb">JSON</span><span class="rt"><span class="ttl">' + name + '</span><span class="sub">About ' + kb + ' KB · opens anywhere</span></span></div>' +
+    '<div class="what"><b>What goes in the file</b><span>· ' + H.length + (H.length === 1 ? ' attempt' : ' attempts') + ' with every answer you gave</span>' +
+    (ip ? '<span>· ' + esc((setInfo(ip.set) || { name: 'A custom test' }).name) + ', in progress at question ' + ((ip.cur || 0) + 1) + (f.inProgress.length > 1 ? ' (+' + (f.inProgress.length - 1) + ' more)' : '') + '</span>' : '') +
+    '<span>· ' + wl + ' incorrect ' + (wl === 1 ? 'question' : 'questions') + ' to revise' + (f.customTests.length ? ', ' + f.customTests.length + ' saved tests' : '') + '</span></div>' +
+    (canShare ? '<button type="button" class="wide grn" id="dShare" data-focus>Share on WhatsApp</button>' : '') +
+    '<button type="button" class="wide ' + (canShare ? 'sec' : 'grn') + '" id="dSave"' + (canShare ? '' : ' data-focus') + '>Save to phone</button>' +
+    '<p class="sub">Upload this file in the GPSC CBRT Mock Exam page, in this app on another phone, or attach it in a chat with Claude.</p>', { label: 'Download progress' });
+  const done = how => { settings.lastSync = { at: new Date().toISOString(), what: 'backup' }; saveSettings(); closeSheet(); toast(how); };
+  const save = () => {
+    try {
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'application/json' })); a.download = name;
+      document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+      done('Saved ' + name + ' to Downloads');
+    } catch (e) { toast('Downloads are not available here'); }
+  };
+  el.querySelector('#dSave').onclick = save;
+  const sh = el.querySelector('#dShare');
+  if (sh) sh.onclick = () => {
+    navigator.share({ files: [file], title: name, text: 'GPSC CBRT progress file' })
+      .then(() => done('Shared ' + name), e => { if (e && e.name === 'AbortError') return; save(); });
+  };
+}
+export function openUpload() {
+  const draw = (inner, title) => sheet('<div class="shh"><h2>' + (title || 'Upload progress') + '</h2><button type="button" class="ib" data-close aria-label="Close">' + ICON.close + '</button></div>' + inner, { label: 'Upload progress' });
+  const pick = () => {
+    const el = draw('<p>Pick a progress file from WhatsApp, Downloads or Files. Nothing on this phone is deleted; new attempts are added.</p>' +
+      '<label class="fileb pickf"><span class="jb">JSON</span><span class="rt"><span class="ttl">Choose a GPSC-progress file</span><span class="sub">Saved by this app or the Mock Exam page</span></span><input type="file" id="upf" accept=".json,application/json,text/plain"></label>');
+    el.querySelector('#upf').onchange = e => { const f = e.target.files && e.target.files[0]; if (f) read(f); };
+  };
+  const bad = (n, why) => { const el = draw('<div class="err"><b>' + esc(n) + '</b> ' + why + '</div><button type="button" class="wide pri" id="again" data-focus>Choose again</button>'); el.querySelector('#again').onclick = pick; };
+  const read = f => {
+    const r = new FileReader();
+    r.onerror = () => bad(f.name, 'could not be read.');
+    r.onload = async () => {
+      let o; try { o = JSON.parse(String(r.result)); } catch (e) { return bad(f.name, 'is not a progress file. Choose a file whose name starts with GPSC-progress and ends in .json.'); }
+      if (!o || o.format !== 'gpsc-cbrt-progress' || o.version !== 1 || !Array.isArray(o.attempts)) return bad(f.name, 'is not a GPSC progress file (format gpsc-cbrt-progress, version 1). Choose a file made with Download progress.');
+      await Promise.all([getKeys(), getIndex()]);
+      const plan = planMerge(o);
+      const el = draw('<div class="prev"><b>' + esc(f.name) + '</b><span class="sub">From ' + (o.exportedFrom === 'mock-exam' ? 'the Mock Exam page' : o.exportedFrom === 'gpscavy-app' ? 'GPSCavy' : esc(o.exportedFrom || 'unknown')) + (o.exportedAt ? ' · saved ' + day(o.exportedAt) : '') + '</span>' +
+        '<div class="three"><div class="t-grn"><b>' + plan.add.length + '</b><span>new attempts</span></div><div><b>' + plan.had + '</b><span>already here</span></div><div class="t-amb"><b>' + plan.prog.length + '</b><span>in progress</span></div></div>' +
+        (plan.add.length ? '<span class="sub">New: ' + esc(plan.add.slice(0, 8).map(a => a.setName.replace('Practice ', '') + ' (' + a.score + ')').join(', ')) + (plan.add.length > 8 ? '…' : '') + '</span>' : '') +
+        (plan.unknown ? '<span class="sub">' + plan.unknown + ' for tests this app does not have</span>' : '') + '</div>' +
+        '<button type="button" class="wide grn" id="merge" data-focus>Add to this phone</button><button type="button" class="wide sec" id="other">Choose a different file</button>', 'Check before adding');
+      el.querySelector('#other').onclick = pick;
+      el.querySelector('#merge').onclick = () => { const msg = applyMerge(plan); closeSheet(); toast(msg, null, 4200); render(); };
+    };
+    r.readAsText(f);
+  };
+  pick();
+}
+export function planMerge(o) {
+  const plan = { add: [], had: 0, unknown: 0, prog: [], customs: [] };
+  const ids = new Set(H.map(a => a.id));
+  (Array.isArray(o.customTests) ? o.customTests : []).forEach(c => { if (c && c.id && Array.isArray(c.refs)) plan.customs.push(c); });
+  // custom defs travel with attempts and in-progress states; make them resolvable before grading
+  const tmp = customs(); let added = false;
+  const addDef = d => { if (d && d.id && Array.isArray(d.refs) && !tmp[d.id]) { tmp[d.id] = Object.assign({}, d, { saved: !!d.saved }); added = true; } };
+  plan.customs.forEach(addDef); o.attempts.forEach(a => a && addDef(a.def)); (o.inProgress || []).forEach(s => s && addDef(s.def));
+  if (added) lsSet(CKEY, tmp);
+  o.attempts.forEach(a => {
+    if (a && ids.has(String(a.id))) { plan.had++; return; }
+    const c = cleanAttempt(a); if (!c) { plan.unknown++; return; }
+    if (c.set.startsWith('custom-')) c.def = findDef(c.set);
+    ids.add(c.id); plan.add.push(c);
+  });
+  (Array.isArray(o.inProgress) ? o.inProgress : []).forEach(st => {
+    if (!st || st.phase !== 'exam' || !st.set || !(setInfo(st.set) || findDef(st.set))) return;
+    const local = loadState(st.set);
+    if (!local || local.phase !== 'exam' || (local.startedAt || 0) < (st.startedAt || 0)) plan.prog.push(st);
+  });
+  return plan;
+}
+export function applyMerge(plan) {
+  plan.add.forEach(a => H.push(a));
+  saveAttempts();
+  plan.prog.forEach(st => {
+    const s = Object.assign({}, st);
+    if (!s.paused) { s.paused = true; s.remainMs = Math.max(0, (s.endAt || 0) - Date.now()); }
+    s.savedAt = Date.now();
+    lsSet(stateKey(s.set), s);
+  });
+  settings.lastSync = { at: new Date().toISOString(), what: 'upload' }; saveSettings();
+  return 'Added ' + plan.add.length + (plan.add.length === 1 ? ' attempt' : ' attempts') + (plan.had ? ', ' + plan.had + ' already here' : '') + (plan.prog.length ? ', ' + plan.prog.length + (plan.prog.length === 1 ? ' test' : ' tests') + ' in progress' : '') + (plan.unknown ? ', ' + plan.unknown + ' skipped' : '') + '.';
+}
+
+// ---------- boot ----------
+async function boot() {
+  loadAttempts();
+  await getIndex();
+  // Deep link opened fresh (e.g. from WhatsApp): put its parents under it so Back moves up a level instead of leaving the app.
+  const target = parse().hash;
+  if (target !== '#/' && !(history.state && history.state.d)) {
+    const chain = [];
+    let p = parentOf(target);
+    while (p && chain.length < 4) { chain.unshift(p); p = parentOf(p); }
+    if (chain[0] !== '#/') chain.unshift('#/');
+    history.replaceState({ d: 0 }, '', chain[0]);
+    chain.slice(1).forEach((h, i) => history.pushState({ d: i + 1 }, '', h));
+    depth = chain.length;
+    history.pushState({ d: depth }, '', target);
+  } else depth = (history.state && history.state.d) || 0;
+  if (!history.state) history.replaceState({ d: 0 }, '', location.hash || '#/');
+  await render();
+  idle(() => { getKeys().catch(() => { }); getMeta().catch(() => { }); }, 1500);
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    const offer = w => { if (!navigator.serviceWorker.controller) return; const ask = () => { if (document.body.dataset.screen === 'runner') return setTimeout(ask, 30000); toast('A new version of GPSCavy is ready', { label: 'Update', fn: () => { updating = true; w.postMessage('skipWaiting'); } }, 12000); }; ask(); };
+    let updating = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => { if (updating) location.reload(); });
+    window.addEventListener('load', () => idle(() => navigator.serviceWorker.register('sw.js').then(reg => {
+      if (reg.waiting) offer(reg.waiting);
+      reg.addEventListener('updatefound', () => { const w = reg.installing; if (w) w.addEventListener('statechange', () => { if (w.state === 'installed') offer(w); }); });
+    }).catch(() => { }), 3000));
+  }
+  if (window.__gpscTest) window.__gpsc = { api, progressFile, planMerge, applyMerge, H: () => H };
+}
+boot();

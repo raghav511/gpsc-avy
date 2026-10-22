@@ -1,0 +1,270 @@
+// GPSCavy core: storage, data loading, grading, router helpers, small UI primitives.
+// Storage keys are shared with the GPSC CBRT mock-exam page (gpsc-cbrt-*), so a progress file moves between them.
+
+export const HKEY = 'gpsc-cbrt-history-v1';
+export const CKEY = 'gpscavy-custom-v1';
+export const SKEY = 'gpscavy-settings-v1';
+export const L5 = ['A', 'B', 'C', 'D', 'E'];
+export const SECS = ['comp', 'gram', 'gk', 'lr', 'core'];
+export const SEC = {
+  comp: { name: 'Comprehension', long: 'English comprehension', code: 'c' },
+  gram: { name: 'Grammar', long: 'English grammar', code: 'g' },
+  gk: { name: 'General knowledge', long: 'General knowledge', code: 'k', short: 'GK' },
+  lr: { name: 'Reasoning', long: 'Logical reasoning', code: 'r' },
+  core: { name: 'Core subject', long: 'Core subject', code: 'o' }
+};
+export const CODE2SEC = { c: 'comp', g: 'gram', k: 'gk', r: 'lr', o: 'core' };
+export const LV = { E: 'Easy', I: 'Intermediate', H: 'Hard' };
+export const LVL = { easy: 'Easy', intermediate: 'Intermediate', hard: 'Hard' };
+export const LVK = { easy: 'E', intermediate: 'I', hard: 'H' };
+export const TOPIC_NAMES = { 1: 'Organon', 2: 'Materia Medica', 3: 'Pharmacy', 4: 'Repertory', 5: 'Anatomy & Physio', 6: 'Pathology', 7: 'Medicine', 8: 'Obs, Gynae, Paeds', 9: 'Surgery, ENT, Eye', 10: 'Community & Forensic' };
+export const EXAM = new Date('2026-11-01T00:00:00+05:30');
+
+export const $ = (s, r = document) => r.querySelector(s);
+export const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+export const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ESC[c]);
+export function fmt(ms) { let s = Math.max(0, Math.round(ms / 1000)); const m = Math.floor(s / 60); s %= 60; return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s; }
+export function mins(ms) { return Math.max(1, Math.round(ms / 60000)) + ' min'; }
+export function day(iso) { const d = new Date(iso); if (isNaN(d)) return ''; try { return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }); } catch (e) { return d.toDateString().slice(4, 10); } }
+export function daysLeft() { return Math.max(0, Math.ceil((EXAM - Date.now()) / 86400000)); }
+export const idle = window.requestIdleCallback ? (f, t) => requestIdleCallback(f, { timeout: t || 400 }) : f => setTimeout(f, 1);
+
+// ---------- storage ----------
+export function lsGet(k, def) { try { const r = localStorage.getItem(k); return r == null ? def : JSON.parse(r); } catch (e) { return def; } }
+export function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
+export function lsDel(k) { try { localStorage.removeItem(k); } catch (e) { } }
+export function lsKeys() { const o = []; try { for (let i = 0; i < localStorage.length; i++) o.push(localStorage.key(i)); } catch (e) { } return o; }
+
+export const settings = lsGet(SKEY, null) || {};
+export function saveSettings() { lsSet(SKEY, settings); }
+
+// ---------- data ----------
+const cache = new Map();
+function getJSON(url) {
+  if (!cache.has(url)) {
+    const p = fetch(url).then(r => { if (!r.ok) throw new Error(url + ' ' + r.status); return r.json(); });
+    p.catch(() => cache.delete(url));
+    cache.set(url, p);
+  }
+  return cache.get(url);
+}
+export let IDX = null, META = null, KEYS = null;
+const byId = new Map();
+export const getIndex = () => getJSON('data/index.json').then(d => { if (!IDX) { IDX = d; d.sets.forEach(s => byId.set(s.id, s)); } return d; });
+export const getMeta = () => getJSON('data/meta.json').then(d => (META = d));
+export const getKeys = () => getJSON('data/keys.json').then(d => (KEYS = d));
+export const getPool = sec => getJSON('data/pool/' + sec + '.json');
+export const getSearch = () => getJSON('data/search.json');
+export const getText = url => { if (!cache.has(url)) { const p = fetch(url).then(r => { if (!r.ok) throw new Error(url); return r.text(); }); p.catch(() => cache.delete(url)); cache.set(url, p); } return cache.get(url); };
+export const setInfo = id => byId.get(id) || null;
+
+// A set by id: a file in data/sets, or a custom test rebuilt from the pools.
+export async function getSet(id) {
+  if (id.startsWith('custom-')) return buildCustomSet(id);
+  return getJSON('data/sets/' + id + '.json');
+}
+export function prefetchSet(id) { if (id && !id.startsWith('custom-')) getSet(id).catch(() => { }); }
+
+// ---------- custom tests ----------
+export const customs = () => lsGet(CKEY, {});
+export function saveCustom(def) { const c = customs(); c[def.id] = def; lsSet(CKEY, c); }
+export function deleteCustom(id) { const c = customs(); if (c[id]) { c[id].saved = false; lsSet(CKEY, c); } }
+async function buildCustomSet(id) {
+  const def = findDef(id);
+  if (!def) throw new Error('Custom test not found');
+  const secs = SECS.filter(s => def.refs.some(r => r[1] === s));
+  const pools = {};
+  await Promise.all(secs.map(s => getPool(s).then(p => (pools[s] = p))).concat([getKeys()]));
+  const qs = [], passages = {};
+  def.refs.forEach((r, i) => {
+    const p = pools[r[1]];
+    let row = p.q.find(x => x[0] === r[0]);
+    if (!row) { const j = r[0].lastIndexOf(':'), t = tokens(r[0].slice(0, j)); const cid = t && t[+r[0].slice(j + 1) - 1] && t[+r[0].slice(j + 1) - 1].cid; row = p.q.find(x => x[8] === cid); }
+    if (!row) return;
+    const q = { n: i + 1, sec: r[1], q: row[3], opts: row[4], ans: row[5], why: row[6], ref: row[0] };
+    if (row[1]) q.lvl = row[1];
+    if (row[2]) q.topic = row[2];
+    if (row[7]) { if (!passages[row[7]]) passages[row[7]] = Object.assign({}, p.p[row[7]]); q.passage = row[7]; }
+    qs.push(q);
+  });
+  // passage titles in test order
+  Object.keys(passages).forEach((k, i) => { passages[k].title = 'Passage ' + (i + 1); });
+  return { id, set: def.name, minutes: def.minutes, custom: true, mode: def.mode,
+    sections: secs.map(s => ({ id: s, name: SEC[s].long, short: SEC[s].name, marks: qs.filter(q => q.sec === s).length })),
+    passages, questions: qs, refs: def.refs.map(r => r[0]) };
+}
+
+// ---------- attempts ----------
+export let H = [];
+export function loadAttempts() { const a = lsGet(HKEY, []); H = Array.isArray(a) ? a.filter(x => x && x.id && x.set && x.answers) : []; sortH(); return H; }
+function sortH() { H.sort((a, b) => String(b.submittedAt).localeCompare(String(a.submittedAt))); }
+export function saveAttempts() { sortH(); lsSet(HKEY, H); }
+export const findAttempt = id => H.find(a => a.id === id) || null;
+export function addAttempt(a) { if (!findAttempt(a.id)) { H.push(a); saveAttempts(); } }
+export function removeAttempt(id) { H = H.filter(a => a.id !== id); saveAttempts(); }
+
+// Per-question key tokens for a set: [{sec, ans, lvl, topic, cid, ref}]. Custom tests resolve through their source refs.
+export function tokens(setId) {
+  if (!KEYS) return null;
+  const conv = (k, c, src) => { const out = []; for (let i = 0; i < c.length; i++) { const t = k.substr(i * 4, 4); out.push({ sec: CODE2SEC[t[0]], ans: t[1], lvl: t[2] === '-' ? '' : t[2], topic: t[3] === '-' ? 0 : t[3] === 'a' ? 10 : +t[3], cid: c[i], ref: src + ':' + (i + 1) }); } return out; };
+  if (KEYS[setId]) return conv(KEYS[setId].k, KEYS[setId].c, setId);
+  const def = findDef(setId);
+  if (!def) return null;
+  const out = [];
+  for (const r of def.refs) {
+    const i = r[0].lastIndexOf(':'), t = tokens(r[0].slice(0, i));
+    if (!t || !t[+r[0].slice(i + 1) - 1]) return null;
+    out.push(t[+r[0].slice(i + 1) - 1]);
+  }
+  return out;
+}
+// A custom test's definition: saved tests, an in-progress state, or the attempt that carries it.
+export function findDef(id) {
+  if (!id || !id.startsWith('custom-')) return null;
+  const c = customs()[id]; if (c) return c;
+  const st = loadState(id); if (st && st.def) return st.def;
+  const a = H.find(x => x.set === id && x.def); return a ? a.def : null;
+}
+
+// Grade answers against a set's key. Works from keys.json, so no set file is needed.
+export function grade(setId, answers) {
+  const tk = tokens(setId);
+  if (!tk) return null;
+  const g = { score: 0, wrong: 0, skipped: 0, total: tk.length, bySec: {}, byLvl: {}, rows: [] };
+  tk.forEach((t, i) => {
+    const n = i + 1, a = (answers || {})[n] || null;
+    const st = !a ? 'skip' : a === t.ans ? 'ok' : 'bad';
+    const b = g.bySec[t.sec] || (g.bySec[t.sec] = { c: 0, w: 0, s: 0, n: 0 }); b.n++;
+    if (st === 'ok') { g.score++; b.c++; } else if (st === 'bad') { g.wrong++; b.w++; } else { g.skipped++; b.s++; }
+    if (t.lvl) { const l = g.byLvl[t.lvl] || (g.byLvl[t.lvl] = { c: 0, w: 0, s: 0, n: 0 }); l.n++; if (st === 'ok') l.c++; else if (st === 'bad') l.w++; else l.s++; }
+    g.rows.push(Object.assign({ n, a, st }, t));
+  });
+  return g;
+}
+
+// Accept an attempt from any source (this app or the mock-exam page) and re-grade it.
+export function cleanAttempt(a) {
+  if (!a || typeof a !== 'object' || !a.id || !a.set || !a.answers || typeof a.answers !== 'object') return null;
+  const g = grade(a.set, a.answers);
+  if (!g) return null;
+  const info = setInfo(a.set);
+  const out = { id: String(a.id), set: a.set, setName: a.setName || (info && info.name) || a.set, score: g.score, total: g.total, wrong: g.wrong, skipped: g.skipped,
+    usedMs: Number(a.usedMs) || 0, auto: !!a.auto, submittedAt: String(a.submittedAt || new Date().toISOString()), answers: a.answers };
+  if (a.flags && typeof a.flags === 'object') out.flags = a.flags;
+  if (a.mode) out.mode = a.mode;
+  if (a.def) out.def = a.def;
+  return out;
+}
+
+// ---------- in-progress tests (one key per test, same key as the mock-exam page) ----------
+export const stateKey = id => 'gpsc-cbrt-' + id + '-v1';
+export function loadState(id) { const o = lsGet(stateKey(id), null); if (o && !o.set) o.set = id; return o; }
+export function listInProgress() {
+  const out = [];
+  lsKeys().forEach(k => {
+    const m = /^gpsc-cbrt-(.+)-v1$/.exec(k || '');
+    if (!m || k === HKEY) return;
+    const st = loadState(m[1]);
+    if (st && st.phase === 'exam' && (setInfo(st.set) || st.def || st.set.startsWith('custom-'))) out.push(st);
+  });
+  return out.sort((a, b) => (b.savedAt || b.startedAt || 0) - (a.savedAt || a.startedAt || 0));
+}
+export function remaining(st) { return st.paused ? st.remainMs : st.endAt - Date.now(); }
+
+// ---------- stats ----------
+export function stats() {
+  // Section accuracy over all attempts, best/avg per section, level breakdown
+  const sec = {}, lvl = {};
+  SECS.forEach(s => (sec[s] = { c: 0, n: 0, best: 0, pcts: [] }));
+  H.forEach(a => {
+    const g = grade(a.set, a.answers); if (!g) return;
+    Object.keys(g.bySec).forEach(s => { const b = g.bySec[s]; if (!sec[s]) return; sec[s].c += b.c; sec[s].n += b.n; const p = b.c / b.n; sec[s].pcts.push(p); if (p > sec[s].best) sec[s].best = p; });
+    Object.keys(g.byLvl).forEach(k => { const l = lvl[k] || (lvl[k] = { c: 0, n: 0 }); l.c += g.byLvl[k].c; l.n += g.byLvl[k].n; });
+  });
+  return { sec, lvl };
+}
+export function weakest(st) {
+  let w = null;
+  SECS.forEach(s => { const b = st.sec[s]; if (b.n >= 3 && (!w || b.c / b.n < st.sec[w].c / st.sec[w].n)) w = s; });
+  return w;
+}
+export const DRILL_FOR = { comp: ['#/drills/comp', 'Comprehension drills'], gram: ['#/drills/en', 'Grammar drills'], gk: ['#/drills/gk', 'GK drills'], lr: ['#/custom?sec=lr', 'a Reasoning test'], core: ['#/study/core', 'the core notes'] };
+
+// Wrong answers across attempts: latest answer per question decides (get it right later and it leaves the list).
+export function wrongList() {
+  const seen = new Map();
+  H.forEach(a => { // H is newest first
+    const g = grade(a.set, a.answers); if (!g) return;
+    g.rows.forEach(r => {
+      if (!r.a || seen.has(r.cid)) return;
+      seen.set(r.cid, { cid: r.cid, ok: r.st === 'ok', a: r.a, sec: r.sec, topic: r.topic, lvl: r.lvl, ans: r.ans, ref: r.ref, attempt: a.id, set: a.set, n: r.n, when: a.submittedAt });
+    });
+  });
+  return Array.from(seen.values()).filter(x => !x.ok);
+}
+
+// ---------- UI primitives ----------
+let toastT = 0;
+export function toast(msg, action, ms) {
+  let el = $('#toast');
+  if (!el) { el = document.createElement('div'); el.id = 'toast'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite'); document.body.appendChild(el); }
+  el.innerHTML = '<span>' + esc(msg) + '</span>' + (action ? '<button type="button" class="tbtn">' + esc(action.label) + '</button>' : '');
+  el.className = 'on';
+  if (action) el.querySelector('button').onclick = () => { hideToast(); action.fn(); };
+  clearTimeout(toastT); toastT = setTimeout(hideToast, ms || 2800);
+}
+export function hideToast() { const el = $('#toast'); if (el) el.className = ''; clearTimeout(toastT); }
+
+let sheetClose = null;
+export function sheet(html, opts) {
+  closeSheet(true);
+  const sh = document.createElement('div');
+  sh.className = 'shade'; sh.id = 'sheet';
+  sh.innerHTML = '<div class="sheet" role="dialog" aria-modal="true" aria-label="' + esc((opts && opts.label) || 'Dialog') + '">' + html + '</div>';
+  document.body.appendChild(sh);
+  document.body.classList.add('noscroll');
+  sh.addEventListener('click', e => { if (e.target === sh || e.target.closest('[data-close]')) closeSheet(); });
+  sheetClose = opts && opts.onClose;
+  requestAnimationFrame(() => { sh.classList.add('on'); const f = sh.querySelector('[data-focus]') || sh.querySelector('button'); if (f) f.focus({ preventScroll: true }); });
+  return sh.firstChild;
+}
+export function closeSheet(silent) {
+  const sh = $('#sheet'); if (!sh) return false;
+  sh.remove(); document.body.classList.remove('noscroll');
+  const f = sheetClose; sheetClose = null; if (!silent && f) f();
+  return true;
+}
+export const sheetOpen = () => !!$('#sheet');
+
+export const ICON = {
+  back: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>',
+  search: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>',
+  play: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>',
+  book: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 19V5"/></svg>',
+  sync: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0114-5.3L20 9"/><path d="M20 4v5h-5"/><path d="M20 12a8 8 0 01-14 5.3L4 15"/><path d="M4 20v-5h5"/></svg>',
+  down: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>',
+  up: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4M7 9l5-5 5 5"/><path d="M5 20h14"/></svg>',
+  close: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  grid: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg>',
+  flag: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg>',
+  share: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg>',
+  plus: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
+  ext: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></svg>',
+  chev: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>'
+};
+export const NAV = [
+  ['home', '#/', 'Home', '<path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/>'],
+  ['tests', '#/tests', 'Tests', '<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/>'],
+  ['study', '#/study', 'Study', '<path d="M2 5h7a3 3 0 013 3v12a2 2 0 00-2-2H2z"/><path d="M22 5h-7a3 3 0 00-3 3v12a2 2 0 012-2h8z"/>'],
+  ['progress', '#/progress', 'Progress', '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>']
+];
+export function navHtml(on) {
+  return '<nav class="bnav" aria-label="Main">' + NAV.map(n => '<a href="' + n[1] + '"' + (n[0] === on ? ' class="on" aria-current="page"' : '') + ' data-nav="' + n[0] + '"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + n[3] + '</svg>' + n[2] + '</a>').join('') + '</nav>';
+}
+export function topbar(title, sub, opts) {
+  opts = opts || {};
+  return '<header class="tb' + (opts.cls ? ' ' + opts.cls : '') + '"><button type="button" class="ib back" data-back aria-label="Back">' + ICON.back + '</button><div class="tbt"><h1>' + esc(title) + '</h1>' + (sub ? '<p>' + esc(sub) + '</p>' : '') + '</div>' + (opts.right || '') + '</header>';
+}
+export function bar(pct, cls) { return '<div class="trk ' + (cls || '') + '"><i style="width:' + Math.max(0, Math.min(100, pct)) + '%"></i></div>'; }
+export function lvlChip(level) { if (!level) return ''; const k = LVK[level] || level; return '<span class="chip lv-' + k + '">' + (LV[k] || LVL[level]) + '</span>'; }
