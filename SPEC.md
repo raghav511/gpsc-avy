@@ -280,9 +280,101 @@ The progress file is a single JSON file. It must be small enough to send on What
 - All asset paths must be relative, because the site lives at `/gpsc-avy/`.
 - Show the public URL in the README.
 
-## 9. Acceptance tests
+## 9. Performance (minimal lag) and the target phone
 
-Run with Playwright at 390×844, then at 1280×800.
+The owner uses a **Google Pixel 10a**:
+- Android, Chrome;
+- 6.3" 1080×2424 OLED at **120 Hz**;
+- Tensor G4, 8 GB RAM;
+- CSS viewport about **412×923** at DPR 2.625;
+- gesture navigation bar and a punch-hole camera.
+
+The app must feel instant on it: every tap gives feedback within 100 ms, and scrolling and transitions hold 120 fps.
+
+### 9.1 Loading
+
+- **Ship no framework**, or at most a tiny one (Preact or lit, under 15 KB gzipped). No React, Tailwind CDN or jQuery.
+- App shell: inline the critical CSS, keep the first JS under 60 KB gzipped, and use `defer`/`type=module`.
+- **Do not load the 1 MB `sets.json` on startup.** At build time, split it into:
+  - `index.json`: set id, name, level, mix, counts and core name only, under 15 KB;
+  - one file per set (`sets/<id>.json`), fetched when a test opens or is pre-fetched on hover/touchstart.
+  - Precompute per-section question indexes for the custom builder and Revise incorrect, so they never scan every set on the main thread.
+- Load notes and playbooks as separate files on demand. The PDFs are never precached; they are fetched only when opened.
+- Fonts:
+  - two families at most, `font-display: swap`;
+  - preconnect to fonts.gstatic.com;
+  - subset to Latin;
+  - or self-host woff2 from the repo for offline use.
+- Service worker:
+  - precache the shell plus `index.json`;
+  - stale-while-revalidate for set, notes and playbook files;
+  - a versioned cache name so that updates apply on the next open.
+  - On repeat visits the app must open with no network.
+- Targets on a mid-range Android profile (Lighthouse mobile, Moto G Power, 4× CPU throttle):
+
+  | Metric | Target |
+  |---|---|
+  | FCP | < 1.2 s |
+  | LCP | < 1.8 s |
+  | TBT | < 100 ms |
+  | CLS | < 0.05 |
+  | INP | < 100 ms |
+  | Performance score | ≥ 95 |
+
+### 9.2 Runtime
+
+- Tap response:
+  - `touch-action: manipulation` on all controls, so there is no 300 ms delay or double-tap zoom;
+  - a visible `:active` state;
+  - no work longer than 50 ms in click handlers. Defer saving with `requestIdleCallback`, or `setTimeout` as a fallback.
+- **Test runner**:
+  - Render only the current question.
+  - Build the palette once and update cell classes on change; don't re-render all 60 cells.
+  - The timer updates one text node once per second via `setInterval`, never by re-rendering the screen. The remaining time is computed from `Date.now()`, so it stays correct after the phone sleeps or the app is backgrounded.
+  - Autosave is debounced (about 300 ms) and also runs on `visibilitychange`/`pagehide`.
+- Long lists (review of 60 items, Revise incorrect, past attempts):
+  - render in chunks, or use `content-visibility: auto` with `contain-intrinsic-size`;
+  - no layout thrashing.
+- Animate only `transform` and `opacity`.
+- No `box-shadow` or `filter` animations. No `backdrop-filter` on large or scrolling areas.
+- Keep the DOM for each screen small. Unmount screens you navigate away from; keep at most the previous one for an instant back.
+- Images and SVG diagrams:
+  - inline SVG diagrams keep their `viewBox`;
+  - give figures `contain: content`.
+- Use event delegation on lists, not one listener per row.
+- Store progress in IndexedDB, or in `localStorage` with small keys:
+  - never parse a multi-MB string on startup;
+  - keep attempts as one compact JSON key, and in-progress tests one per key.
+- Respect `prefers-reduced-motion`.
+
+### 9.3 Pixel 10a / Android Chrome specifics
+
+- Viewport and layout:
+  - Viewport meta: `width=device-width, initial-scale=1, viewport-fit=cover`.
+  - Use `100dvh`, not `100vh`, for full-height screens.
+  - Pad the bottom nav and the test-runner action bar with `env(safe-area-inset-bottom)`, so they clear the gesture bar. Pad the top for the camera cutout.
+- Theme colours:
+  - `<meta name="theme-color">` with light and dark variants (indigo), so the status bar matches;
+  - manifest with `display: standalone`, `theme_color`, `background_color`, and maskable 192 and 512 icons, so the app installs as a proper Android app.
+- Android back button and gesture:
+  - every screen pushes a history entry (hash routes), so Back moves up one level;
+  - in a running test, Back opens the "Leave test? Answers are saved" sheet instead of leaving;
+  - Back never exits the app from a nested screen.
+- Inputs and gestures:
+  - no hover-only UI;
+  - inputs at least 16 px, so focusing doesn't zoom;
+  - `overscroll-behavior: contain` on sheets and modals, so pull-to-refresh doesn't fire inside them.
+- Sharing the progress file:
+  - `navigator.canShare({files})` with `type: application/json`, which must show WhatsApp in the Android share sheet;
+  - test that it falls back to a download when share is not supported.
+- Large text: the layout must stay usable with Android font scaling at 130%. Use `rem`/`em` and avoid fixed-height text boxes.
+- Dark mode follows the system setting, and the OLED dark background is a deep indigo-black, not pure grey.
+
+## 10. Acceptance tests
+
+Run with Playwright at **412×923 with DPR 2.625, mobile and touch enabled, and a Pixel/Android Chrome user agent**. This is the primary viewport and represents the Pixel 10a. Then run at 390×844 and 1280×800.
+
+Performance gate: run Lighthouse mobile on the built site. It must meet the targets in §9.1. Record the scores in the final report, and fix any regressions before pushing.
 
 1. Every tab and every button navigates, and every non-root screen has a working back control.
 2. **Content matches labels**:
@@ -297,4 +389,4 @@ Run with Playwright at 390×844, then at 1280×800.
    - importing the same file twice adds nothing;
    - a file in the mock-exam format imports.
 7. **Notes**: all 15 diagrams render, and wide tables don't cause horizontal page scroll.
-8. No console errors. Lighthouse PWA installable, and performance at least 85 on mobile.
+8. No console errors. Lighthouse PWA installable and meets the §9.1 targets (performance ≥ 95 on mobile). Android Back behaves as in §9.3. The timer stays correct after the page is hidden for 60 s.
