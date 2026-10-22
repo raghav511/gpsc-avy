@@ -531,11 +531,12 @@ export function openDownload() {
       .then(() => done('Shared ' + name), e => { if (e && e.name === 'AbortError') return; save(); });
   };
 }
-export function openUpload() {
+export function openUpload(given) {
   const draw = (inner, title) => sheet('<div class="shh"><h2>' + (title || 'Upload progress') + '</h2><button type="button" class="ib" data-close aria-label="Close">' + ICON.close + '</button></div>' + inner, { label: 'Upload progress' });
   const pick = () => {
     const el = draw('<p>Pick a progress file from WhatsApp, Downloads or Files. Nothing on this phone is deleted; new attempts are added.</p>' +
-      '<label class="fileb pickf"><span class="jb">JSON</span><span class="rt"><span class="ttl">Choose a GPSC-progress file</span><span class="sub">Saved by this app or the Mock Exam page</span></span><input type="file" id="upf" accept=".json,application/json,text/plain"></label>');
+      '<p class="sub">Easiest from WhatsApp: open the chat, press and hold the file, tap Share, then choose GPSCavy.</p>' +
+      '<label class="fileb pickf"><span class="jb">JSON</span><span class="rt"><span class="ttl">Choose a GPSC-progress file</span><span class="sub">Saved by this app or the Mock Exam page</span></span><input type="file" id="upf"></label>');
     el.querySelector('#upf').onchange = e => { const f = e.target.files && e.target.files[0]; if (f) read(f); };
   };
   const bad = (n, why) => { const el = draw('<div class="err"><b>' + esc(n) + '</b> ' + why + '</div><button type="button" class="wide pri" id="again" data-focus>Choose again</button>'); el.querySelector('#again').onclick = pick; };
@@ -557,7 +558,7 @@ export function openUpload() {
     };
     r.readAsText(f);
   };
-  pick();
+  if (given) read(given); else pick();
 }
 export function planMerge(o) {
   const plan = { add: [], had: 0, unknown: 0, prog: [], customs: [] };
@@ -612,6 +613,14 @@ async function boot() {
   } else depth = (history.state && history.state.d) || 0;
   if (!history.state) history.replaceState({ d: 0 }, '', location.hash || '#/');
   await render();
+  if (/[?&]shared=1/.test(location.search) && 'caches' in window) {
+    history.replaceState(history.state, '', location.pathname + (location.hash || '#/'));
+    caches.open('inbox-gpscavy').then(c => c.match('inbox').then(res => {
+      if (!res) return toast('No shared file arrived. Try Upload progress instead.');
+      const name = decodeURIComponent(res.headers.get('x-name') || 'shared-file.json');
+      return res.blob().then(b => { c.delete('inbox'); openUpload(new File([b], name, { type: 'application/json' })); });
+    })).catch(() => toast('Could not open the shared file. Try Upload progress instead.'));
+  }
   idle(() => { getKeys().catch(() => { }); getMeta().catch(() => { }); }, 1500);
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
     const offer = w => { if (!navigator.serviceWorker.controller) return; const ask = () => { if (document.body.dataset.screen === 'runner') return setTimeout(ask, 30000); toast('A new version of GPSCavy is ready', { label: 'Update', fn: () => { updating = true; w.postMessage('skipWaiting'); } }, 12000); }; ask(); };

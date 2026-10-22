@@ -1,5 +1,5 @@
 // GPSCavy service worker. The version is stamped by tools/build.py from a hash of the shell and data files.
-const V = 'gpscavy-a4908aea18';
+const V = 'gpscavy-750a4a7d87';
 const SHELL = ['./', 'index.html', 'js/app.js', 'js/core.js', 'js/runner.js', 'js/study.js', 'manifest.webmanifest',
   'icons/icon-192.png', 'icons/icon-512.png', 'fonts/jakarta-latin.woff2', 'fonts/inter-latin.woff2',
   'data/index.json', 'data/meta.json', 'data/keys.json'];
@@ -14,6 +14,16 @@ self.addEventListener('message', e => { if (e.data === 'skipWaiting') self.skipW
 
 self.addEventListener('fetch', e => {
   const req = e.request;
+  if (req.method === 'POST' && new URL(req.url).pathname.endsWith('/share-target')) {
+    // A progress file shared into the app from WhatsApp or Files: park it, then open the app on the upload preview.
+    e.respondWith(req.formData().then(fd => {
+      const f = fd.getAll('file').find(x => x && typeof x !== 'string');
+      if (!f) return Response.redirect('./?shared=1#/', 303);
+      return caches.open('inbox-gpscavy').then(c => c.put('inbox', new Response(f, { headers: { 'x-name': encodeURIComponent(f.name || 'shared-file.json') } })))
+        .then(() => Response.redirect('./?shared=1#/', 303));
+    }).catch(() => Response.redirect('./?shared=1#/', 303)));
+    return;
+  }
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== location.origin) return;
