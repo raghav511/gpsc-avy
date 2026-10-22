@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Progress</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#4338CA}a:hover{color:#312E81}
+.scr{width:390px;height:844px;box-sizing:border-box;background:#F5F4FF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#1E1B4B;display:flex;flex-direction:column;overflow:hidden;position:relative}
+.opt{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;padding:10px 14px;border-radius:16px;font:500 15px 'Plus Jakarta Sans',sans-serif;color:#1E1B4B;text-align:left;cursor:pointer;box-sizing:border-box}
+.key{width:30px;height:30px;border-radius:9px;flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.bb{border:0;min-height:48px;border-radius:14px;font:700 14px 'Plus Jakarta Sans',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;text-decoration:none}
+.hb{width:44px;height:44px;border:0;border-radius:12px;background:rgba(255,255,255,.12);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+.lg{display:flex;align-items:center;gap:6px;font-size:12px;color:#5B5A7A}
+.sw{width:12px;height:12px;border-radius:4px}
+.shade{position:absolute;inset:0;background:rgba(30,27,75,.5);display:flex;flex-direction:column;justify-content:flex-end}
+.sheet{background:#fff;border-radius:24px 24px 0 0;padding:18px 20px 28px;display:flex;flex-direction:column;gap:14px}
+.wide{display:flex;align-items:center;justify-content:center;min-height:50px;border-radius:14px;font:700 15px 'Plus Jakarta Sans',sans-serif;text-decoration:none;border:0;cursor:pointer}
+.card{background:#fff;border-radius:18px;padding:16px;box-shadow:0 1px 2px rgba(30,27,75,.06),0 4px 14px rgba(30,27,75,.06)}
+.secrow{display:flex;align-items:center;gap:10px;font-size:13px}
+.label{font-size:14px;font-weight:700;color:#3F3D63}
+.tog{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:14px;font:600 14px 'Plus Jakarta Sans',sans-serif;cursor:pointer;text-align:left}
+.seg{border:0;min-height:44px;border-radius:12px;font:700 14px 'Plus Jakarta Sans',sans-serif;cursor:pointer}
+.stat{border-radius:16px;padding:10px 8px;text-align:center}
+.stat b{display:block;font-size:22px;font-weight:800}
+.stat span{font-size:11.5px;font-weight:600}
+.bar{display:flex;align-items:center;gap:10px;font-size:13px}
+.nav{display:flex;justify-content:space-around;background:#fff;border-top:1px solid #E6E4F5;padding:6px 8px 18px}
+.nav a{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;font-weight:600;color:#5B5A7A;text-decoration:none;min-width:64px;min-height:44px;justify-content:center}
+.nav a.on{color:#4338CA}
+.hist{display:flex;align-items:center;gap:12px;min-height:48px;text-decoration:none;color:#1E1B4B;border:0;border-top:1px solid #EEEDF7;background:none;width:100%;text-align:left;cursor:pointer;font:inherit;padding:0}
+</style>
+</helmet>
+<div class="scr">
+  <sc-if value="{{inHost}}" hint-placeholder-val="{{true}}">
+  <div style="padding: 18px 20px 8px">
+    <div style="font-weight: 800; font-size: 24px; letter-spacing: -0.01em">Progress</div>
+  </div>
+  <div style="flex: 1; padding: 6px 20px 14px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto">
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+      <div class="stat" style="background: #E0E7FF; color: #312E81"><b>9</b><span>sets done</span></div>
+      <div class="stat" style="background: #DCFCE7; color: #166534"><b>45</b><span>best /60</span></div>
+      <div class="stat" style="background: #FEF3C7; color: #78350F"><b>41</b><span>average</span></div>
+      <div class="stat" style="background: #FCE7F3; color: #9D174D"><b>10</b><span>days left</span></div>
+    </div>
+
+    <div class="card" style="display: flex; flex-direction: column; gap: 6px">
+      <div class="label">Score in each mock, oldest first</div>
+      <svg viewBox="0 0 350 166" width="100%" role="img" aria-label="Scores: 45, 35, 40, 41, 39, 38, 42, 44, 43 out of 60">
+        <g stroke="#EEEDF7" stroke-width="1"><path d="M30 20H340M30 80H340M30 140H340"></path></g>
+        <g font-family="Plus Jakarta Sans, sans-serif" font-size="11" fill="#5B5A7A"><text x="22" y="24" text-anchor="end">50</text><text x="22" y="84" text-anchor="end">40</text><text x="22" y="144" text-anchor="end">30</text></g>
+        <polyline points="40,50 76,110 112,80 148,74 184,86 220,92 256,68 292,56 328,62" fill="none" stroke="#4338CA" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"></polyline>
+        <g fill="#4338CA"><circle cx="40" cy="50" r="4"></circle><circle cx="76" cy="110" r="4"></circle><circle cx="112" cy="80" r="4"></circle><circle cx="148" cy="74" r="4"></circle><circle cx="184" cy="86" r="4"></circle><circle cx="220" cy="92" r="4"></circle><circle cx="256" cy="68" r="4"></circle><circle cx="292" cy="56" r="4"></circle></g>
+        <circle cx="328" cy="62" r="6" fill="#F59E0B" stroke="#fff" stroke-width="2"></circle>
+        <g font-family="Plus Jakarta Sans, sans-serif" font-size="11" fill="#5B5A7A" text-anchor="middle"><text x="40" y="160">13 Oct</text><text x="328" y="160">19 Oct</text></g>
+        <text x="328" y="48" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="12" font-weight="800" fill="#1E1B4B">43</text>
+      </svg>
+      <div style="font-size: 12.5px; color: #5B5A7A">Up 8 marks since your second attempt.</div>
+    </div>
+
+    <div class="card" style="display: flex; flex-direction: column; gap: 9px">
+      <div class="label">Accuracy by section, all attempts</div>
+      <div class="bar"><span style="width: 104px">Comprehension</span><div style="flex: 1; height: 10px; border-radius: 5px; background: #DBEAFE"><div style="width: 82%; height: 10px; border-radius: 5px; background: #2563EB"></div></div><span style="width: 34px; text-align: right; font-weight: 700">82%</span></div>
+      <div class="bar"><span style="width: 104px">Grammar</span><div style="flex: 1; height: 10px; border-radius: 5px; background: #EDE9FE"><div style="width: 74%; height: 10px; border-radius: 5px; background: #7C3AED"></div></div><span style="width: 34px; text-align: right; font-weight: 700">74%</span></div>
+      <div class="bar"><span style="width: 104px">GK</span><div style="flex: 1; height: 10px; border-radius: 5px; background: #FEF3C7"><div style="width: 58%; height: 10px; border-radius: 5px; background: #D97706"></div></div><span style="width: 34px; text-align: right; font-weight: 700">58%</span></div>
+      <div class="bar"><span style="width: 104px">Reasoning</span><div style="flex: 1; height: 10px; border-radius: 5px; background: #CCFBF1"><div style="width: 66%; height: 10px; border-radius: 5px; background: #0D9488"></div></div><span style="width: 34px; text-align: right; font-weight: 700">66%</span></div>
+      <div class="bar"><span style="width: 104px">Core subject</span><div style="flex: 1; height: 10px; border-radius: 5px; background: #FCE7F3"><div style="width: 71%; height: 10px; border-radius: 5px; background: #DB2777"></div></div><span style="width: 34px; text-align: right; font-weight: 700">71%</span></div>
+      <a href="DrillGk.dc.html" style="display: flex; align-items: center; justify-content: center; min-height: 46px; border-radius: 14px; background: #FDE68A; color: #422006; font-weight: 800; text-decoration: none">Practise weakest: GK drills</a>
+    </div>
+
+    <div class="card" style="display: flex; flex-direction: column">
+      <div class="label" style="padding-bottom: 6px">Recent attempts</div>
+      <button class="hist" onClick="{{h10}}"><span style="flex: 1"><b>Practice Set 10</b><span style="display: block; font-size: 12.5px; color: #5B5A7A">19 Oct · 52 min</span></span><b>43/60</b></button>
+      <button class="hist" onClick="{{h7}}"><span style="flex: 1"><b>Practice Set 7</b><span style="display: block; font-size: 12.5px; color: #5B5A7A">18 Oct · 61 min</span></span><b>44/60</b></button>
+      <button class="hist" onClick="{{h9}}"><span style="flex: 1"><b>Practice Set 9</b><span style="display: block; font-size: 12.5px; color: #5B5A7A">16 Oct · 46 min</span></span><b>42/60</b></button>
+    </div>
+  </div>
+
+  <nav class="nav" aria-label="Main">
+    <a href="Main.dc.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"></path></svg>Home</a>
+    <a href="Tests.dc.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"></path><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"></path></svg>Tests</a>
+    <a href="Study.dc.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 5h7a3 3 0 013 3v12a2 2 0 00-2-2H2z"></path><path d="M22 5h-7a3 3 0 00-3 3v12a2 2 0 012-2h8z"></path></svg>Study</a>
+    <a href="Progress.dc.html" class="on"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>Progress</a>
+  </nav>
+
+  </sc-if>
+  <sc-if value="{{notHost}}" hint-placeholder-val="{{false}}">
+  <div style="display: flex; align-items: center; gap: 10px; padding: 12px 14px 10px; background: #1E1B4B; color: #fff">
+    <sc-if value="{{inTest}}" hint-placeholder-val="{{true}}">
+      <button class="hb" onClick="{{askExit}}" aria-label="Leave test">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+      </button>
+    </sc-if>
+    <sc-if value="{{inResult}}" hint-placeholder-val="{{false}}">
+      <sc-if value="{{hostHome}}" hint-placeholder-val="{{false}}"><button class="hb" onClick="{{goHome}}" aria-label="{{homeAria}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button></sc-if>
+      <sc-if value="{{urlHome}}" hint-placeholder-val="{{true}}"><a href="{{homeHref}}" class="hb" aria-label="{{homeAria}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a></sc-if>
+    </sc-if>
+    <sc-if value="{{inReview}}" hint-placeholder-val="{{false}}">
+      <button class="hb" onClick="{{toResult}}" aria-label="Back to result">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+      </button>
+    </sc-if>
+    <div style="flex: 1; min-width: 0">
+      <div style="font-size: 12px; color: #C7D2FE; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{title}}</div>
+      <div style="font-size: 20px; font-weight: 800; letter-spacing: .02em">{{headline}}</div>
+    </div>
+    <sc-if value="{{showGrid}}" hint-placeholder-val="{{true}}">
+      <button onClick="{{openPalette}}" aria-label="{{gridAria}}" style="display: flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border: 0; border-radius: 12px; background: rgba(255,255,255,.12); color: #fff; font: 700 13px 'Plus Jakarta Sans', sans-serif; cursor: pointer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1.5"></rect><rect x="14" y="4" width="6" height="6" rx="1.5"></rect><rect x="4" y="14" width="6" height="6" rx="1.5"></rect><rect x="14" y="14" width="6" height="6" rx="1.5"></rect></svg>{{gridLabel}}
+      </button>
+    </sc-if>
+    <sc-if value="{{inTest}}" hint-placeholder-val="{{true}}">
+      <button class="bb" onClick="{{askSubmit}}" style="min-height: 44px; padding: 0 12px; background: #F59E0B; color: #422006">Submit</button>
+    </sc-if>
+  </div>
+  <div style="height: 5px; background: #312E81"><div style="{{barStyle}}"></div></div>
+  </sc-if>
+
+  <sc-if value="{{inResult}}" hint-placeholder-val="{{false}}">
+    <div style="flex: 1; padding: 16px 20px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto">
+      <div class="card" style="display: flex; align-items: center; gap: 18px">
+        <div style="{{ringStyle}}">
+          <div style="width: 84px; height: 84px; border-radius: 50%; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center">
+            <div style="font-size: 28px; font-weight: 800; line-height: 1">{{res.right}}</div>
+            <div style="font-size: 12px; font-weight: 600; color: #5B5A7A">of {{total}}</div>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <div style="font-weight: 800; font-size: 17px">{{res.headline}}</div>
+          <div style="font-size: 13.5px"><b>{{res.right}}</b> right · <b style="color: #B91C1C">{{res.wrong}}</b> wrong · <b>{{res.skipped}}</b> skipped</div>
+          <div style="font-size: 12.5px; color: #5B5A7A">{{res.time}}</div>
+        </div>
+      </div>
+      <div class="card" style="display: flex; flex-direction: column; gap: 10px">
+        <div style="font-size: 14px; font-weight: 700; color: #3F3D63">By section</div>
+        <sc-for list="{{res.secs}}" as="s" hint-placeholder-count="5">
+          <div class="secrow"><span style="width: 112px">{{s.name}}</span><div style="{{s.track}}"><div style="{{s.fill}}"></div></div><span style="width: 44px; text-align: right; font-weight: 700">{{s.score}}</span></div>
+        </sc-for>
+      </div>
+      <div class="card" style="display: flex; flex-direction: column; gap: 10px">
+        <div style="font-size: 14px; font-weight: 700; color: #3F3D63">By difficulty</div>
+        <sc-for list="{{res.lvls}}" as="l" hint-placeholder-count="3">
+          <div class="secrow"><span style="width: 112px"><span style="{{l.chip}}">{{l.name}}</span></span><div style="{{l.track}}"><div style="{{l.fill}}"></div></div><span style="width: 44px; text-align: right; font-weight: 700">{{l.score}}</span></div>
+        </sc-for>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <button class="wide" onClick="{{startReview}}" style="background: #4338CA; color: #fff">Review answers</button>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+          <button class="wide" onClick="{{retake}}" style="background: #F1F0FA; color: #1E1B4B">Retake</button>
+          <sc-if value="{{hostHome}}" hint-placeholder-val="{{false}}"><button class="wide" onClick="{{goHome}}" style="background: #1E1B4B; color: #fff">Done</button></sc-if>
+          <sc-if value="{{urlHome}}" hint-placeholder-val="{{true}}"><a href="{{homeHref}}" class="wide" style="background: #1E1B4B; color: #fff">Done</a></sc-if>
+        </div>
+        <sc-if value="{{isCustom}}" hint-placeholder-val="{{false}}">
+          <button class="wide" onClick="{{rebuild}}" style="background: #fff; color: #4338CA; border: 1.5px solid #C7D2FE">Change subjects and build again</button>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{showQuestion}}" hint-placeholder-val="{{true}}">
+    <div style="flex: 1; padding: 16px 20px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
+        <span style="font-size: 13px; font-weight: 700; color: #5B5A7A">Question {{cur}} of {{total}}</span>
+        <span style="display: flex; gap: 6px; align-items: center"><span style="{{lvlStyle}}">{{lvlName}}</span><span style="{{tagStyle}}">{{tag}}</span></span>
+      </div>
+      <sc-if value="{{inReview}}" hint-placeholder-val="{{false}}">
+        <div role="tablist" aria-label="Show questions" style="display: flex; gap: 6px; flex-wrap: wrap">
+          <sc-for list="{{rchips}}" as="r" hint-placeholder-count="3">
+            <button role="tab" aria-selected="{{r.on}}" onClick="{{r.pick}}" style="{{r.style}}">{{r.name}}</button>
+          </sc-for>
+        </div>
+      </sc-if>
+      <div style="font-size: 17.5px; font-weight: 600; line-height: 1.45">{{stem}}</div>
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <sc-for list="{{opts}}" as="o" hint-placeholder-count="4">
+          <button class="opt" aria-pressed="{{o.on}}" onClick="{{o.pick}}" style="{{o.style}}">
+            <span class="key" style="{{o.keyStyle}}">{{o.k}}</span><span style="flex: 1">{{o.text}}</span><span style="font-size: 12px; font-weight: 800">{{o.note}}</span>
+          </button>
+        </sc-for>
+      </div>
+      <sc-if value="{{fb.show}}" hint-placeholder-val="{{false}}">
+        <div style="{{fb.style}}">
+          <div style="font-weight: 800; font-size: 14.5px">{{fb.title}}</div>
+          <div style="font-size: 14px; line-height: 1.5">{{fb.why}}</div>
+        </div>
+      </sc-if>
+      <sc-if value="{{canMark}}" hint-placeholder-val="{{true}}">
+        <button onClick="{{toggleMark}}" aria-pressed="{{markedNow}}" style="{{markStyle}}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"></path></svg>{{markLabel}}
+        </button>
+      </sc-if>
+    </div>
+    <div style="{{footStyle}}">
+      <button class="bb" onClick="{{prev}}" disabled="{{atFirst}}" style="{{prevStyle}}">Previous</button>
+      <sc-if value="{{inTest}}" hint-placeholder-val="{{true}}">
+        <button class="bb" onClick="{{clear}}" disabled="{{noAnswer}}" style="{{clearStyle}}">Clear</button>
+      </sc-if>
+      <button class="bb" onClick="{{next}}" style="background: #4338CA; color: #fff">{{nextLabel}}</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" style="position: absolute; left: 20px; right: 20px; bottom: 100px; background: #1E1B4B; color: #fff; border-radius: 14px; padding: 12px 16px; font-size: 14px; font-weight: 600; text-align: center">{{toast}}</div>
+  </sc-if>
+
+  <sc-if value="{{sheetPalette}}" hint-placeholder-val="{{false}}">
+    <div class="shade">
+      <div class="sheet" style="max-height: 88%; overflow-y: auto; box-sizing: border-box">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <div style="font-weight: 800; font-size: 17px">All questions</div>
+          <button onClick="{{closeSheet}}" style="border: 0; background: #EEF0FF; color: #1E1B4B; min-height: 44px; padding: 0 16px; border-radius: 12px; font: 700 13px 'Plus Jakarta Sans', sans-serif; cursor: pointer">Close</button>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px 14px">
+          <sc-for list="{{legend}}" as="l" hint-placeholder-count="4">
+            <span class="lg"><span class="sw" style="{{l.sw}}"></span>{{l.text}}</span>
+          </sc-for>
+        </div>
+        <sc-for list="{{groups}}" as="g" hint-placeholder-count="5">
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <div style="font-size: 12px; font-weight: 700; color: #5B5A7A">{{g.name}}</div>
+            <div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px">
+              <sc-for list="{{g.cells}}" as="c" hint-placeholder-count="10">
+                <button aria-label="{{c.aria}}" onClick="{{c.go}}" style="{{c.style}}">{{c.n}}</button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+        <sc-if value="{{inTest}}" hint-placeholder-val="{{true}}">
+          <button class="wide" onClick="{{askSubmit}}" style="background: #1E1B4B; color: #fff">Submit test</button>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{sheetExit}}" hint-placeholder-val="{{false}}">
+    <div class="shade">
+      <div class="sheet">
+        <div style="font-weight: 800; font-size: 18px">Leave this test?</div>
+        <div style="font-size: 14.5px; line-height: 1.5; color: #3F3D63">{{exitText}}</div>
+        <button class="wide" onClick="{{closeSheet}}" style="background: #4338CA; color: #fff">Keep going</button>
+        <sc-if value="{{hostHome}}" hint-placeholder-val="{{false}}"><button class="wide" onClick="{{goHome}}" style="background: #F1F0FA; color: #1E1B4B">Save and leave</button></sc-if>
+        <sc-if value="{{urlHome}}" hint-placeholder-val="{{true}}"><a href="{{homeHref}}" class="wide" style="background: #F1F0FA; color: #1E1B4B">Save and leave</a></sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{sheetSubmit}}" hint-placeholder-val="{{false}}">
+    <div class="shade">
+      <div class="sheet">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <div style="font-weight: 800; font-size: 18px">Submit the test?</div>
+          <button onClick="{{closeSheet}}" aria-label="Close and go back to the test" style="width: 44px; height: 44px; border: 0; border-radius: 12px; background: #F1F0FA; color: #1E1B4B; display: flex; align-items: center; justify-content: center; cursor: pointer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+          </button>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; text-align: center">
+          <div style="background: #DCFCE7; border-radius: 14px; padding: 10px 4px"><div style="font-size: 24px; font-weight: 800; color: #166534">{{cnt.done}}</div><div style="font-size: 12.5px; color: #166534; font-weight: 600">answered</div></div>
+          <div style="background: #FFEDD5; border-radius: 14px; padding: 10px 4px"><div style="font-size: 24px; font-weight: 800; color: #9A3412">{{cnt.left}}</div><div style="font-size: 12.5px; color: #9A3412; font-weight: 600">not answered</div></div>
+        </div>
+        <sc-if value="{{cnt.marked}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; align-items: center; gap: 8px; background: #EDE9FE; color: #5B21B6; border-radius: 12px; padding: 10px 12px; font-size: 13.5px; font-weight: 600"><span class="sw" style="background: #7C3AED"></span>{{markedText}}</div>
+        </sc-if>
+        <div style="font-size: 14px; color: #3F3D63">{{submitText}}</div>
+        <div style="font-size: 13px; color: #5B5A7A">You can't change answers after submitting.</div>
+        <button class="wide" onClick="{{submit}}" style="background: #4338CA; color: #fff">Submit and see result</button>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+          <button class="wide" onClick="{{closeSheet}}" style="background: #F1F0FA; color: #1E1B4B">Back to test</button>
+          <button class="wide" onClick="{{reviewLeft}}" disabled="{{allDone}}" style="{{leftStyle}}">First unanswered</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    const WHICH = null;
+    const CFG = {
+      set14: { mode: 'exam', title: 'Practice Set 14', total: 60, time: 4500, home: 'Tests.dc.html', secs: [['comp', 'Comprehension', 1, 10], ['gram', 'Grammar', 11, 15], ['gk', 'General knowledge', 16, 25], ['reas', 'Reasoning', 26, 35], ['core', 'Core subject', 36, 60]], resume: true },
+      mock: { mode: 'exam', title: 'Practice set · new attempt', total: 60, time: 4500, home: 'Tests.dc.html', secs: [['comp', 'Comprehension', 1, 10], ['gram', 'Grammar', 11, 15], ['gk', 'General knowledge', 16, 25], ['reas', 'Reasoning', 26, 35], ['core', 'Core subject', 36, 60]] },
+      cexam: { mode: 'exam', title: 'Custom test · GK + Core 7–10', total: 25, time: 1875, home: 'Tests.dc.html', secs: [['gk', 'General knowledge', 1, 10], ['core', 'Core subject', 11, 25]] },
+      custom: { mode: 'learn', title: 'Custom test · GK + Core 7–10', total: 25, home: 'Tests.dc.html', secs: [['gk', 'General knowledge', 1, 10], ['core', 'Core subject', 11, 25]] },
+      gk: { mode: 'exam', title: 'GK drill', total: 25, time: 900, home: 'Tests.dc.html', secs: [['gk', 'General knowledge', 1, 25]] },
+      en: { mode: 'exam', title: 'Grammar drill', total: 25, time: 900, home: 'Tests.dc.html', secs: [['gram', 'Grammar', 1, 25]] },
+      encomp: { mode: 'exam', title: 'Comprehension drill', total: 25, time: 1500, home: 'Tests.dc.html', secs: [['comp', 'Comprehension', 1, 25]] },
+      t9: { mode: 'learn', title: 'Topic 9 quiz · Surgery, ENT, Eye', total: 20, home: 'Notes.dc.html', secs: [['t9', 'Topic 9', 1, 20]] }
+    };
+    this.C = null;
+    const T9 = [
+      { tag: 'Topic 9 · Surgery', stem: 'A puncture wound from a rusty nail is cold to touch, yet the pain is better from cold applications. The remedy is:', opts: ['Arnica montana', 'Ledum palustre', 'Hypericum perforatum', 'Calendula officinalis'], ans: 1, why: 'Ledum: punctured wounds, cold to touch, better from cold.' },
+      { tag: 'Topic 9 · Eye', stem: 'A painful red eye with a fixed, mid-dilated pupil and haloes round lights suggests:', opts: ['Acute conjunctivitis', 'Acute iritis', 'Acute angle-closure glaucoma', 'Subconjunctival haemorrhage'], ans: 2, why: 'A fixed mid-dilated pupil with very high pressure means glaucoma; refer urgently.' },
+      { tag: 'Topic 9 · Surgery', stem: 'A fracture that is slow to unite calls for:', opts: ['Ruta graveolens', 'Symphytum officinale', 'Bellis perennis', 'Staphysagria'], ans: 1, why: 'Symphytum, "knitbone", promotes union of fractures.' },
+      { tag: 'Topic 9 · Burns', stem: 'By the rule of nines, a burn of the whole front of the trunk and one arm covers:', opts: ['18%', '27%', '36%', '45%'], ans: 1, why: 'Front of trunk 18% + one arm 9% = 27%.' }
+    ];
+    this.P = {
+      comp: [
+        { stem: 'Passage: "Students who slept seven hours before a test recalled more words than those who slept five." According to the passage, more sleep before a test:', opts: ['improved recall', 'reduced recall', 'had no effect', 'improved spelling'], ans: 0, why: 'The passage links seven hours of sleep with recalling more words.' },
+        { stem: 'Passage: "The clinic opens at 9; patients arriving after 11 are seen only in an emergency." A patient with a mild cough who arrives at 11:30 will:', opts: ['be seen at once', 'not be seen unless it is an emergency', 'be seen at 9', 'be sent to another clinic'], ans: 1, why: 'After 11 only emergencies are seen, and a mild cough is not one.' },
+        { stem: 'Passage: "Daily walking for 30 minutes lowered blood pressure in most participants over 12 weeks." The passage suggests that walking:', opts: ['cures hypertension', 'helped lower blood pressure in most people', 'harmed some participants', 'works within a week'], ans: 1, why: 'It says "most participants" over 12 weeks; the other options go beyond the passage.' }
+      ],
+      gram: [
+        { stem: 'Choose the correct sentence:', opts: ['Neither the doctor nor the nurses was present.', 'Neither the doctor nor the nurses were present.', 'Neither the doctor or the nurses were present.', 'Neither the doctor nor the nurses is present.'], ans: 1, why: 'With neither…nor, the verb agrees with the nearer subject: nurses → were.' },
+        { stem: 'Fill in the blank: He has been working in this hospital ___ 2019.', opts: ['for', 'since', 'from', 'by'], ans: 1, why: '"Since" goes with a point in time; "for" with a length of time.' },
+        { stem: 'Choose the correctly spelt word:', opts: ['Accomodation', 'Acommodation', 'Accommodation', 'Acomodation'], ans: 2, why: 'Accommodation has double c and double m.' },
+        { stem: 'Choose the correct article: He is ___ honest man.', opts: ['a', 'an', 'the', 'no article'], ans: 1, why: '"Honest" begins with a vowel sound, so it takes "an".' }
+      ],
+      gk: [
+        { stem: 'Goa attained statehood, becoming the 25th state of India, on:', opts: ['19 December 1961', '30 May 1987', '16 January 1967', '15 August 1947'], ans: 1, why: 'Goa became a state on 30 May 1987; 19 December 1961 is Liberation Day.' },
+        { stem: 'Goa was liberated from Portuguese rule on:', opts: ['19 December 1961', '30 May 1987', '26 January 1950', '15 August 1947'], ans: 0, why: 'Operation Vijay ended 451 years of Portuguese rule on 19 December 1961.' },
+        { stem: 'Konkani was added to the Eighth Schedule of the Constitution by the:', opts: ['42nd Amendment, 1976', '71st Amendment, 1992', '92nd Amendment, 2003', '56th Amendment, 1987'], ans: 1, why: 'The 71st Amendment (1992) added Konkani, Manipuri and Nepali.' },
+        { stem: 'The state animal of Goa is the:', opts: ['Gaur (Indian bison)', 'Black panther', 'Sambar deer', 'Asiatic lion'], ans: 0, why: 'The gaur is the state animal of Goa.' }
+      ],
+      reas: [
+        { stem: 'Find the next number: 3, 6, 12, 24, ?', opts: ['36', '42', '48', '30'], ans: 2, why: 'Each number is doubled.' },
+        { stem: 'If CAT is written as DBU, how is DOG written?', opts: ['EPH', 'EOH', 'DPH', 'FQI'], ans: 0, why: 'Each letter moves one step forward.' },
+        { stem: 'Find the odd one out: 8, 27, 64, 100', opts: ['8', '27', '64', '100'], ans: 3, why: '8, 27 and 64 are cubes; 100 is not.' },
+        { stem: 'Find the smallest number that leaves remainder 7 when divided by 12, 18, 21 or 30.', opts: ['1260', '1267', '1274', '1253'], ans: 1, why: 'LCM of 12, 18, 21 and 30 is 1260; add the remainder 7.' }
+      ],
+      core: T9.concat([
+        { tag: 'Topic 10 · Forensic', stem: 'Cherry-red post-mortem staining is seen in poisoning by:', opts: ['Arsenic', 'Carbon monoxide', 'Opium', 'Organophosphate'], ans: 1, why: 'Carboxyhaemoglobin is bright red.' },
+        { tag: 'Topic 8 · Paediatrics', stem: 'A child usually sits without support at:', opts: ['3 months', '6–8 months', '12 months', '15 months'], ans: 1, why: 'Sits 6–8 months, stands with support 9–10, walks 12–15.' }
+      ]),
+      t9: T9
+    };
+    this.CB = {
+      1: [{ stem: 'Hahnemann held psora responsible for what share of all chronic diseases?', opts: ['One-half', 'Seven-eighths', 'One-third', 'All of them'], ans: 1, why: 'Hahnemann attributed seven-eighths of chronic diseases to psora.', lvl: 'H' },
+          { stem: 'According to §83, the physician taking the case needs above all:', opts: ['freedom from prejudice, sound senses, attention and fidelity in recording', 'a knowledge of pathology only', 'laboratory reports first', 'a fixed list of questions'], ans: 0, why: '§83: the unprejudiced observer.' },
+          { stem: 'Symptoms leaving from above downward, from within outward and in reverse order of appearance follow:', opts: ['the Arndt-Schulz law', "Hering's law of cure", 'the law of simplex', "Kent's second prescription"], ans: 1, why: 'Constantine Hering described this direction of cure.' }],
+      2: [{ stem: 'Which remedy is complementary to Pulsatilla?', opts: ['Silicea', 'Causticum', 'Coffea', 'Phosphorus'], ans: 0, why: 'Silicea is the chronic of Pulsatilla.' },
+          { stem: 'Sudden complaints after exposure to dry cold wind, with fear of death and restlessness, call for:', opts: ['Belladonna', 'Aconitum napellus', 'Bryonia alba', 'Gelsemium'], ans: 1, why: 'Aconite: sudden onset, dry cold wind, fear of death.' }],
+      3: [{ stem: 'In the Korsakovian method of potentisation:', opts: ['the same vial is used throughout', 'a new vial is used for each potency', 'only trituration is used', 'each step is 1 in 50,000'], ans: 0, why: 'Korsakov used one vial, emptied and refilled at each step.' },
+          { stem: 'X-ray, Magnetis polus and Sol are drawn from:', opts: ['Imponderabilia', 'Nosodes', 'Sarcodes', 'The mineral kingdom'], ans: 0, why: 'Imponderabilia are "weightless" energies.' }],
+      4: [{ stem: 'A card repertory works by:', opts: ['lining up punched cards, one per symptom, so common remedies show through', 'listing remedies under disease names', 'arranging chapters alphabetically', 'printing all rubrics in one volume'], ans: 0, why: 'Remedies are eliminated with punched cards.' },
+          { stem: "Boenninghausen's Therapeutic Pocket Book rests on the doctrine of:", opts: ['analogy and generalisation', 'keynotes only', 'pathological diagnosis', 'constitutional types'], ans: 0, why: 'Boenninghausen generalised modalities and sensations to the whole patient.' }],
+      5: [{ stem: 'The normal serum anion gap is about:', opts: ['2–4 mEq/L', '8–12 mEq/L', '20–25 mEq/L', '30–35 mEq/L'], ans: 1, why: 'Anion gap = Na − (Cl + HCO3), normally about 8–12 mEq/L.', lvl: 'H' },
+          { stem: 'GFR is measured most accurately by the clearance of:', opts: ['Inulin', 'PAH', 'Glucose', 'Urea'], ans: 0, why: 'Inulin is filtered but neither reabsorbed nor secreted.' },
+          { stem: 'The first heart sound is produced by closure of the:', opts: ['Aortic and pulmonary valves', 'Mitral and tricuspid valves', 'Aortic valve only', 'Mitral and aortic valves'], ans: 1, why: 'S1 marks the start of ventricular systole.' }],
+      6: [{ stem: 'Blunting of the costophrenic angle on a chest X-ray suggests:', opts: ['Pneumothorax', 'Pleural effusion', 'Lobar consolidation', 'Normal lung'], ans: 1, why: 'Fluid collects first in the costophrenic recess.' },
+          { stem: 'The serum enzyme most specific for liver-cell injury is:', opts: ['ALT (SGPT)', 'AST (SGOT)', 'Alkaline phosphatase', 'Creatine kinase'], ans: 0, why: 'ALT is found mainly in the liver.' }],
+      7: [{ stem: 'Burning, stinging wheals that are better from cold applications call for:', opts: ['Rhus toxicodendron', 'Apis mellifica', 'Dulcamara', 'Sulphur'], ans: 1, why: 'Apis: oedematous, stinging wheals, better from cold.' },
+          { stem: "Murphy's sign is positive in:", opts: ['Acute appendicitis', 'Acute cholecystitis', 'Acute pancreatitis', 'Peptic ulcer'], ans: 1, why: 'Breathing stops as the inflamed gallbladder meets the hand.' }],
+      8: [{ stem: 'If the last period began on 10 January, the expected date of delivery is about:', opts: ['3 October', '17 October', '10 October', '24 October'], ans: 1, why: '10 January + 9 months + 7 days = 17 October.' },
+          { stem: 'Under the Rotterdam criteria, PCOD is diagnosed when:', opts: ['all 3 features are present', 'any 2 of the 3 features are present', 'only ultrasound is abnormal', 'LH is raised'], ans: 1, why: 'Any 2 of 3, after other causes are excluded.' }],
+      9: [this.P.t9[0], this.P.t9[2]],
+      10: [{ stem: "Casper's dictum compares the rate of putrefaction in air, water and earth as:", opts: ['1 : 2 : 8', '1 : 4 : 8', '2 : 1 : 8', '8 : 2 : 1'], ans: 0, why: 'One week in air equals two weeks in water and eight weeks in earth.', lvl: 'H' },
+          { stem: 'The infant mortality rate is expressed per:', opts: ['1,000 population', '1,000 live births', '1,00,000 live births', '1,000 children under five'], ans: 1, why: 'IMR uses live births as the denominator.' },
+          { stem: 'Discarded glass vials go into the:', opts: ['Yellow bag', 'Red bag', 'White container', 'Blue cardboard box'], ans: 3, why: 'Glass and metal implants go in the blue box.' }]
+    };
+    const LV = { t9: 'EIEI', comp: 'III', gram: 'IEEE', gk: 'EEHI', reas: 'EEIH', core: 'IIIIII' };
+    ['t9', 'comp', 'gram', 'gk', 'reas', 'core'].forEach(k => this.P[k].forEach((q, i) => { q.lvl = q.lvl || LV[k][i] || 'I'; }));
+    const CL = { 1: 'HIE', 2: 'IE', 3: 'II', 4: 'EH', 5: 'HII', 6: 'EE', 7: 'EE', 8: 'II', 9: 'EE', 10: 'HEI' };
+    Object.keys(CL).forEach(t => this.CB[t].forEach((q, i) => { q.lvl = q.lvl || CL[t][i] || 'I'; }));
+    this.TN = ['', 'Organon', 'Materia Medica', 'Pharmacy', 'Repertory', 'Anatomy & Physiology', 'Pathology', 'Medicine', 'Obs & Gynae', 'Surgery', 'Community Medicine'];
+    this.DEFS = [['comp', 'Comprehension', '#2563EB', '#DBEAFE'], ['gram', 'Grammar', '#7C3AED', '#EDE9FE'], ['gk', 'General knowledge', '#D97706', '#FEF3C7'], ['reas', 'Reasoning', '#0D9488', '#CCFBF1'], ['core', 'Core subject', '#DB2777', '#FCE7F3']];
+    this.state = Object.assign({ sheet: null, toast: '', rf: 'wrong' }, { phase: 'host' });
+  }
+  fresh(resume) {
+    const ans = {}, visited = {};
+    let cur = 1, secs = this.C.mode === 'exam' ? this.C.time : 0, marked = {};
+    if (resume) {
+      cur = 47; secs = 2480; marked = { 7: true, 19: true, 28: true };
+      for (let n = 1; n <= 46; n++) { visited[n] = true; if ([12, 22, 31].indexOf(n) < 0) { const q = this.q(n); ans[n] = (n % 5 === 0) ? (q.ans + 1) % 4 : q.ans; } }
+    }
+    visited[cur] = true;
+    return { phase: 'test', cur, ans, visited, marked, sheet: null, secs, toast: '', rf: 'wrong' };
+  }
+  componentDidMount() {
+    if (this.onMount) this.onMount();
+    this.timer = setInterval(() => {
+      const S = this.state;
+      if (S.phase !== 'test' || S.sheet === 'exit') return;
+      if (this.C.mode === 'exam') { if (S.secs > 0) this.setState({ secs: S.secs - 1 }); }
+      else this.setState({ secs: S.secs + 1 });
+    }, 1000);
+  }
+  componentWillUnmount() { clearInterval(this.timer); clearTimeout(this.tt); }
+  sec(n) { return this.C.secs.find(s => n >= s[2] && n <= s[3]); }
+  q(n) {
+    if (this.QL) return this.QL[n - 1];
+    const s = this.sec(n), pool = this.P[s[0]], q = pool[(n - 1) % pool.length];
+    return Object.assign({ tag: s[1] }, q);
+  }
+  go(n) {
+    const v = Object.assign({}, this.state.visited); v[n] = true;
+    this.setState({ cur: n, visited: v, sheet: null });
+  }
+  flash(t) {
+    this.setState({ toast: t });
+    clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: '' }), 1800);
+  }
+  matches(f) {
+    const out = [];
+    for (let k = 1; k <= this.C.total; k++) {
+      const a = this.state.ans[k];
+      if (f === 'all' || (f === 'wrong' && a != null && a !== this.q(k).ans) || (f === 'skipped' && a == null)) out.push(k);
+    }
+    return out;
+  }
+  cands(b) {
+    const out = {};
+    this.DEFS.forEach(([id, name]) => {
+      if (!b.sec[id]) return;
+      if (id === 'core') out.core = [].concat.apply([], b.topics.slice().sort((x, y) => x - y).map(t => this.CB[t].map(q => Object.assign({}, q, { tag: 'Topic ' + t + ' · ' + this.TN[t] }))));
+      else out[id] = this.P[id].map(q => Object.assign({}, q, { tag: name }));
+      if (b.diff && b.diff !== 'any' && out[id]) { out[id] = out[id].filter(q => (q.lvl || 'I') === b.diff); if (!out[id].length) delete out[id]; }
+    });
+    return out;
+  }
+  build() {
+    const b = this.state.b, cs = this.cands(b), ids = this.DEFS.map(d => d[0]).filter(id => cs[id]);
+    const avail = ids.reduce((a, id) => a + cs[id].length, 0), n = Math.min(b.count, avail);
+    const take = {}; ids.forEach(id => take[id] = 0);
+    let got = 0;
+    while (got < n) { ids.forEach(id => { if (got < n && take[id] < cs[id].length) { take[id]++; got++; } }); }
+    const QL = [], secs = [];
+    ids.forEach(id => { if (!take[id]) return; const st = QL.length + 1; cs[id].slice(0, take[id]).forEach(q => QL.push(q)); secs.push([id, this.DEFS.find(d => d[0] === id)[1], st, QL.length]); });
+    this.QL = QL;
+    this.C = { mode: b.mode, title: 'Custom · ' + secs.map(s => s[1]).join(' + '), total: QL.length, time: QL.length * 75, home: null, secs, custom: true };
+    this.setState(this.fresh(false));
+  }
+  builderVals() {
+    const S = this.state, B = S.b;
+    const setB = o => this.setState({ b: Object.assign({}, B, o) });
+    const sections = this.DEFS.map(([id, name, c, soft]) => {
+      const on = !!B.sec[id];
+      return { name, on: String(on),
+        style: on ? 'background:' + soft + ';border:2px solid ' + c + ';color:#1E1B4B' : 'background:#fff;border:2px solid #E6E4F5;color:#5B5A7A',
+        dot: 'width:10px;height:10px;border-radius:50%;flex:none;background:' + (on ? c : '#C9C6E0'),
+        toggle: () => setB({ sec: Object.assign({}, B.sec, { [id]: !on }) }) };
+    });
+    const names = ['Organon', 'Materia Medica', 'Pharmacy', 'Repertory', 'Anatomy & Physio', 'Pathology', 'Medicine', 'Obs, Gynae, Paeds', 'Surgery, ENT, Eye', 'Community & Forensic'];
+    const topics = names.map((nm, i) => { const k = i + 1, on = B.topics.indexOf(k) >= 0; return { label: k + ' · ' + nm, on: String(on),
+      style: 'min-height:44px;padding:0 12px;border-radius:999px;cursor:pointer;font:600 13px Plus Jakarta Sans,sans-serif;' + (on ? 'background:#DB2777;color:#fff;border:0' : 'background:#fff;color:#5B5A7A;border:1.5px solid #E6E4F5'),
+      toggle: () => setB({ topics: on ? B.topics.filter(x => x !== k) : B.topics.concat([k]) }) }; });
+    const counts = [10, 25, 40, 60].map(n => ({ n, on: String(B.count === n), style: B.count === n ? 'background:#fff;color:#1E1B4B;box-shadow:0 1px 3px rgba(30,27,75,.15)' : 'background:transparent;color:#5B5A7A', pick: () => setB({ count: n }) }));
+    const diffs = [['any', 'Any'], ['E', 'Easy'], ['I', 'Medium'], ['H', 'Hard']].map(([id, name]) => ({ name, on: String((B.diff || 'any') === id),
+      style: 'border:0;min-height:44px;border-radius:12px;font:700 14px Plus Jakarta Sans,sans-serif;cursor:pointer;' + ((B.diff || 'any') === id ? 'background:#fff;color:#1E1B4B;box-shadow:0 1px 3px rgba(30,27,75,.15)' : 'background:transparent;color:#5B5A7A'), pick: () => setB({ diff: id }) }));
+    const modes = [['exam', 'Exam mode', 'Timer, answers at the end'], ['learn', 'Learn mode', 'See the answer after each']].map(([id, name, desc]) => ({ name, desc, on: String(B.mode === id),
+      style: 'display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:12px 14px;min-height:64px;border-radius:14px;cursor:pointer;font-family:Plus Jakarta Sans,sans-serif;color:#1E1B4B;text-align:left;' + (B.mode === id ? 'background:#E0E7FF;border:2px solid #4338CA' : 'background:#fff;border:2px solid #E6E4F5'),
+      pick: () => setB({ mode: id }) }));
+    const picked = this.DEFS.filter(d => B.sec[d[0]]).map(d => d[1]);
+    const ready0 = picked.length > 0 && !(B.sec.core && B.topics.length === 0);
+    const cs = ready0 ? this.cands(B) : {};
+    const avail = Object.keys(cs).reduce((a, k) => a + cs[k].length, 0), n = Math.min(B.count, avail);
+    const ready = ready0 && n > 0;
+    const allOn = B.topics.length === 10;
+    return {
+      inBuild: true, notBuild: false, inTest: false, inResult: false, inReview: false, showQuestion: false, showGrid: false, canMark: false, isCustom: true,
+      sheetPalette: false, sheetExit: false, sheetSubmit: false, toast: S.toast, opts: [], groups: [], legend: [], rchips: [], fb: {}, cnt: {}, res: { secs: [] },
+      sections, topics, counts, modes, diffs, coreOn: !!B.sec.core,
+      allLabel: allOn ? 'Clear' : 'Select all',
+      allTopics: () => setB({ topics: allOn ? [] : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }),
+      ready, notReady: !ready,
+      summary: !picked.length ? 'Pick at least one section to start' : (B.sec.core && !B.topics.length) ? 'Pick at least one core topic, or turn Core off' : !n ? 'No questions at this level for this mix in the preview bank' : picked.join(' + ') + (B.sec.core ? ' (' + B.topics.length + ' topics)' : '') + (B.diff && B.diff !== 'any' ? ' · ' + { E: 'easy', I: 'medium', H: 'hard' }[B.diff] + ' only' : '') + (n < B.count ? ' · preview bank has ' + n + ' questions for this mix' : ''),
+      startLabel: !ready ? 'Start' : B.mode === 'exam' ? 'Start ' + n + ' questions · ' + Math.round(n * 1.25) + ' min' : 'Start ' + n + ' questions',
+      start: () => { if (ready) this.build(); }
+    };
+  }
+  prep(cfg) {
+    const QL = [], secs = [];
+    cfg.secs.forEach(([id, count, topics]) => {
+      const d = this.DEFS.find(x => x[0] === id), name = d ? d[1] : (id === 't9' ? 'Topic 9' : id);
+      const pool = id === 'core' ? [].concat.apply([], (topics || [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).map(t => this.CB[t].map(q => Object.assign({}, q, { tag: 'Topic ' + t + ' · ' + this.TN[t] })))) : this.P[id].map(q => Object.assign({ tag: name }, q));
+      if (cfg.level) pool.sort((a, b) => ((a.lvl === cfg.level) ? 0 : 1) - ((b.lvl === cfg.level) ? 0 : 1));
+      const n = cfg.unique ? Math.min(count, pool.length) : count;
+      if (!n) return;
+      const st = QL.length + 1;
+      for (let i = 0; i < n; i++) QL.push(pool[i % pool.length]);
+      secs.push([id, name, st, QL.length]);
+    });
+    this.QL = QL;
+    this.C = { mode: cfg.mode, title: cfg.title, total: QL.length, time: cfg.time || QL.length * 75, home: cfg.home || null, secs, custom: !!cfg.custom };
+    if (cfg.past) return this.pastState(cfg.past);
+    return this.fresh(!!cfg.resume);
+  }
+  launch(cfg) { this.setState(Object.assign({ rf: 'wrong', toast: '' }, this.prep(cfg))); }
+  pastState(p) {
+    const T = this.C.total, ans = {}, visited = {}, order = [];
+    for (let k = 1; k <= T; k++) order.push(k);
+    order.sort((a, b) => ((a * 37) % T) - ((b * 37) % T));
+    order.forEach((k, i) => { visited[k] = true; const q = this.q(k); if (i < p.score) ans[k] = q.ans; else if (i < p.score + p.wrong) ans[k] = (q.ans + 1) % 4; });
+    return { phase: 'result', cur: 1, ans, visited, marked: {}, sheet: null, secs: Math.max(0, this.C.time - p.used), toast: '', rf: 'wrong' };
+  }
+  goHome() { this.QL = null; this.C = null; this.setState({ phase: 'host', sheet: null }); }
+  hostRow(k, name, meta, pill, kind, go) {
+    const K = { prog: ['background:#FEF3C7;color:#92400E', 'background:#F59E0B;color:#422006', 'border:2px solid #F59E0B'], new: ['background:#E0E7FF;color:#3730A3', 'background:#E0E7FF;color:#3730A3', ''], done: ['background:#DCFCE7;color:#166534', 'background:#DCFCE7;color:#166534', ''], gk: ['background:#FEF3C7;color:#92400E', 'background:#FEF3C7;color:#92400E', ''], gram: ['background:#EDE9FE;color:#5B21B6', 'background:#EDE9FE;color:#5B21B6', ''], comp: ['background:#DBEAFE;color:#1E40AF', 'background:#DBEAFE;color:#1E40AF', ''], core: ['background:#FCE7F3;color:#9D174D', 'background:#FCE7F3;color:#9D174D', ''], lvE: ['background:#DCFCE7;color:#166534', 'background:#16A34A;color:#fff', ''], lvI: ['background:#FEF3C7;color:#92400E', 'background:#D97706;color:#fff', ''], lvH: ['background:#FEE2E2;color:#991B1B', 'background:#DC2626;color:#fff', ''] }[kind];
+    return { num: k, name, meta, pill, go, numStyle: K[0], pillStyle: K[1], border: K[2] };
+  }
+  progVals() {
+    const F = [['comp', 10], ['gram', 5], ['gk', 10], ['reas', 10], ['core', 25]];
+    const past = (k, s, w, m) => () => this.launch({ title: 'Practice Set ' + k, mode: 'exam', time: 4500, secs: F, past: { score: s, wrong: w, used: m * 60 } });
+    return { h10: past(10, 43, 11, 52), h7: past(7, 44, 10, 61), h9: past(9, 42, 12, 46) };
+  }
+
+  fmt(s) { const m = Math.floor(s / 60), x = s % 60; return (m < 10 ? '0' : '') + m + ':' + (x < 10 ? '0' : '') + x; }
+  renderVals() {
+    if (this.state.phase === 'host') return Object.assign({ inHost: true, notHost: false, inTest: false, inResult: false, inReview: false, showQuestion: false, showGrid: false, sheetPalette: false, sheetExit: false, sheetSubmit: false, toast: this.state.toast }, this.progVals());
+    const S = this.state, C = this.C, exam = C.mode === 'exam', T = C.total, n = S.cur, q = this.q(n), L = 'ABCD';
+    const phase = S.phase, inTest = phase === 'test', inReview = phase === 'review', inResult = phase === 'result';
+    const chosen = S.ans[n];
+    const locked = inReview || (!exam && chosen != null);
+    const opts = q.opts.map((text, i) => {
+      let style = 'background:#fff;border:2px solid #E6E4F5', keyStyle = 'background:#F1F0FA;color:#5B5A7A', note = '';
+      if (chosen === i) { style = 'background:#E0E7FF;border:2px solid #4338CA'; keyStyle = 'background:#4338CA;color:#fff'; }
+      if (locked && i === q.ans) { style = 'background:#DCFCE7;border:2px solid #16A34A'; keyStyle = 'background:#16A34A;color:#fff'; note = inReview ? 'Correct' : ''; }
+      if (locked && chosen === i && i !== q.ans) { style = 'background:#FEE2E2;border:2px solid #DC2626'; keyStyle = 'background:#DC2626;color:#fff'; note = inReview ? 'Yours' : ''; }
+      return { k: L[i], text, note, on: String(chosen === i), style, keyStyle,
+        pick: () => { if (locked) return; const a = Object.assign({}, S.ans); a[n] = i; this.setState({ ans: a }); } };
+    });
+    const right = chosen === q.ans, skippedQ = chosen == null;
+    const fb = { show: locked, title: inReview && skippedQ ? 'Skipped · answer ' + L[q.ans] : right ? 'Correct' : 'Not quite · answer ' + L[q.ans], why: q.why,
+      style: 'border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;' + (right ? 'background:#DCFCE7;color:#14532D' : 'background:#FEF3C7;color:#422006') };
+    let answered = 0, marked = 0, skipped = 0, unseen = 0, done = 0, rRight = 0, rWrong = 0;
+    const secRes = [];
+    const groups = C.secs.map(s => {
+      const cells = []; let sr = 0;
+      for (let k = s[2]; k <= s[3]; k++) {
+        const a = S.ans[k] != null, m = !!S.marked[k], v = !!S.visited[k], ok = a && S.ans[k] === this.q(k).ans;
+        if (a) done++;
+        if (ok) { rRight++; sr++; } else if (a) rWrong++;
+        let bg = '#E6E4F5', fg = '#5B5A7A', st = 'not seen';
+        if (inTest) {
+          if (m) { marked++; bg = '#7C3AED'; fg = '#fff'; st = 'marked'; }
+          else if (a) { answered++; bg = '#16A34A'; fg = '#fff'; st = 'answered'; }
+          else if (v && k !== n) { skipped++; bg = '#F97316'; fg = '#fff'; st = 'skipped'; }
+          else unseen++;
+        } else {
+          if (ok) { bg = '#16A34A'; fg = '#fff'; st = 'right'; } else if (a) { bg = '#DC2626'; fg = '#fff'; st = 'wrong'; } else { bg = '#F97316'; fg = '#fff'; st = 'skipped'; }
+        }
+        let style = 'height:38px;border-radius:10px;border:0;cursor:pointer;font:700 12.5px Plus Jakarta Sans,sans-serif;background:' + bg + ';color:' + fg;
+        if (k === n && !inResult) style += ';outline:3px solid #F59E0B;outline-offset:1px';
+        cells.push({ n: k, aria: 'Question ' + k + ', ' + st, style, go: () => this.go(k) });
+      }
+      const cols = { comp: ['#DBEAFE', '#2563EB'], gram: ['#EDE9FE', '#7C3AED'], gk: ['#FEF3C7', '#D97706'], reas: ['#CCFBF1', '#0D9488'], core: ['#FCE7F3', '#DB2777'], t9: ['#EDE9FE', '#7C3AED'] }[s[0]];
+      const len = s[3] - s[2] + 1;
+      secRes.push({ name: s[1], score: sr + '/' + len, track: 'flex:1;height:10px;border-radius:5px;background:' + cols[0], fill: 'height:10px;border-radius:5px;background:' + cols[1] + ';width:' + Math.round(sr / len * 100) + '%' });
+      return { name: s[1] + ' · ' + s[2] + '–' + s[3], cells };
+    });
+    const left = T - done;
+    const legend = inTest
+      ? [['#16A34A', 'Answered ' + answered], ['#7C3AED', 'Marked ' + marked], ['#F97316', 'Skipped ' + skipped], ['#E6E4F5', 'Not seen ' + unseen]]
+      : [['#16A34A', 'Right ' + rRight], ['#DC2626', 'Wrong ' + rWrong], ['#F97316', 'Skipped ' + left]];
+    const pct = Math.round(rRight / T * 100);
+    const isCore = q.tag.indexOf('Topic') === 0;
+    const colors = { 'Comprehension': ['#DBEAFE', '#1E40AF'], 'Grammar': ['#EDE9FE', '#5B21B6'], 'General knowledge': ['#FEF3C7', '#92400E'], 'Reasoning': ['#CCFBF1', '#115E59'] };
+    const c = isCore ? ['#FCE7F3', '#9D174D'] : colors[q.tag];
+    const firstLeft = (() => { for (let k = 1; k <= T; k++) if (S.ans[k] == null) return k; return null; })();
+    const used = exam ? C.time - S.secs : S.secs;
+    const rList = inReview ? this.matches(S.rf) : [];
+    const rPrev = rList.some(k => k < n), rNext = rList.some(k => k > n);
+    const rchips = [['wrong', 'Wrong'], ['skipped', 'Skipped'], ['all', 'All']].map(([id, name]) => {
+      const m = inReview ? this.matches(id) : [];
+      return { name: name + ' ' + m.length, on: String(S.rf === id),
+        style: 'min-height:44px;padding:0 14px;border-radius:999px;cursor:pointer;font:700 13px Plus Jakarta Sans,sans-serif;' + (S.rf === id ? 'background:#4338CA;color:#fff;border:0' : 'background:#fff;color:#1E1B4B;border:1.5px solid #E6E4F5'),
+        pick: () => { if (m.length) this.setState({ rf: id, cur: m[0] }); else this.flash('No ' + name.toLowerCase() + ' questions'); } };
+    });
+    let headline = exam ? this.fmt(S.secs) + ' left' : this.fmt(S.secs) + ' spent';
+    if (inResult) headline = 'Result';
+    if (inReview) headline = 'Review';
+    return {
+      inTest, inReview, inResult, rchips, inHost: false, notHost: true, isCustom: !!C.custom, hostHome: !C.home, urlHome: !!C.home, goHome: () => this.goHome(), homeAria: C.home ? 'Back' : 'Back to list',
+      rebuild: () => { this.QL = null; this.setState({ phase: 'host', sheet: null }); }, showQuestion: !inResult, showGrid: !inResult, canMark: inTest && exam,
+      title: C.title + (inTest ? (exam ? '' : ' · Learn mode') : ''),
+      headline, homeHref: C.home,
+      gridLabel: inTest ? done + '/' + T : 'Jump',
+      gridAria: inTest ? 'All questions, ' + done + ' of ' + T + ' answered' : 'Jump to a question',
+      cur: n, total: T, tag: q.tag, stem: q.stem, opts, fb, toast: S.toast, legend: legend.map(([col, text]) => ({ sw: 'background:' + col, text })),
+      tagStyle: 'font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap;background:' + c[0] + ';color:' + c[1],
+      barStyle: 'height:5px;background:#F59E0B;width:' + (inTest ? Math.round(done / T * 100) : 100) + '%',
+      cnt: { marked: Object.keys(S.marked).length, done, left },
+      groups,
+      lvlName: { E: 'Easy', I: 'Intermediate', H: 'Hard' }[q.lvl || 'I'],
+      lvlStyle: 'font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap;' + { E: 'background:#DCFCE7;color:#166534', I: 'background:#FEF3C7;color:#92400E', H: 'background:#FEE2E2;color:#991B1B' }[q.lvl || 'I'],
+      res: { right: rRight, wrong: rWrong, skipped: left, secs: secRes, lvls: ['E', 'I', 'H'].map(k => {
+        const ns = []; for (let k2 = 1; k2 <= T; k2++) if ((this.q(k2).lvl || 'I') === k) ns.push(k2);
+        if (!ns.length) return null;
+        const c = ns.filter(k2 => S.ans[k2] != null && S.ans[k2] === this.q(k2).ans).length;
+        const col = { E: ['#DCFCE7', '#16A34A', '#166534'], I: ['#FEF3C7', '#D97706', '#92400E'], H: ['#FEE2E2', '#DC2626', '#991B1B'] }[k];
+        return { name: { E: 'Easy', I: 'Intermediate', H: 'Hard' }[k], score: c + '/' + ns.length, chip: 'font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:' + col[0] + ';color:' + col[2],
+          track: 'flex:1;height:10px;border-radius:5px;background:' + col[0], fill: 'height:10px;border-radius:5px;background:' + col[1] + ';width:' + Math.round(c / ns.length * 100) + '%' };
+      }).filter(x => x), headline: pct >= 70 ? 'Well done' : pct >= 50 ? 'Good effort' : 'Keep practising', time: this.fmt(used) + (exam ? ' used of ' + this.fmt(C.time) : ' spent') + ' · no negative marking' },
+      ringStyle: 'width:108px;height:108px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;background:conic-gradient(#4338CA ' + pct + '%, #E0E7FF 0)',
+      markedNow: String(!!S.marked[n]),
+      markLabel: S.marked[n] ? 'Marked for review' : 'Mark for review',
+      markStyle: 'align-self:flex-start;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:12px;cursor:pointer;font:700 14px Plus Jakarta Sans,sans-serif;' + (S.marked[n] ? 'background:#EDE9FE;color:#5B21B6;border:2px solid #7C3AED' : 'background:transparent;color:#5B21B6;border:2px dashed #A78BFA'),
+      toggleMark: () => { const m = Object.assign({}, S.marked); if (m[n]) delete m[n]; else m[n] = true; this.setState({ marked: m }); },
+      footStyle: 'display:grid;grid-template-columns:' + (inTest ? '1fr 1fr 1.4fr' : '1fr 1fr') + ';gap:8px;padding:12px 16px 26px;background:#fff;border-top:1px solid #E6E4F5',
+      atFirst: inReview ? !rPrev : n === 1, noAnswer: chosen == null || locked,
+      prevStyle: (inReview ? !rPrev : n === 1) ? 'background:#F1F0FA;color:#A9A7C4;cursor:default' : 'background:#EEF0FF;color:#1E1B4B',
+      clearStyle: (chosen == null || locked) ? 'background:#fff;color:#A9A7C4;border:1.5px solid #EEEDF7;cursor:default' : 'background:#fff;color:#5B5A7A;border:1.5px solid #E6E4F5',
+      prev: () => { if (inReview) { const m = this.matches(S.rf).filter(k => k < n); if (m.length) this.go(m[m.length - 1]); } else if (n > 1) this.go(n - 1); },
+      clear: () => { const a = Object.assign({}, S.ans); delete a[n]; this.setState({ ans: a }); this.flash('Answer cleared'); },
+      nextLabel: inReview ? (rNext ? 'Next' : 'Back to result') : n === T ? 'Finish' : (exam ? 'Save & next' : 'Next'),
+      next: () => { if (inReview) { const m = this.matches(S.rf).filter(k => k > n); if (m.length) this.go(m[0]); else this.setState({ phase: 'result' }); } else if (n < T) this.go(n + 1); else this.setState({ sheet: 'submit' }); },
+      sheetPalette: S.sheet === 'palette', sheetExit: S.sheet === 'exit', sheetSubmit: S.sheet === 'submit',
+      openPalette: () => this.setState({ sheet: 'palette' }),
+      closeSheet: () => this.setState({ sheet: null }),
+      askExit: () => this.setState({ sheet: 'exit' }),
+      askSubmit: () => this.setState({ sheet: 'submit' }),
+      submit: () => this.setState({ phase: 'result', sheet: null }),
+      startReview: () => { const w = this.matches('wrong'); const f = w.length ? 'wrong' : 'all'; this.setState({ phase: 'review', rf: f, cur: (w.length ? w : [1])[0] }); },
+      toResult: () => this.setState({ phase: 'result', sheet: null }),
+      retake: () => this.setState(this.fresh(false)),
+      exitText: exam ? 'Your ' + done + ' answers are saved and the timer pauses. Resume any time from Tests.' : 'Your answers are saved. Pick up where you left off any time.',
+      submitText: left ? left + ' questions are still unanswered. There is no negative marking, so an answer is always worth a try.' : 'All questions answered.',
+      markedText: (() => { const m = Object.keys(S.marked).length; return m + (m === 1 ? ' question is' : ' questions are') + ' marked to recheck; they count as answered if you picked an option.'; })(),
+      allDone: !firstLeft,
+      leftStyle: firstLeft ? 'background:#FFEDD5;color:#9A3412' : 'background:#F1F0FA;color:#A9A7C4;cursor:default',
+      reviewLeft: () => { if (firstLeft) this.go(firstLeft); else this.setState({ sheet: null }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

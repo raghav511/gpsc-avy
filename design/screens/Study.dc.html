@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Study library</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#4338CA}a:hover{color:#312E81}
+.scr{width:390px;height:844px;box-sizing:border-box;background:#F5F4FF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#1E1B4B;display:flex;flex-direction:column;overflow:hidden;position:relative}
+.label{font-size:14px;font-weight:700;color:#3F3D63}
+.tile{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:14px;border-radius:18px;text-decoration:none;color:#1E1B4B;min-height:104px;box-sizing:border-box;border:0;text-align:left;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;width:100%}
+.item{display:flex;align-items:center;gap:12px;background:#fff;border-radius:16px;padding:12px 14px;text-decoration:none;color:#1E1B4B;min-height:44px;border:0;width:100%;box-sizing:border-box;text-align:left;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px}
+.ico{width:40px;height:40px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.sub{display:block;font-size:12.5px;color:#5B5A7A;font-weight:500}
+.ttl{display:block;font-weight:700;font-size:15px}
+.share{width:44px;height:44px;border:0;border-radius:12px;background:#DCFCE7;color:#166534;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+.wide{display:flex;align-items:center;justify-content:center;min-height:50px;border-radius:14px;font:700 15px 'Plus Jakarta Sans',sans-serif;text-decoration:none;border:0;cursor:pointer;width:100%}
+.opt{display:flex;align-items:center;gap:12px;width:100%;min-height:54px;padding:10px 14px;border-radius:16px;font:500 15px 'Plus Jakarta Sans',sans-serif;color:#1E1B4B;text-align:left;cursor:pointer;box-sizing:border-box}
+.key{width:30px;height:30px;border-radius:9px;flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.nav{display:flex;justify-content:space-around;background:#fff;border-top:1px solid #E6E4F5;padding:6px 8px 18px}
+.nav a{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;font-weight:600;color:#5B5A7A;text-decoration:none;min-width:64px;min-height:44px;justify-content:center}
+.nav a.on{color:#4338CA}
+</style>
+</helmet>
+<div class="scr">
+
+  <sc-if value="{{libOn}}" hint-placeholder-val="{{true}}">
+    <div style="padding: 18px 20px 8px; display: flex; flex-direction: column; gap: 12px">
+      <div style="font-weight: 800; font-size: 24px; letter-spacing: -0.01em">Study</div>
+      <label style="display: flex; align-items: center; gap: 10px; background: #fff; border-radius: 14px; padding: 0 14px; min-height: 48px; border: 1.5px solid #E6E4F5">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5B5A7A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+        <input type="search" value="{{q}}" onChange="{{onQ}}" placeholder="Search notes: Ledum, PCOD, IMR…" aria-label="Search all notes" style="flex: 1; border: 0; outline: none; font: 500 15px 'Plus Jakarta Sans', sans-serif; color: #1E1B4B; background: transparent; min-height: 44px">
+      </label>
+      <div role="tablist" aria-label="Filter library" style="display: flex; gap: 8px; flex-wrap: wrap">
+        <sc-for list="{{chips}}" as="c" hint-placeholder-count="7">
+          <button role="tab" aria-selected="{{c.on}}" onClick="{{c.pick}}" style="{{c.style}}">{{c.name}}</button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="flex: 1; padding: 6px 20px 14px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto">
+      <sc-if value="{{searching}}" hint-placeholder-val="{{false}}">
+        <div class="label">{{resultLabel}}</div>
+        <sc-for list="{{results}}" as="r" hint-placeholder-count="3">
+          <sc-if value="{{r.isLink}}" hint-placeholder-val="{{false}}">
+            <a href="Notes.dc.html" class="item"><span class="ico" style="{{r.icoStyle}}">{{r.short}}</span><span style="flex: 1; min-width: 0"><span class="ttl">{{r.title}}</span><span class="sub">{{r.where}}</span></span></a>
+          </sc-if>
+          <sc-if value="{{r.isBtn}}" hint-placeholder-val="{{true}}">
+            <button class="item" onClick="{{r.open}}"><span class="ico" style="{{r.icoStyle}}">{{r.short}}</span><span style="flex: 1; min-width: 0"><span class="ttl">{{r.title}}</span><span class="sub">{{r.where}}</span></span></button>
+          </sc-if>
+        </sc-for>
+        <sc-if value="{{noResults}}" hint-placeholder-val="{{false}}">
+          <div style="background: #fff; border-radius: 16px; padding: 16px; font-size: 14px; color: #5B5A7A">No notes match "{{q}}". Try a remedy, a disease or a term like IMR.</div>
+        </sc-if>
+      </sc-if>
+
+      <sc-if value="{{showCore}}" hint-placeholder-val="{{true}}">
+        <div class="label">Core subject notes</div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+          <sc-for list="{{coreTiles}}" as="t" hint-placeholder-count="6">
+            <sc-if value="{{t.isLink}}" hint-placeholder-val="{{false}}">
+              <a href="Notes.dc.html" class="tile" style="{{t.style}}"><span style="{{t.labStyle}}">{{t.label}}</span><span style="font-weight: 700; font-size: 14.5px">{{t.title}}</span><span style="font-size: 12px">{{t.meta}}</span></a>
+            </sc-if>
+            <sc-if value="{{t.isBtn}}" hint-placeholder-val="{{true}}">
+              <button class="tile" onClick="{{t.open}}" style="{{t.style}}"><span style="{{t.labStyle}}">{{t.label}}</span><span style="font-weight: 700; font-size: 14.5px">{{t.title}}</span><span style="font-size: 12px">{{t.meta}}</span></button>
+            </sc-if>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{showGk}}" hint-placeholder-val="{{true}}">
+        <div class="label">General knowledge</div>
+        <button class="item" onClick="{{openGk}}"><span class="ico" style="background: #FEF3C7; color: #B45309">GK</span><span style="flex: 1"><span class="ttl">GK Playbook</span><span class="sub">Goa statehood, language and heritage</span></span></button>
+        <a href="DrillGk.dc.html" class="item"><span class="ico" style="background: #FEF3C7; color: #B45309">6</span><span style="flex: 1"><span class="ttl">GK drills 1–6</span><span class="sub">25 questions each, 15 minutes</span></span></a>
+      </sc-if>
+
+      <sc-if value="{{showComp}}" hint-placeholder-val="{{true}}">
+        <div class="label">English comprehension</div>
+        <button class="item" onClick="{{openComp}}"><span class="ico" style="background: #DBEAFE; color: #1D4ED8">Rc</span><span style="flex: 1"><span class="ttl">Reading a passage</span><span class="sub">Main idea, inference, common traps</span></span></button>
+        <a href="DrillComp.dc.html" class="item"><span class="ico" style="background: #DBEAFE; color: #1D4ED8">5</span><span style="flex: 1"><span class="ttl">Comprehension drills</span><span class="sub">Real GPSC passages, 2 drills</span></span></a>
+      </sc-if>
+
+      <sc-if value="{{showGram}}" hint-placeholder-val="{{true}}">
+        <div class="label">English grammar</div>
+        <button class="item" onClick="{{openGram}}"><span class="ico" style="background: #EDE9FE; color: #6D28D9">Gr</span><span style="flex: 1"><span class="ttl">Grammar rules</span><span class="sub">Agreement, tenses, prepositions, spelling</span></span></button>
+        <a href="DrillEn.dc.html" class="item"><span class="ico" style="background: #EDE9FE; color: #6D28D9">3</span><span style="flex: 1"><span class="ttl">Grammar drills</span><span class="sub">2026 pattern, vocabulary and usage, 2 drills</span></span></a>
+      </sc-if>
+
+      <sc-if value="{{showPdf}}" hint-placeholder-val="{{false}}">
+        <div class="label">Printable PDFs to share on WhatsApp</div>
+        <sc-for list="{{pdfs}}" as="p" hint-placeholder-count="6">
+          <div class="item" style="cursor: default">
+            <span class="ico" style="background: #FEE2E2; color: #B91C1C">PDF</span>
+            <span style="flex: 1; min-width: 0"><span class="ttl">{{p.name}}</span><span class="sub">{{p.meta}}</span></span>
+            <button class="share" onClick="{{p.share}}" aria-label="{{p.aria}}">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5"></path><path d="M5 14v5a2 2 0 002 2h10a2 2 0 002-2v-5"></path></svg>
+            </button>
+          </div>
+        </sc-for>
+      </sc-if>
+
+      <sc-if value="{{showWrong}}" hint-placeholder-val="{{false}}">
+        <div style="font-size: 14px; color: #3F3D63; line-height: 1.5">Every question you answered wrongly in mocks and drills, newest first. Get one right in a retest and it leaves this list.</div>
+        <div role="tablist" aria-label="Filter incorrect questions" style="display: flex; gap: 2px; flex-wrap: wrap; background: #fff; border-radius: 16px; padding: 4px">
+          <sc-for list="{{wchips}}" as="w" hint-placeholder-count="6">
+            <button role="tab" aria-selected="{{w.on}}" onClick="{{w.pick}}" style="{{w.style}}">{{w.name}}</button>
+          </sc-for>
+        </div>
+        <sc-if value="{{wPdf}}" hint-placeholder-val="{{false}}">
+          <sc-for list="{{wpdfs}}" as="p" hint-placeholder-count="5">
+            <div class="item" style="cursor: default">
+              <span class="ico" style="background: #FEE2E2; color: #B91C1C">PDF</span>
+              <span style="flex: 1; min-width: 0"><span class="ttl">{{p.name}}</span><span class="sub">{{p.meta}}</span></span>
+              <button class="share" onClick="{{p.share}}" aria-label="{{p.aria}}">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5"></path><path d="M5 14v5a2 2 0 002 2h10a2 2 0 002-2v-5"></path></svg>
+              </button>
+            </div>
+          </sc-for>
+        </sc-if>
+        <sc-if value="{{wList}}" hint-placeholder-val="{{true}}">
+          <button class="wide" onClick="{{retestWrong}}" style="background: #EA580C; color: #fff">{{retestLabel}}</button>
+          <sc-for list="{{wrongs}}" as="w" hint-placeholder-count="4">
+            <div style="background: #fff; border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 1px 2px rgba(30,27,75,.06), 0 4px 14px rgba(30,27,75,.06)">
+              <div style="display: flex; justify-content: space-between; gap: 8px; align-items: center">
+                <span style="{{w.tagStyle}}">{{w.tag}}</span>
+                <span style="font-size: 12px; color: #5B5A7A">{{w.src}}</span>
+              </div>
+              <div style="font-size: 15px; font-weight: 600; line-height: 1.45">{{w.stem}}</div>
+              <div style="display: flex; gap: 8px; align-items: flex-start; font-size: 14px; color: #991B1B"><span style="font-weight: 800; flex: none">You:</span><span>{{w.you}}</span></div>
+              <div style="display: flex; gap: 8px; align-items: flex-start; font-size: 14px; color: #166534"><span style="font-weight: 800; flex: none">Answer:</span><span>{{w.right}}</span></div>
+              <button onClick="{{w.toggle}}" aria-expanded="{{w.open}}" style="align-self: flex-start; border: 0; background: none; color: #4338CA; font: 700 14px 'Plus Jakarta Sans', sans-serif; min-height: 44px; padding: 0; cursor: pointer">{{w.toggleLabel}}</button>
+              <sc-if value="{{w.isOpen}}" hint-placeholder-val="{{false}}">
+                <div style="background: #FEF3C7; color: #422006; border-radius: 12px; padding: 10px 12px; font-size: 14px; line-height: 1.5">{{w.why}}</div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </sc-if>
+      </sc-if>
+    </div>
+
+    <nav class="nav" aria-label="Main">
+      <a href="Main.dc.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"></path></svg>Home</a>
+      <a href="Tests.dc.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"></path><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"></path></svg>Tests</a>
+      <a href="Study.dc.html" class="on"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 5h7a3 3 0 013 3v12a2 2 0 00-2-2H2z"></path><path d="M22 5h-7a3 3 0 00-3 3v12a2 2 0 012-2h8z"></path></svg>Study</a>
+      <a href="Progress.dc.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>Progress</a>
+    </nav>
+  </sc-if>
+
+  <sc-if value="{{readerOn}}" hint-placeholder-val="{{false}}">
+    <div style="{{rd.bandStyle}}">
+      <div style="display: flex; align-items: center; justify-content: space-between">
+        <button onClick="{{closeReader}}" aria-label="Back to library" style="width: 44px; height: 44px; border: 0; background: transparent; display: flex; align-items: center; justify-content: center; color: #fff; cursor: pointer">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+        </button>
+        <button onClick="{{shareReader}}" aria-label="Share as PDF" style="width: 44px; height: 44px; border: 0; border-radius: 12px; background: rgba(255,255,255,.16); color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5"></path><path d="M5 14v5a2 2 0 002 2h10a2 2 0 002-2v-5"></path></svg>
+        </button>
+      </div>
+      <div style="padding: 0 8px">
+        <div style="font-size: 13px; font-weight: 600; opacity: .85">{{rd.label}}</div>
+        <div style="font-size: 22px; font-weight: 800; line-height: 1.2">{{rd.title}}</div>
+      </div>
+    </div>
+    <div role="tablist" aria-label="Sections" style="display: flex; gap: 6px; padding: 10px 16px; background: #fff; border-bottom: 1px solid #E6E4F5; flex-wrap: wrap">
+      <sc-for list="{{rd.tabs}}" as="t" hint-placeholder-count="3">
+        <button role="tab" aria-selected="{{t.on}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.name}}</button>
+      </sc-for>
+    </div>
+    <div style="flex: 1; padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto">
+      <div style="font-size: 19px; font-weight: 800">{{rd.secTitle}}</div>
+      <sc-for list="{{rd.facts}}" as="f" hint-placeholder-count="3">
+        <div style="background: #fff; border-radius: 14px; padding: 12px 14px; font-size: 15px; line-height: 1.55; display: flex; gap: 10px"><span style="{{rd.dot}}"></span><span>{{f.text}}</span></div>
+      </sc-for>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 8px; padding: 12px 16px 26px; background: #fff; border-top: 1px solid #E6E4F5">
+      <button class="wide" onClick="{{rd.next}}" disabled="{{rd.atEnd}}" style="{{rd.nextStyle}}">{{rd.nextLabel}}</button>
+      <button class="wide" onClick="{{rd.quiz}}" style="{{rd.quizStyle}}">Quick check · 2 questions</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{quizOn}}" hint-placeholder-val="{{false}}">
+    <div style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: #1E1B4B; color: #fff">
+      <button onClick="{{stopQuiz}}" aria-label="Stop and go back" style="width: 44px; height: 44px; border: 0; border-radius: 12px; background: rgba(255,255,255,.12); color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+      </button>
+      <div style="flex: 1; min-width: 0">
+        <div style="font-size: 12px; color: #C7D2FE; font-weight: 600">{{qz.title}}</div>
+        <div style="font-size: 18px; font-weight: 800">{{qz.progress}}</div>
+      </div>
+    </div>
+    <sc-if value="{{qz.running}}" hint-placeholder-val="{{true}}">
+      <div style="flex: 1; padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto">
+        <span style="{{qz.tagStyle}}">{{qz.tag}}</span>
+        <div style="font-size: 17.5px; font-weight: 600; line-height: 1.45">{{qz.stem}}</div>
+        <sc-for list="{{qz.opts}}" as="o" hint-placeholder-count="4">
+          <button class="opt" onClick="{{o.pick}}" aria-pressed="{{o.on}}" style="{{o.style}}"><span class="key" style="{{o.keyStyle}}">{{o.k}}</span><span style="flex: 1">{{o.text}}</span></button>
+        </sc-for>
+        <sc-if value="{{qz.answered}}" hint-placeholder-val="{{false}}">
+          <div style="{{qz.fbStyle}}"><div style="font-weight: 800">{{qz.fbTitle}}</div><div style="font-size: 14px; line-height: 1.5">{{qz.why}}</div></div>
+        </sc-if>
+      </div>
+      <div style="padding: 12px 16px 26px; background: #fff; border-top: 1px solid #E6E4F5">
+        <button class="wide" onClick="{{qz.next}}" disabled="{{qz.waiting}}" style="{{qz.nextStyle}}">{{qz.nextLabel}}</button>
+      </div>
+    </sc-if>
+    <sc-if value="{{qz.finished}}" hint-placeholder-val="{{false}}">
+      <div style="flex: 1; padding: 28px 20px; display: flex; flex-direction: column; gap: 16px; align-items: center; text-align: center">
+        <div style="width: 120px; height: 120px; border-radius: 50%; background: #E0E7FF; display: flex; flex-direction: column; align-items: center; justify-content: center"><div style="font-size: 36px; font-weight: 800">{{qz.score}}</div><div style="font-size: 13px; color: #5B5A7A; font-weight: 600">of {{qz.total}} right</div></div>
+        <div style="font-size: 18px; font-weight: 800">{{qz.verdict}}</div>
+        <div style="font-size: 14.5px; color: #3F3D63; line-height: 1.5; max-width: 300px">{{qz.after}}</div>
+        <button class="wide" onClick="{{stopQuiz}}" style="background: #4338CA; color: #fff">Done</button>
+        <button class="wide" onClick="{{qz.again}}" style="background: #F1F0FA; color: #1E1B4B">Try again</button>
+      </div>
+    </sc-if>
+  </sc-if>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" style="position: absolute; left: 20px; right: 20px; bottom: 100px; background: #1E1B4B; color: #fff; border-radius: 14px; padding: 12px 16px; font-size: 14px; font-weight: 600; text-align: center">{{toast}}</div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    this.R = {
+      t5: { label: 'Core subject, topic 5', title: 'Anatomy & Physiology', band: '#BE185D', secs: [
+        ['Heart', ['First heart sound (S1): closure of the mitral and tricuspid valves; S2: aortic and pulmonary valves.', 'Cardiac output = stroke volume × heart rate, about 5 L/min at rest.', 'Baroreceptors in the carotid sinus and aortic arch correct a sudden rise in blood pressure within seconds.']],
+        ['Kidney & liver', ['GFR is about 125 mL/min and is measured best by inulin clearance.', 'PAH clearance measures renal plasma flow.', 'In adults, erythropoietin comes mainly from the kidney; albumin and clotting factors II, VII, IX, X from the liver.']],
+        ['Brain', ["Broca's area (areas 44, 45): motor speech; a lesion leaves understanding intact but speech non-fluent.", "Wernicke's area: understanding speech; a lesion gives fluent but meaningless speech."]]],
+        quiz: [
+          { stem: 'GFR is measured most accurately by the clearance of:', opts: ['Inulin', 'PAH', 'Glucose', 'Urea'], ans: 0, why: 'Inulin is filtered but neither reabsorbed nor secreted.' },
+          { stem: 'The first heart sound is produced by closure of the:', opts: ['Aortic and pulmonary valves', 'Mitral and tricuspid valves', 'Aortic valve only', 'Mitral and aortic valves'], ans: 1, why: 'S1 marks the start of ventricular systole.' }] },
+      t6: { label: 'Core subject, topic 6', title: 'Pathology & Diagnostics', band: '#4338CA', secs: [
+        ['Imaging', ['Blunting of the costophrenic angle on a chest X-ray suggests pleural effusion.', 'A gallstone on ultrasound is a bright (echogenic) focus with an acoustic shadow that moves with posture.']],
+        ['Blood tests', ['ESR is very high in multiple myeloma and tuberculosis, and low in polycythaemia and sickle cell disease.', 'ALT (SGPT) is the enzyme most specific for liver-cell injury.', 'High alkaline phosphatase with conjugated bilirubin suggests obstructive jaundice.']]],
+        quiz: [
+          { stem: 'Blunting of the costophrenic angle on a chest X-ray suggests:', opts: ['Pneumothorax', 'Pleural effusion', 'Lobar consolidation', 'Normal lung'], ans: 1, why: 'Fluid collects first in the costophrenic recess.' },
+          { stem: 'The serum enzyme most specific for liver-cell injury is:', opts: ['ALT (SGPT)', 'AST (SGOT)', 'Alkaline phosphatase', 'Creatine kinase'], ans: 0, why: 'ALT is found mainly in the liver.' }] },
+      t7: { label: 'Core subject, topic 7', title: 'Practice of Medicine', band: '#0F766E', secs: [
+        ['Gut', ['Irritable bowel syndrome: recurrent abdominal pain linked to defecation, with a change in stool form and no structural disease (Rome IV).', "Murphy's sign, a catch in breath when the right upper abdomen is pressed, points to acute cholecystitis."]],
+        ['Skin & eye', ['Urticaria with burning, stinging, oedematous wheals that are better from cold: Apis mellifica.', 'Measles with acrid tears and bland coryza: Euphrasia.']]],
+        quiz: [
+          { stem: 'Burning, stinging wheals that are better from cold applications call for:', opts: ['Rhus toxicodendron', 'Apis mellifica', 'Dulcamara', 'Sulphur'], ans: 1, why: 'Apis: oedematous, stinging wheals, thirstless, better from cold.' },
+          { stem: "Murphy's sign is positive in:", opts: ['Acute appendicitis', 'Acute cholecystitis', 'Acute pancreatitis', 'Peptic ulcer'], ans: 1, why: 'Inspiration stops as the inflamed gallbladder meets the examining hand.' }] },
+      t8: { label: 'Core subject, topic 8', title: 'Obs, Gynae & Paediatrics', band: '#B45309', secs: [
+        ['Pregnancy', ["Naegele's rule: expected date of delivery = first day of the last period + 9 months + 7 days.", 'Preeclampsia: blood pressure of 140/90 or more after 20 weeks, with proteinuria.']],
+        ['Gynaecology', ['PCOD (Rotterdam 2003) needs any 2 of 3: irregular or absent ovulation, excess androgen, polycystic ovaries on ultrasound.', 'PALM-COEIN classifies abnormal uterine bleeding: PALM causes are structural, COEIN causes are not.']],
+        ['Child health', ['Milestones: social smile 2 months, neck holding 3–4, sitting 6–8, walking 12–15 months.', 'At birth: BCG, OPV-0 and the Hepatitis B birth dose.']]],
+        quiz: [
+          { stem: 'If the last period began on 10 January, the expected date of delivery is about:', opts: ['3 October', '17 October', '10 October', '24 October'], ans: 1, why: '10 January + 9 months + 7 days = 17 October.' },
+          { stem: 'Under the Rotterdam criteria, PCOD is diagnosed when:', opts: ['all 3 features are present', 'any 2 of the 3 features are present', 'only ultrasound is abnormal', 'LH is raised'], ans: 1, why: 'Any 2 of 3, after other causes are excluded.' }] },
+      t10: { label: 'Core subject, topic 10', title: 'Community & Forensic Medicine', band: '#1D4ED8', secs: [
+        ['Epidemiology', ['Prevalence = incidence × mean duration.', 'Immunisation is primary prevention (specific protection); screening is secondary prevention.', 'Infant mortality rate: deaths under 1 year per 1,000 live births.']],
+        ['Environment', ['Chlorinated water should keep 0.5 mg/L of free chlorine after 1 hour of contact.', 'Biomedical waste: yellow for anatomical and soiled waste, red for recyclable plastics, white for sharps, blue for glass and metal implants.']],
+        ['Forensic', ['A hanging mark is oblique, high and incomplete; a strangulation mark is horizontal, low and complete.', 'Cherry-red post-mortem staining: carbon monoxide and cyanide.']]],
+        quiz: [
+          { stem: 'The infant mortality rate is expressed per:', opts: ['1,000 population', '1,000 live births', '1,00,000 live births', '1,000 children under five'], ans: 1, why: 'IMR uses live births as the denominator.' },
+          { stem: 'Discarded glass vials go into the:', opts: ['Yellow bag', 'Red bag', 'White container', 'Blue cardboard box'], ans: 3, why: 'Glass and metal implants go in the blue box.' }] },
+      gk: { label: 'General knowledge', title: 'GK Playbook', band: '#B45309', secs: [
+        ['Statehood', ['Goa was liberated from Portuguese rule on 19 December 1961 (Operation Vijay), after about 451 years.', 'In the Opinion Poll of 16 January 1967, Goans chose to stay separate from Maharashtra.', 'Goa became the 25th state of India on 30 May 1987.']],
+        ['Language & heritage', ['Konkani was added to the Eighth Schedule by the 71st Amendment (1992).', "The 'Churches and Convents of Goa' became a UNESCO World Heritage Site in 1986.", 'Dudhsagar falls are on the Mandovi; the gaur is the state animal.']]],
+        quiz: [
+          { stem: 'Goa attained statehood, becoming the 25th state of India, on:', opts: ['19 December 1961', '30 May 1987', '16 January 1967', '15 August 1947'], ans: 1, why: '19 December 1961 is Liberation Day; statehood came on 30 May 1987.' },
+          { stem: 'Konkani was added to the Eighth Schedule by the:', opts: ['42nd Amendment, 1976', '71st Amendment, 1992', '92nd Amendment, 2003', '56th Amendment, 1987'], ans: 1, why: 'The 71st Amendment (1992) added Konkani, Manipuri and Nepali.' }] },
+      comp: { label: 'English comprehension', title: 'Reading a passage', band: '#1D4ED8', secs: [
+        ['Method', ['Read the questions first, then the passage, so you know what to look for.', 'The main idea usually sits in the first and last lines of each paragraph.', '"According to the passage" means the answer is stated; "infer" or "suggests" means it is implied.']],
+        ['Traps', ['An option can be true in real life but not in the passage: reject it.', 'Options with extreme words such as always, never or all are usually wrong.']]],
+        quiz: [
+          { stem: 'A question that begins "It can be inferred that…" asks for something:', opts: ['stated word for word', 'implied but not stated', 'from your own knowledge', 'given in the title'], ans: 1, why: 'Inference questions ask what the passage implies.' },
+          { stem: 'An option says "always" where the passage says "usually". The option is most likely:', opts: ['correct', 'wrong', 'the main idea', 'irrelevant'], ans: 1, why: 'It overstates the passage.' }] },
+      gram: { label: 'English grammar', title: 'Grammar rules', band: '#6D28D9', secs: [
+        ['Agreement', ['With neither…nor and either…or, the verb agrees with the nearer subject.', 'Each, every and everyone take a singular verb.']],
+        ['Time words', ['"Since" goes with a point in time (since 2019); "for" with a length of time (for five years).']]],
+        quiz: [
+          { stem: 'Choose the correct sentence:', opts: ['Neither the doctor nor the nurses was present.', 'Neither the doctor nor the nurses were present.', 'Neither the doctor or the nurses were present.', 'Neither the doctor nor the nurses is present.'], ans: 1, why: 'The verb agrees with "nurses", the nearer subject.' },
+          { stem: 'He has been working in this hospital ___ 2019.', opts: ['for', 'since', 'from', 'by'], ans: 1, why: '2019 is a point in time.' }] }
+    };
+    this.W = [
+      { id: 'w1', sec: 'core', tag: 'Topic 9 · Surgery', src: 'Set 10, 19 Oct', stem: 'A puncture wound from a rusty nail is cold to touch, yet better from cold. The remedy is:', opts: ['Arnica montana', 'Ledum palustre', 'Hypericum perforatum', 'Calendula officinalis'], you: 0, ans: 1, why: 'Ledum: punctured wounds, cold to touch, better from cold. Arnica is for blunt bruising.' },
+      { id: 'w2', sec: 'core', tag: 'Topic 10 · Forensic', src: 'Set 9, 16 Oct', stem: 'Cherry-red post-mortem staining is seen in poisoning by:', opts: ['Arsenic', 'Carbon monoxide', 'Opium', 'Organophosphate'], you: 3, ans: 1, why: 'Carboxyhaemoglobin is bright red; cyanide gives a similar colour.' },
+      { id: 'w3', sec: 'core', tag: 'Topic 5 · Physiology', src: 'Set 8, 13 Oct', stem: 'GFR is measured most accurately by the clearance of:', opts: ['Inulin', 'PAH', 'Glucose', 'Urea'], you: 1, ans: 0, why: 'Inulin is filtered but neither reabsorbed nor secreted; PAH measures plasma flow.' },
+      { id: 'w4', sec: 'core', tag: 'Topic 8 · Gynaecology', src: 'Set 7, 18 Oct', stem: 'Under the Rotterdam criteria, PCOD is diagnosed when:', opts: ['all 3 features are present', 'any 2 of the 3 features are present', 'only ultrasound is abnormal', 'LH is raised'], you: 0, ans: 1, why: 'Any 2 of 3, after other causes are excluded.' },
+      { id: 'w5', sec: 'gk', tag: 'General knowledge', src: 'Set 6, 16 Oct', stem: 'Dudhsagar waterfalls are on which river?', opts: ['Zuari', 'Mandovi', 'Chapora', 'Sal'], you: 0, ans: 1, why: 'Dudhsagar falls are on the Mandovi, on the Goa–Karnataka border.' },
+      { id: 'w6', sec: 'gk', tag: 'General knowledge', src: 'Set 13, 20 Oct', stem: "The 'Churches and Convents of Goa' were inscribed as a UNESCO World Heritage Site in:", opts: ['1961', '1986', '1987', '2004'], you: 2, ans: 1, why: 'Inscribed in 1986; 1987 is the year Goa became a state.' },
+      { id: 'w7', sec: 'comp', tag: 'Comprehension', src: 'Set 9, 16 Oct', stem: 'Passage: "The clinic opens at 9; patients arriving after 11 are seen only in an emergency." A patient with a mild cough who arrives at 11:30 will:', opts: ['be seen at once', 'not be seen unless it is an emergency', 'be seen at 9', 'be sent to another clinic'], you: 0, ans: 1, why: 'After 11 only emergencies are seen, and a mild cough is not one.' },
+      { id: 'w8', sec: 'gram', tag: 'Grammar', src: 'Set 10, 19 Oct', stem: 'Choose the correct sentence:', opts: ['Neither the doctor nor the nurses was present.', 'Neither the doctor nor the nurses were present.', 'Neither the doctor or the nurses were present.', 'Neither the doctor nor the nurses is present.'], you: 0, ans: 1, why: 'The verb agrees with "nurses", the nearer subject.' },
+      { id: 'w9', sec: 'gram', tag: 'Grammar', src: 'English drill 1, 15 Oct', stem: 'He has been working in this hospital ___ 2019.', opts: ['for', 'since', 'from', 'by'], you: 0, ans: 1, why: '"Since" goes with a point in time; "for" with a length of time.' }
+    ];
+    this.state = { f: 'all', q: '', wf: 'all', open: {}, reader: null, sec: 0, quiz: null, toast: '' };
+  }
+  componentWillUnmount() { clearTimeout(this.t); }
+  flash(m) { this.setState({ toast: m }); clearTimeout(this.t); this.t = setTimeout(() => this.setState({ toast: '' }), 2200); }
+  startQuiz(title, qs, back) { this.setState({ quiz: { title, qs, i: 0, pick: null, score: 0, done: false, back } }); }
+  chip(on, accent) {
+    const a = accent || '#4338CA';
+    return 'min-height:44px;padding:0 15px;border-radius:999px;cursor:pointer;font:700 13.5px Plus Jakarta Sans,sans-serif;' + (on ? 'background:' + a + ';color:#fff;border:0' : 'background:#fff;color:#1E1B4B;border:1.5px solid #E6E4F5');
+  }
+  renderVals() {
+    const S = this.state, f = S.f, R = this.R;
+    const secColor = { core: ['#FCE7F3', '#9D174D'], gk: ['#FEF3C7', '#92400E'], comp: ['#DBEAFE', '#1E40AF'], gram: ['#EDE9FE', '#5B21B6'] };
+    const chips = [['all', 'All'], ['core', 'Core'], ['gk', 'GK'], ['comp', 'Comprehension'], ['gram', 'Grammar'], ['pdf', 'PDFs'], ['wrong', 'Revise incorrect · ' + this.W.length]].map(([id, name]) => ({
+      name, on: String(f === id), style: this.chip(f === id, id === 'wrong' ? '#EA580C' : null) + (id === 'wrong' && f !== id ? ';color:#9A3412;border-color:#FDBA74;background:#FFF7ED' : ''),
+      pick: () => this.setState({ f: id, q: '' })
+    }));
+    const open = id => () => this.setState({ reader: id, sec: 0 });
+    const tiles = [['t5', 'Topic 5', 'Anatomy & Physiology', '6 diagrams · read', '#FCE7F3', '#9D174D'], ['t6', 'Topic 6', 'Pathology & Diagnostics', 'read', '#E0E7FF', '#3730A3'], ['t7', 'Topic 7', 'Practice of Medicine', 'half read', '#CCFBF1', '#115E59'], ['t8', 'Topic 8', 'Obs, Gynae & Paeds', '4 diagrams · new', '#FEF3C7', '#92400E'], ['t9', 'Topic 9', 'Surgery, ENT & Eye', 'continue · 40%', '#EDE9FE', '#5B21B6'], ['t10', 'Topic 10', 'Community & Forensic', '3 diagrams · new', '#DBEAFE', '#1E40AF']];
+    const coreTiles = tiles.map(([id, label, title, meta, bg, fg]) => ({ label, title, meta, isLink: id === 't9', isBtn: id !== 't9', open: open(id),
+      style: 'background:' + bg + ';color:#1E1B4B' + (id === 't9' ? ';outline:2.5px solid #7C3AED' : ''), labStyle: 'font-size:12.5px;font-weight:700;color:' + fg }));
+    const idx = [
+      ['Ledum palustre: puncture wounds', 'Topic 9 notes', 'T9', secColor.core, 't9', 'ledum puncture nail bite wound'],
+      ['Red eye: conjunctivitis, glaucoma, iritis', 'Topic 9 notes', 'T9', secColor.core, 't9', 'red eye glaucoma iritis conjunctivitis'],
+      ['Rule of nines for burns', 'Topic 9 notes', 'T9', secColor.core, 't9', 'burns rule nines'],
+      ['GFR and inulin clearance', 'Topic 5 · Kidney & liver', 'T5', secColor.core, 't5', 'gfr inulin kidney pah'],
+      ["Broca's and Wernicke's areas", 'Topic 5 · Brain', 'T5', secColor.core, 't5', 'broca wernicke speech aphasia'],
+      ['ESR, ALT, alkaline phosphatase', 'Topic 6 · Blood tests', 'T6', secColor.core, 't6', 'esr alt alp sgpt liver jaundice'],
+      ['Apis urticaria, Euphrasia measles', 'Topic 7 · Skin & eye', 'T7', secColor.core, 't7', 'apis urticaria euphrasia measles'],
+      ['PCOD: Rotterdam criteria', 'Topic 8 · Gynaecology', 'T8', secColor.core, 't8', 'pcod pcos rotterdam ovary'],
+      ['PALM-COEIN: abnormal uterine bleeding', 'Topic 8 · Gynaecology', 'T8', secColor.core, 't8', 'palm coein aub bleeding fibroid'],
+      ['Milestones: sit, stand, walk', 'Topic 8 · Child health', 'T8', secColor.core, 't8', 'milestones sit walk child bcg'],
+      ['Infant mortality rate (IMR)', 'Topic 10 · Epidemiology', 'T10', secColor.core, 't10', 'imr infant mortality prevalence incidence'],
+      ['Biomedical waste colour codes', 'Topic 10 · Environment', 'T10', secColor.core, 't10', 'biomedical waste bmw colour yellow red chlorine'],
+      ['Hanging vs strangulation', 'Topic 10 · Forensic', 'T10', secColor.core, 't10', 'hanging strangulation asphyxia ligature'],
+      ['Goa statehood and liberation', 'GK Playbook · Statehood', 'GK', secColor.gk, 'gk', 'goa statehood liberation 1961 1987 opinion poll operation vijay'],
+      ['Konkani, UNESCO churches, Dudhsagar', 'GK Playbook · Language & heritage', 'GK', secColor.gk, 'gk', 'konkani unesco churches convents dudhsagar mandovi gaur heritage'],
+      ['Inference questions', 'Reading a passage', 'Rc', secColor.comp, 'comp', 'inference main idea passage comprehension'],
+      ['Subject-verb agreement', 'Grammar rules', 'Gr', secColor.gram, 'gram', 'grammar agreement neither nor verb since for']
+    ];
+    const q = S.q.trim().toLowerCase();
+    const results = q ? idx.filter(x => (x[0] + ' ' + x[5]).toLowerCase().indexOf(q) >= 0).map(x => ({ title: x[0], where: x[1], short: x[2], icoStyle: 'background:' + x[3][0] + ';color:' + x[3][1], isLink: x[4] === 't9', isBtn: x[4] !== 't9', open: open(x[4]) })) : [];
+    const s = !!q;
+    const pdfList = [['Practice Sets 1–25', 'All 25 mock tests with answers'], ['Topic 8 · Obs, Gynae & Paeds', '20 pages · 0.9 MB'], ['Topic 9 · Surgery, ENT & Eye', 'Notes, diagrams, 20 MCQs'], ['Topic 10 · Community & Forensic', 'Notes, diagrams, 20 MCQs'], ['GK drills 1–6', '150 questions with answers'], ['Comprehension drill', '5 passages with answers'], ['Grammar drills', '75 questions with answers']];
+    const pdfs = pdfList.map(([name, meta]) => ({ name, meta, aria: 'Share ' + name + ' as PDF', share: () => this.flash(name + ' PDF ready · choose WhatsApp to send') }));
+    const wNames = { all: 'All', core: 'Core', gk: 'GK', comp: 'Comprehension', gram: 'Grammar', pdf: 'PDFs' };
+    const inSec = id => this.W.filter(w => id === 'all' || w.sec === id);
+    const wchips = Object.keys(wNames).map(id => ({ name: wNames[id] + (id === 'pdf' ? '' : ' ' + inSec(id).length), on: String(S.wf === id), style: 'min-height:44px;padding:0 12px;border-radius:12px;cursor:pointer;font:700 13px Plus Jakarta Sans,sans-serif;' + (S.wf === id ? 'background:#FFEDD5;color:#9A3412;border:2px solid #EA580C' : 'background:transparent;color:#5B5A7A;border:2px solid transparent'), pick: () => this.setState({ wf: id }) }));
+    const L = 'ABCD';
+    const wl = S.wf === 'pdf' ? [] : inSec(S.wf);
+    const wrongs = wl.map(w => ({ tag: w.tag, src: w.src, stem: w.stem, you: L[w.you] + '. ' + w.opts[w.you], right: L[w.ans] + '. ' + w.opts[w.ans], why: w.why,
+      tagStyle: 'font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:' + secColor[w.sec][0] + ';color:' + secColor[w.sec][1],
+      isOpen: !!S.open[w.id], open: String(!!S.open[w.id]), toggleLabel: S.open[w.id] ? 'Hide explanation' : 'Show why',
+      toggle: () => { const o = Object.assign({}, S.open); o[w.id] = !o[w.id]; this.setState({ open: o }); } }));
+    const wpdfs = ['all', 'core', 'gk', 'comp', 'gram'].map(id => { const n = inSec(id).length, name = 'Incorrect · ' + wNames[id]; return { name, meta: n + ' questions with answers and reasons', aria: 'Share ' + name + ' as PDF', share: () => this.flash('PDF of ' + n + ' incorrect questions ready · choose WhatsApp to send') }; });
+    let rd = {};
+    if (S.reader) {
+      const it = R[S.reader], sec = it.secs[S.sec], last = S.sec === it.secs.length - 1;
+      rd = { label: it.label, title: it.title, secTitle: sec[0], facts: sec[1].map(text => ({ text })),
+        bandStyle: 'background:' + it.band + ';color:#fff;padding:12px 12px 16px;display:flex;flex-direction:column;gap:8px',
+        dot: 'width:8px;height:8px;border-radius:50%;flex:none;margin-top:8px;background:' + it.band,
+        tabs: it.secs.map((x, i) => ({ name: x[0], on: String(S.sec === i), style: 'min-height:44px;padding:0 14px;border-radius:999px;border:0;cursor:pointer;font:700 13px Plus Jakarta Sans,sans-serif;' + (S.sec === i ? 'background:' + it.band + ';color:#fff' : 'background:#F1F0FA;color:#5B5A7A'), pick: () => this.setState({ sec: i }) })),
+        atEnd: last, nextLabel: last ? 'All read' : 'Next section',
+        nextStyle: last ? 'background:#DCFCE7;color:#166534;cursor:default' : 'background:#F1F0FA;color:#1E1B4B',
+        next: () => { if (!last) this.setState({ sec: S.sec + 1 }); },
+        quizStyle: 'background:' + it.band + ';color:#fff',
+        quiz: () => this.startQuiz(it.title + ' · quick check', it.quiz.map(x => Object.assign({ tag: it.label }, x)), 'reader') };
+    }
+    let qz = {};
+    const Q = S.quiz;
+    if (Q) {
+      const n = Q.qs.length, cur = Q.qs[Math.min(Q.i, n - 1)], answered = Q.pick != null;
+      const tagC = cur.sec ? secColor[cur.sec] : ['#E0E7FF', '#3730A3'];
+      qz = { title: Q.title, running: !Q.done, finished: Q.done, total: n, score: Q.score,
+        progress: Q.done ? 'Finished' : 'Question ' + (Q.i + 1) + ' of ' + n,
+        tag: cur.tag, tagStyle: 'align-self:flex-start;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:' + tagC[0] + ';color:' + tagC[1],
+        stem: cur.stem, answered, why: cur.why,
+        fbTitle: Q.pick === cur.ans ? 'Correct' : 'Not quite · answer ' + L[cur.ans],
+        fbStyle: 'border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;' + (Q.pick === cur.ans ? 'background:#DCFCE7;color:#14532D' : 'background:#FEF3C7;color:#422006'),
+        opts: cur.opts.map((text, i) => {
+          let style = 'background:#fff;border:2px solid #E6E4F5', keyStyle = 'background:#F1F0FA;color:#5B5A7A';
+          if (answered && i === cur.ans) { style = 'background:#DCFCE7;border:2px solid #16A34A'; keyStyle = 'background:#16A34A;color:#fff'; }
+          else if (answered && i === Q.pick) { style = 'background:#FEE2E2;border:2px solid #DC2626'; keyStyle = 'background:#DC2626;color:#fff'; }
+          return { k: L[i], text, on: String(Q.pick === i), style, keyStyle, pick: () => { if (answered) return; this.setState({ quiz: Object.assign({}, Q, { pick: i, score: Q.score + (i === cur.ans ? 1 : 0) }) }); } };
+        }),
+        waiting: !answered, nextLabel: !answered ? 'Pick an answer' : (Q.i === n - 1 ? 'See score' : 'Next question'),
+        nextStyle: !answered ? 'background:#E6E4F5;color:#6B6990;cursor:default' : 'background:#4338CA;color:#fff',
+        next: () => { if (!answered) return; if (Q.i === n - 1) this.setState({ quiz: Object.assign({}, Q, { done: true }) }); else this.setState({ quiz: Object.assign({}, Q, { i: Q.i + 1, pick: null }) }); },
+        verdict: Q.score === n ? 'All correct' : Q.score === 0 ? 'None right this time' : 'Some still to learn',
+        after: Q.back === 'wrong' ? (Q.score ? Q.score + ' question' + (Q.score === 1 ? '' : 's') + ' will leave your incorrect list.' : 'They stay on your incorrect list for the next round.') : 'Read the section again for anything you missed.',
+        again: () => this.startQuiz(Q.title, Q.qs, Q.back) };
+    }
+    const retestQs = wl.map(w => Object.assign({}, w));
+    return {
+      libOn: !S.reader && !S.quiz, readerOn: !!S.reader && !S.quiz, quizOn: !!S.quiz,
+      chips, coreTiles, pdfs, wchips, wrongs, wpdfs, rd, qz, toast: S.toast,
+      q: S.q, searching: s, results, noResults: s && !results.length,
+      resultLabel: results.length + (results.length === 1 ? ' match' : ' matches'),
+      onQ: (e) => this.setState({ q: e.target.value }),
+      showCore: !s && (f === 'all' || f === 'core'),
+      showGk: !s && (f === 'all' || f === 'gk'),
+      showComp: !s && (f === 'all' || f === 'comp'),
+      showGram: !s && (f === 'all' || f === 'gram'),
+      showPdf: !s && f === 'pdf',
+      showWrong: !s && f === 'wrong', wPdf: S.wf === 'pdf', wList: S.wf !== 'pdf',
+      retestLabel: 'Retest these ' + wl.length + ' questions',
+      retestWrong: () => this.startQuiz('Revise incorrect · ' + wNames[S.wf], retestQs, 'wrong'),
+      openGk: open('gk'), openComp: open('comp'), openGram: open('gram'),
+      closeReader: () => this.setState({ reader: null }),
+      shareReader: () => this.flash((S.reader ? R[S.reader].title : '') + ' PDF ready · choose WhatsApp to send'),
+      stopQuiz: () => this.setState({ quiz: null })
+    };
+  }
+}
+</script>
+</body>
+</html>

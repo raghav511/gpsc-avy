@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Topic notes</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#4338CA}a:hover{color:#312E81}
+.scr{width:390px;height:844px;box-sizing:border-box;background:#F5F4FF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#1E1B4B;display:flex;flex-direction:column;overflow:hidden;position:relative}
+.hb{width:44px;height:44px;border:0;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.rm{display:flex;align-items:center;gap:10px}
+.rm b{font-weight:700}
+.dot{width:10px;height:10px;border-radius:3px;flex:none}
+.bb{display:flex;align-items:center;justify-content:center;min-height:50px;border-radius:14px;font:700 15px 'Plus Jakarta Sans',sans-serif;text-decoration:none;border:0;cursor:pointer}
+</style>
+</helmet>
+<div class="scr">
+  <div style="background: #5B21B6; color: #fff; padding: 12px 12px 16px; display: flex; flex-direction: column; gap: 10px">
+    <div style="display: flex; align-items: center; justify-content: space-between">
+      <a href="Study.dc.html" aria-label="Back to library" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #fff">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+      </a>
+      <div style="display: flex; gap: 6px">
+        <button class="hb" onClick="{{share}}" aria-label="Share topic as PDF">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5"></path><path d="M5 14v5a2 2 0 002 2h10a2 2 0 002-2v-5"></path></svg>
+        </button>
+        <button class="hb" onClick="{{toggleSize}}" aria-label="{{sizeAria}}" aria-pressed="{{big}}" style="{{sizeBtn}}">Aa</button>
+      </div>
+    </div>
+    <div style="padding: 0 8px">
+      <div style="font-size: 12px; font-weight: 800; color: #DDD6FE">Core subject, topic 9</div>
+      <div style="font-size: 22px; font-weight: 800; line-height: 1.2">Surgery, ENT, Eye &amp; First Aid</div>
+      <div style="display: flex; align-items: center; gap: 8px; margin-top: 10px">
+        <div style="flex: 1; height: 6px; border-radius: 3px; background: rgba(255,255,255,.2)"><div style="{{readBar}}"></div></div>
+        <span style="font-size: 12px; font-weight: 700; color: #DDD6FE">{{readPct}}</span>
+      </div>
+    </div>
+  </div>
+  <div role="tablist" aria-label="Sections" style="display: flex; gap: 6px; padding: 10px 16px; background: #fff; border-bottom: 1px solid #E6E4F5; flex-wrap: wrap">
+    <sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+      <button role="tab" aria-selected="{{t.on}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.name}}</button>
+    </sc-for>
+  </div>
+
+  <div style="{{bodyStyle}}">
+    <sc-if value="{{tab1}}" hint-placeholder-val="{{false}}">
+      <div style="font-size: 1.2em; font-weight: 800">Wounds, ulcers, shock and burns</div>
+      <div style="background: #fff; border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 8px">
+        <div style="font-size: 13px; font-weight: 700; color: #3F3D63">Rule of nines, adult</div>
+        <div class="rm"><span class="dot" style="background: #2563EB"></span><span style="flex: 1">Head and neck</span><b>9%</b></div>
+        <div class="rm"><span class="dot" style="background: #0D9488"></span><span style="flex: 1">Each upper limb</span><b>9%</b></div>
+        <div class="rm"><span class="dot" style="background: #EA580C"></span><span style="flex: 1">Front / back of trunk</span><b>18% each</b></div>
+        <div class="rm"><span class="dot" style="background: #1E3A8A"></span><span style="flex: 1">Each lower limb</span><b>18%</b></div>
+        <div class="rm"><span class="dot" style="background: #9CA3AF"></span><span style="flex: 1">Perineum</span><b>1%</b></div>
+      </div>
+      <div style="line-height: 1.6">The patient's palm with fingers is about <b>1%</b> of the body. Children have a larger head: use the Lund and Browder chart.</div>
+    </sc-if>
+    <sc-if value="{{tab2}}" hint-placeholder-val="{{true}}">
+      <div style="font-size: 1.2em; font-weight: 800">Pick the remedy by the tissue injured</div>
+      <div style="background: #fff; border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 8px">
+        <div class="rm"><span class="dot" style="background: #2563EB"></span><span style="flex: 1">Bruise, blunt injury</span><b>Arnica</b></div>
+        <div class="rm"><span class="dot" style="background: #2563EB"></span><span style="flex: 1">Nerve-rich parts</span><b>Hypericum</b></div>
+        <div class="rm"><span class="dot" style="background: #2563EB"></span><span style="flex: 1">Puncture, bites</span><b>Ledum</b></div>
+        <div class="rm"><span class="dot" style="background: #2563EB"></span><span style="flex: 1">Torn open wound</span><b>Calendula</b></div>
+        <div class="rm"><span class="dot" style="background: #EA580C"></span><span style="flex: 1">Clean surgical cut</span><b>Staphysagria</b></div>
+        <div class="rm"><span class="dot" style="background: #EA580C"></span><span style="flex: 1">Bone, fracture</span><b>Symphytum</b></div>
+        <div class="rm"><span class="dot" style="background: #EA580C"></span><span style="flex: 1">Tendon, periosteum</span><b>Ruta</b></div>
+        <div class="rm"><span class="dot" style="background: #EA580C"></span><span style="flex: 1">Deep soft tissue</span><b>Bellis perennis</b></div>
+      </div>
+      <div style="line-height: 1.6">Match the tissue first: a nail puncture is <b>Ledum</b>, a crushed fingertip is <b>Hypericum</b>, a fracture slow to unite is <b>Symphytum</b>.</div>
+      <div style="background: #FEF3C7; border-radius: 16px; padding: 12px 14px; line-height: 1.5; color: #422006"><b>Exam tip:</b> Ledum wounds are cold to touch yet better from cold.</div>
+    </sc-if>
+    <sc-if value="{{tab3}}" hint-placeholder-val="{{false}}">
+      <div style="font-size: 1.2em; font-weight: 800">Telling the red eyes apart</div>
+      <div style="background: #fff; border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+        <div><b>Conjunctivitis</b><div style="color: #5B5A7A">Gritty, discharge, normal pupil and vision · Euphrasia</div></div>
+        <div><b>Acute glaucoma</b><div style="color: #5B5A7A">Severe pain, haloes, fixed mid-dilated pupil · refer urgently</div></div>
+        <div><b>Acute iritis</b><div style="color: #5B5A7A">Photophobia, small irregular pupil · Merc corr, Rhus tox</div></div>
+      </div>
+      <div style="background: #FEF3C7; border-radius: 16px; padding: 12px 14px; line-height: 1.5; color: #422006"><b>Exam tip:</b> a red eye with a fixed mid-dilated pupil is glaucoma until proved otherwise.</div>
+    </sc-if>
+    <sc-if value="{{tab4}}" hint-placeholder-val="{{false}}">
+      <div style="font-size: 1.2em; font-weight: 800">Rapid revision</div>
+      <div style="background: #fff; border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 8px; line-height: 1.5">
+        <div>1. Rule of nines: head 9, arm 9, trunk 18+18, leg 18, perineum 1.</div>
+        <div>2. Puncture wound, cold to touch: <b>Ledum</b>.</div>
+        <div>3. Fracture not uniting: <b>Symphytum</b>.</div>
+        <div>4. Clean surgical incision: <b>Staphysagria</b>.</div>
+        <div>5. Fixed mid-dilated pupil + pain: acute glaucoma.</div>
+      </div>
+      <a href="Quiz9.dc.html" class="bb" style="background: #EDE9FE; color: #5B21B6">Try the 20 practice MCQs</a>
+    </sc-if>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 8px; padding: 12px 16px 26px; background: #fff; border-top: 1px solid #E6E4F5">
+    <button class="bb" onClick="{{nextTab}}" disabled="{{atEnd}}" style="{{nextStyle}}">{{nextLabel}}</button>
+    <a href="Quiz9.dc.html" class="bb" style="background: #5B21B6; color: #fff">Quiz me on Topic 9</a>
+  </div>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" style="position: absolute; left: 20px; right: 20px; bottom: 100px; background: #1E1B4B; color: #fff; border-radius: 14px; padding: 12px 16px; font-size: 14px; font-weight: 600; text-align: center">{{toast}}</div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { tab: 1, big: false, toast: '' }; }
+  renderVals() {
+    const S = this.state;
+    const names = ['9.1 General', '9.2 Trauma', '9.3 ENT & Eye', 'Revise'];
+    const tabs = names.map((name, i) => ({
+      name, on: String(S.tab === i),
+      style: 'min-height:44px;padding:0 14px;border-radius:999px;border:0;cursor:pointer;font:700 13px Plus Jakarta Sans,sans-serif;' + (S.tab === i ? 'background:#5B21B6;color:#fff' : 'background:#F1F0FA;color:#5B5A7A'),
+      pick: () => this.setState({ tab: i })
+    }));
+    const pct = [25, 50, 75, 100][S.tab];
+    const last = S.tab === names.length - 1;
+    return {
+      tabs, tab1: S.tab === 0, tab2: S.tab === 1, tab3: S.tab === 2, tab4: S.tab === 3,
+      big: String(S.big),
+      sizeAria: S.big ? 'Use normal text size' : 'Use larger text',
+      sizeBtn: S.big ? 'background:#FBBF24;color:#422006;font:800 15px Plus Jakarta Sans,sans-serif' : 'font:800 15px Plus Jakarta Sans,sans-serif',
+      bodyStyle: 'flex:1;padding:16px 20px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;font-size:' + (S.big ? '17.5px' : '15px'),
+      readBar: 'height:6px;border-radius:3px;background:#FBBF24;width:' + pct + '%',
+      readPct: pct + '% read',
+      atEnd: last,
+      nextLabel: last ? 'All read' : 'Next: ' + names[S.tab + 1].split(' ')[0],
+      nextStyle: last ? 'background:#DCFCE7;color:#166534;cursor:default' : 'background:#F1F0FA;color:#1E1B4B',
+      nextTab: () => { if (!last) this.setState({ tab: S.tab + 1 }); },
+      toast: S.toast,
+      toggleSize: () => this.setState({ big: !S.big }),
+      share: () => { this.setState({ toast: 'Topic 9 PDF ready · choose WhatsApp to send' }); clearTimeout(this.t); this.t = setTimeout(() => this.setState({ toast: '' }), 2200); }
+    };
+  }
+}
+</script>
+</body>
+</html>
