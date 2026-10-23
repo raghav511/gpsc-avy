@@ -1,5 +1,5 @@
 // GPSCavy service worker. The version is stamped by tools/build.py from a hash of the shell and data files.
-const V = 'gpscavy-c427c7ec6d';
+const V = 'gpscavy-458923630e';
 const SHELL = ['./', 'index.html', 'js/app.js', 'js/core.js', 'js/runner.js', 'js/study.js', 'manifest.webmanifest',
   'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png', 'fonts/jakarta-latin.woff2', 'fonts/inter-latin.woff2',
   'data/index.json', 'data/meta.json', 'data/keys.json'];
@@ -35,7 +35,7 @@ self.addEventListener('fetch', e => {
   }
   // shell files: cache first (versioned); data files: stale-while-revalidate
   e.respondWith(caches.open(V).then(c => c.match(req, { ignoreSearch: true }).then(hit => {
-    const net = fetch(req).then(res => { if (res.ok && res.type === 'basic') c.put(req, res.clone()); return res; });
+    const net = fetch(new Request(req, { cache: 'no-cache' })).then(res => { if (res.ok && res.type === 'basic') c.put(req, res.clone()); return res; });
     if (hit) { if (path.startsWith('data/')) net.catch(() => { }); return hit; }
     return net;
   })));

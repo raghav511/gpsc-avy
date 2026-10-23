@@ -182,7 +182,7 @@ function homeScreen() {
   const tnames = { 5: 'Anatomy & Physiology', 6: 'Pathology', 7: 'Practice of Medicine', 8: 'Obs, Gynae & Paeds', 9: 'Surgery', 10: 'Community & Forensic' };
   const dl = daysLeft();
   app.innerHTML =
-    '<header class="hhead"><div class="brand"><span class="logo" aria-hidden="true">G</span><span><b>GPSCavy</b><small>Homoeopathic Physician · CBRT</small></span></div><div class="hact">' + syncBtn() + '<a class="ib white" href="#/search" aria-label="Search questions, notes and sets">' + ICON.search + '</a></div></header>' +
+    '<header class="hhead"><div class="brand"><span class="logo" aria-hidden="true">G</span><span><b>GPSCavy</b><small>Homoeopathic Physician · CBRT</small></span></div><div class="hact"><div class="hbtns"><button type="button" class="updb" data-act="update" aria-label="Update app">' + UPD_ICON + '<span>Update app</span></button>' + syncBtn() + '</div><a class="ib white" href="#/search" aria-label="Search questions, notes and sets">' + ICON.search + '</a></div></header>' +
     '<main class="pad stack home">' +
     '<section class="hero"><div><p class="hk">Exam on Sunday, 1 November</p><p class="hd">' + (dl === 0 ? 'Exam day' : dl + (dl === 1 ? ' day left' : ' days left')) + '</p><p class="hs">60 marks · 75 minutes · 5 sections</p></div>' +
     '<a class="badge" href="#/progress" aria-label="Last score ' + (last ? last.score : '–') + ' of ' + (last ? last.total : 60) + ', see progress"><small>Last score</small><b>' + (last ? last.score : '–') + '</b><small>of ' + (last ? last.total : 60) + '</small></a></section>' +
@@ -223,6 +223,7 @@ document.addEventListener('click', e => {
   if (act === 'down') openDownload();
   else if (act === 'up') openUpload();
   else if (act === 'sync') openSync();
+  else if (act === 'update') updateApp(b);
   else if (act === 'other') openOther();
 });
 
@@ -694,6 +695,33 @@ function openSyncSetup() {
 }
 export function openOther() { openDownload(); }
 
+// ---------- Update app: fetch the newest version now ----------
+let swUpdating = false;
+const UPD_ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>';
+const waitInstalled = w => new Promise(r => { const f = () => { if (w.state !== 'installing') { w.removeEventListener('statechange', f); r(); } }; w.addEventListener('statechange', f); f(); });
+export async function updateApp(btn) {
+  const busy = on => { if (btn) { btn.classList.toggle('busy', on); btn.disabled = on; } };
+  if (!('serviceWorker' in navigator) || location.protocol === 'file:') { location.reload(); return; }
+  busy(true);
+  try {
+    const reg = await navigator.serviceWorker.getRegistration();
+    if (!reg) { location.reload(); return; }
+    await reg.update();
+    let w = reg.installing || reg.waiting;
+    if (!w) { busy(false); toast('GPSCavy is up to date.'); return; }
+    toast('Updating GPSCavy…', null, 6000);
+    await waitInstalled(w);
+    w = reg.waiting || w;
+    swUpdating = true;
+    if (!navigator.serviceWorker.controller || w.state === 'activated') { location.reload(); return; }
+    w.postMessage('skipWaiting');
+    setTimeout(() => location.reload(), 4000); // in case the switch-over event is missed
+  } catch (e) {
+    busy(false);
+    toast(navigator.onLine === false ? 'You are offline. Connect to the internet and tap Update app again.' : 'Could not check for updates just now. Try again in a minute.', null, 5000);
+  }
+}
+
 // ---------- boot ----------
 async function boot() {
   loadAttempts();
@@ -731,14 +759,15 @@ async function boot() {
   window.addEventListener('online', () => { if (settings.syncUrl) syncNow(true); });
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
     // Updates apply by themselves: the new version takes over and the app reloads, never in the middle of a test.
-    const offer = w => { if (!navigator.serviceWorker.controller) return; const go = () => { if (document.body.dataset.screen === 'runner' || sheetOpen()) return setTimeout(go, 15000); updating = true; w.postMessage('skipWaiting'); }; go(); };
-    let updating = false;
-    navigator.serviceWorker.addEventListener('controllerchange', () => { if (updating) location.reload(); });
+    const offer = w => { if (!navigator.serviceWorker.controller) return; const go = () => { if (document.body.dataset.screen === 'runner' || sheetOpen()) return setTimeout(go, 15000); swUpdating = true; w.postMessage('skipWaiting'); }; go(); };
+    navigator.serviceWorker.addEventListener('controllerchange', () => { if (swUpdating) location.reload(); });
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') navigator.serviceWorker.getRegistration().then(r => r && r.update()).catch(() => { }); });
-    window.addEventListener('load', () => idle(() => navigator.serviceWorker.register('sw.js').then(reg => {
+    // Register after the first paint. boot() awaits data first, so the load event has often fired already.
+    const regSW = () => idle(() => navigator.serviceWorker.register('sw.js').then(reg => {
       if (reg.waiting) offer(reg.waiting);
       reg.addEventListener('updatefound', () => { const w = reg.installing; if (w) w.addEventListener('statechange', () => { if (w.state === 'installed') offer(w); }); });
-    }).catch(() => { }), 3000));
+    }).catch(() => { }), 3000);
+    if (document.readyState === 'complete') regSW(); else window.addEventListener('load', regSW, { once: true });
   }
   if (window.__gpscTest) window.__gpsc = { api, progressFile, planMerge, applyMerge, H: () => H };
 }

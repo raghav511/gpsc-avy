@@ -39,4 +39,6 @@ Run `tools/build.py` after any change to `content/`, `js/` or `index.html`, so t
 - The app also syncs by itself when it opens, 15 s after each test (after the Undo window) and when you leave it.
 - The hub is a small Google Apps Script web app you own: `tools/sync-hub/Code.gs` (paste your Drive file and folder ids). Each device is connected once with the web app's `/exec` link.
 
-**Updates** apply by themselves: a new version takes over the next time the app is opened or brought back, never in the middle of a test.
+**Updates** apply by themselves: a new version takes over the next time the app is opened or brought back, never in the middle of a test. To get it straight away, tap **Update app** (top right on Home, above Sync progress). Progress is kept on the device and is never touched by an update.
+
+When changing the app, run `python3 tools/build.py` before pushing: it stamps a new service-worker version, which is how phones and iPads notice the update.
