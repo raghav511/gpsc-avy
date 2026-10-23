@@ -512,7 +512,7 @@ export function progressFile() {
   const cs = Object.values(customs()).filter(c => c.saved);
   return {
     format: 'gpsc-cbrt-progress', version: 1, exportedAt: new Date().toISOString(), exportedFrom: 'gpscavy-app',
-    note: 'GPSC CBRT progress. Open the GPSC CBRT Mock Exam page or the GPSCavy app and choose Upload progress.',
+    note: 'GPSC CBRT progress. Open the practice app and choose Upload progress.',
     summary: { attempts: H.length, best },
     attempts: H.map(a => { const o = { id: a.id, set: a.set, setName: a.setName, score: a.score, total: a.total, wrong: a.wrong, skipped: a.skipped, usedMs: a.usedMs, auto: a.auto, submittedAt: a.submittedAt, answers: a.answers };
       if (a.flags) o.flags = a.flags; if (a.mode) o.mode = a.mode; if (a.set.startsWith('custom-')) o.def = a.def || findDef(a.set); return o; }),

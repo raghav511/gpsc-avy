@@ -53,8 +53,7 @@ function doc(ts, title, sub) {
   const toc = ts.length > 1 ? '<div class="tc">' + ts.map(t => '<div>Topic ' + t + ' · ' + esc(TITLES[t]) + '</div>').join('') + '</div>' : '';
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><base href="${BASE}"><title>${esc(title)}</title><style>${css}${PRINT}</style></head>
 <body data-screen="print"><div id="app">
-<section class="cover"><span class="k">GPSC CBRT · Homoeopathic Physician · Core</span><h1>${esc(title)}</h1><p>${esc(sub)}</p>${toc}
-<p class="b">Made with GPSCavy · raghav511.github.io/gpsc-avy · ${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</p></section>
+<section class="cover"><span class="k">GPSC CBRT · Homoeopathic Physician · Core</span><h1>${esc(title)}</h1><p>${esc(sub)}</p>${toc}</section>
 ${ts.map(t => `<section class="topic"><h1 class="thead">Topic ${t}: ${esc(TITLES[t])}</h1><main class="notes" style="--fs:1">${notesOf(t)}</main></section>`).join('\n')}
 </div></body></html>`;
 }
@@ -62,7 +61,7 @@ ${ts.map(t => `<section class="topic"><h1 class="thead">Topic ${t}: ${esc(TITLES
 const browser = await PW.chromium.launch(fs.existsSync('/opt/pw-browsers/chromium') ? { executablePath: '/opt/pw-browsers/chromium' } : {});
 const page = await browser.newPage();
 await page.emulateMedia({ colorScheme: 'light', media: 'print' });
-const out = { hash: digest, made: new Date().toISOString(), files: {} };
+const out = { hash: digest, files: {} };
 async function print(ts, file, title, sub) {
   await page.setContent(doc(ts, title, sub), { waitUntil: 'load' });
   await page.evaluate(async () => {
@@ -74,7 +73,7 @@ async function print(ts, file, title, sub) {
   if (bad.length) throw new Error('pictures did not load: ' + bad.join(', '));
   await page.pdf({ path: path.join(OUT, file), format: 'A4', printBackground: true, preferCSSPageSize: true, displayHeaderFooter: true,
     headerTemplate: '<span></span>',
-    footerTemplate: `<div style="font:8px sans-serif;color:#888;width:100%;padding:0 12mm;display:flex;justify-content:space-between"><span>${esc(title)} · GPSCavy</span><span><span class="pageNumber"></span> / <span class="totalPages"></span></span></div>` });
+    footerTemplate: `<div style="font:8px sans-serif;color:#888;width:100%;padding:0 12mm;display:flex;justify-content:space-between"><span>${esc(title)}</span><span><span class="pageNumber"></span> / <span class="totalPages"></span></span></div>` });
   // squeeze the file (about 15% smaller) when qpdf is installed
   try { const { execFileSync } = await import('node:child_process'); const f = path.join(OUT, file); execFileSync('qpdf', ['--object-streams=generate', '--recompress-flate', '--compression-level=9', f, f + '.tmp']); fs.renameSync(f + '.tmp', f); } catch (e) { }
   const kb = Math.round(fs.statSync(path.join(OUT, file)).size / 1024);
@@ -85,3 +84,5 @@ for (const t of topics) await print([t], FILE(t), 'Topic ' + t + ': ' + TITLES[t
 await print(topics, 'GPSC-Core-Notes-All-Topics.pdf', 'Core Notes: all 10 topics', 'The 25-mark core section in one file: every topic with its pictures, memory hooks, rapid revision and practice MCQs.');
 await browser.close();
 fs.writeFileSync(path.join(OUT, 'notes-pdf.json'), JSON.stringify(out, null, 1));
+// no author, tool or date details in any downloadable file
+try { (await import('node:child_process')).execFileSync('python3', [path.join(ROOT, 'tools', 'pdf_clean.py')], { stdio: 'inherit' }); } catch (e) { console.log('pdf_clean skipped:', e.message); }
