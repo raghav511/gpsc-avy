@@ -107,8 +107,9 @@ def inline(h):
 
 
 LABEL = re.compile(r'<p><strong>([^<]{1,80})</strong>')
+HOOKP = re.compile(r'<p><strong>\s*(Memory hook|Hook\b|Mnemonic)', re.I)
 TRAP = re.compile(r'<p><strong>\s*(Exam trap|Trap|Traps|Pitfall|Caution|Warning|Do not confuse|Common mistake|One key to distrust)', re.I)
-TIP = re.compile(r'<p><strong>\s*(Exam tip|Tip|Remember|Note|Mnemonic|Key point|High yield)', re.I)
+TIP = re.compile(r'<p><strong>\s*(Exam tip|Tip|Remember|Note|Key point|High yield)', re.I)
 
 
 def para(b):
@@ -131,6 +132,8 @@ def callout(b):
         if re.search(r'Memory hook|Mnemonic', inner, re.I):
             return '<div class="hook">' + BULB + '<div>' + inner + '</div></div>'
         return '<div class="tip">' + STAR + '<div>' + inner + '</div></div>'
+    if HOOKP.match(b):
+        return '<div class="hook">' + BULB + '<div>' + b + '</div></div>'
     if TRAP.match(b):
         return '<div class="trap">' + WARN + '<div>' + para(b) + '</div></div>'
     if TIP.match(b):
