@@ -285,6 +285,7 @@ function runner(set, S, me) {
     if (set.custom) att.def = findDef(set.id);
     addAttempt(att);
     lsDel(stateKey(S.set));
+    window.dispatchEvent(new Event('gpsc-saved'));
     allowLeave = true;
     API.go('#/result/' + encodeURIComponent(att.id), true);
     if (auto) toast('Time is up. Your test was submitted.', null, 4000);

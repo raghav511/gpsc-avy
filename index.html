@@ -92,7 +92,16 @@ body[data-screen=runner] #app{padding-bottom:0}
 .btn:disabled,.wide:disabled{opacity:.45}
 .pri{background:var(--pri);color:#fff}.sec{background:var(--card2);color:var(--ink)}.ghost{background:var(--card);color:var(--muted);border:1.5px solid var(--line)}
 .amb{background:var(--acc);color:var(--acc-ink)}.org{background:var(--org-s);color:var(--org-i)}.vio{background:#5b21b6;color:#fff}
-.grn{background:var(--grn);color:#fff}.grn-o{background:var(--card);color:var(--l-E-i);border:2px solid #86efac}
+.grn{background:var(--grn);color:#fff}
+.hact{display:flex;align-items:center;gap:8px;flex:none}.hhead{gap:10px}.hhead .brand{min-width:0;flex:1 1 auto}.hhead .brand>span{min-width:0}.hhead .brand small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.syncb{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:0;border-radius:14px;background:var(--grn);color:#fff;font:700 .85rem var(--ui);box-shadow:var(--shadow);cursor:pointer;touch-action:manipulation;white-space:nowrap}
+.syncb svg{width:20px;height:20px}
+.syncb.busy svg{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (max-width:380px){.syncb{padding:0 10px;gap:6px}.syncb svg{width:18px;height:18px}.hhead .brand small{display:none}}
+.syncmsg{font-weight:700}
+.other{margin-top:4px}.other summary{cursor:pointer;color:var(--muted);font-weight:700;min-height:44px;display:flex;align-items:center}.other .two{margin:6px 0 10px}
+.inp{width:100%;min-height:48px;border:2px solid var(--line);border-radius:14px;padding:0 12px;font:16px var(--body);background:var(--card);color:var(--ink)}.grn-o{background:var(--card);color:var(--l-E-i);border:2px solid #86efac}
 .sun{background:var(--sun);color:var(--sun-ink)}
 .btn svg,.wide svg{flex:none}
 .sm{min-height:40px;font-size:.82rem}

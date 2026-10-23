@@ -32,3 +32,11 @@ node tests/acceptance.mjs --profile pixel   # also: --profile iphone, --profile 
 ```
 
 Run `tools/build.py` after any change to `content/`, `js/` or `index.html`, so the service worker picks up the new version.
+
+**Sync progress**
+- One button, top right of Home. It combines this device, your other devices and the GPSC CBRT Mock Exam page in one file in your Google Drive (`GPSCavy sync/GPSCavy-progress.json`).
+- Merging is a union: attempts are never removed; a later submission of the same attempt replaces the earlier one; a test in progress keeps its newest copy.
+- The app also syncs by itself when it opens, 15 s after each test (after the Undo window) and when you leave it.
+- The hub is a small Google Apps Script web app you own: `tools/sync-hub/Code.gs` (paste your Drive file and folder ids). Each device is connected once with the web app's `/exec` link.
+
+**Updates** apply by themselves: a new version takes over the next time the app is opened or brought back, never in the middle of a test.

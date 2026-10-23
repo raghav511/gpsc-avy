@@ -3,7 +3,7 @@ import {
   $, $$, esc, fmt, day, daysLeft, idle, lsGet, lsSet, settings, saveSettings, getIndex, getMeta, getKeys, getPool, setInfo, IDX, KEYS,
   H, loadAttempts, saveAttempts, findAttempt, cleanAttempt, grade, tokens, listInProgress, loadState, stateKey, remaining, stats, weakest,
   DRILL_FOR, wrongList, customs, saveCustom, deleteCustom, toast, hideToast, sheet, closeSheet, sheetOpen, ICON, navHtml, topbar, bar, lvlChip,
-  SECS, SEC, LV, LVL, TOPIC_NAMES, prefetchSet, findDef, CKEY
+  SECS, SEC, LV, LVL, TOPIC_NAMES, prefetchSet, findDef, CKEY, lsDel
 } from './core.js';
 
 const app = $('#app');
@@ -182,7 +182,7 @@ function homeScreen() {
   const tnames = { 5: 'Anatomy & Physiology', 6: 'Pathology', 7: 'Practice of Medicine', 8: 'Obs, Gynae & Paeds', 9: 'Surgery', 10: 'Community & Forensic' };
   const dl = daysLeft();
   app.innerHTML =
-    '<header class="hhead"><div class="brand"><span class="logo" aria-hidden="true">G</span><span><b>GPSCavy</b><small>Homoeopathic Physician · CBRT</small></span></div><a class="ib white" href="#/search" aria-label="Search questions, notes and sets">' + ICON.search + '</a></header>' +
+    '<header class="hhead"><div class="brand"><span class="logo" aria-hidden="true">G</span><span><b>GPSCavy</b><small>Homoeopathic Physician · CBRT</small></span></div><div class="hact">' + syncBtn() + '<a class="ib white" href="#/search" aria-label="Search questions, notes and sets">' + ICON.search + '</a></div></header>' +
     '<main class="pad stack home">' +
     '<section class="hero"><div><p class="hk">Exam on Sunday, 1 November</p><p class="hd">' + (dl === 0 ? 'Exam day' : dl + (dl === 1 ? ' day left' : ' days left')) + '</p><p class="hs">60 marks · 75 minutes · 5 sections</p></div>' +
     '<a class="badge" href="#/progress" aria-label="Last score ' + (last ? last.score : '–') + ' of ' + (last ? last.total : 60) + ', see progress"><small>Last score</small><b>' + (last ? last.score : '–') + '</b><small>of ' + (last ? last.total : 60) + '</small></a></section>' +
@@ -190,7 +190,6 @@ function homeScreen() {
     '<div class="two"><a class="big dark" href="#/test/' + nextMock() + '" data-pf="' + nextMock() + '"><b>Full mock</b><small>60 Q · 75 min</small></a><a class="big sun" href="#/custom"><b>Pick subjects</b><small>custom test</small></a></div>' +
     '<section class="card"><div class="ch"><h2 class="label">Your accuracy by section</h2><a class="lnk" href="#/progress">All progress</a></div><div id="acc" class="acc"><p class="sub">Loading…</p></div></section>' +
     '<section class="card today"><span class="ic ic-core">' + ICON.book + '</span><span class="rt"><span class="ttl">Today\'s read: Topic ' + tday + ' ' + tnames[tday] + '</span><span class="sub">then a quick-check quiz · <a href="#/test/quiz-topic' + tday + '">Quiz</a></span></span><a class="lnk" href="#/study/topic' + tday + '">Open</a></section>' +
-    syncCard() +
     '</main>' + navHtml('home');
   installHint();
   getKeys().then(() => { if (cur && cur.hash === '#/') fillAcc($('#acc'), true); });
@@ -209,17 +208,22 @@ function fillAcc(el, home) {
   el.innerHTML = accRows(s, !home) + (w ? (home ? '<p class="sub">Weakest: ' + SEC[w].long + '. <a class="lnk" href="' + DRILL_FOR[w][0] + '">Practise ' + DRILL_FOR[w][1] + '</a></p>'
     : '<a class="wide sun" href="' + DRILL_FOR[w][0] + '">Practise weakest: ' + DRILL_FOR[w][1] + '</a>') : '');
 }
+function syncBtn() {
+  return '<button type="button" class="syncb' + (syncing ? ' busy' : '') + '" data-act="sync" aria-label="Sync progress">' + ICON.sync + '<span>Sync progress</span></button>';
+}
 function syncCard() {
   const ls = settings.lastSync;
-  return '<section class="card sync"><div class="ch2"><span class="ic ic-grn">' + ICON.sync + '</span><span class="rt"><span class="ttl">Back up and sync progress</span><span class="sub">' +
+  return '<section class="card sync"><div class="ch2"><span class="ic ic-grn">' + ICON.sync + '</span><span class="rt"><span class="ttl">Sync progress</span><span class="sub">' +
     (ls ? 'Last ' + esc(ls.what) + ' ' + day(ls.at) + ' · ' : '') + H.length + (H.length === 1 ? ' attempt' : ' attempts') + ' on this device</span></span></div>' +
-    '<div class="two"><button type="button" class="btn grn" data-act="down">' + ICON.down + '<span>Download progress</span></button><button type="button" class="btn grn-o" data-act="up">' + ICON.up + '<span>Upload progress</span></button></div></section>';
+    '<button type="button" class="wide grn" data-act="sync">' + ICON.sync + '<span>Sync progress</span></button></section>';
 }
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-act]'); if (!b) return;
   const act = b.dataset.act;
   if (act === 'down') openDownload();
   else if (act === 'up') openUpload();
+  else if (act === 'sync') openSync();
+  else if (act === 'other') openOther();
 });
 
 // ---------- install hint ----------
@@ -562,7 +566,7 @@ export function openUpload(given) {
   if (given) read(given); else pick();
 }
 export function planMerge(o) {
-  const plan = { add: [], had: 0, unknown: 0, prog: [], customs: [] };
+  const plan = { add: [], replace: [], had: 0, unknown: 0, prog: [], customs: [], done: [] };
   const ids = new Set(H.map(a => a.id));
   (Array.isArray(o.customTests) ? o.customTests : []).forEach(c => { if (c && c.id && Array.isArray(c.refs)) plan.customs.push(c); });
   // custom defs travel with attempts and in-progress states; make them resolvable before grading
@@ -571,20 +575,30 @@ export function planMerge(o) {
   plan.customs.forEach(addDef); o.attempts.forEach(a => a && addDef(a.def)); (o.inProgress || []).forEach(s => s && addDef(s.def));
   if (added) lsSet(CKEY, tmp);
   o.attempts.forEach(a => {
-    if (a && ids.has(String(a.id))) { plan.had++; return; }
+    if (a && ids.has(String(a.id))) {
+      const mine = H.find(x => x.id === String(a.id));
+      if (mine && String(a.submittedAt || '') > String(mine.submittedAt || '')) { const c = cleanAttempt(a); if (c) { if (c.set.startsWith('custom-')) c.def = findDef(c.set); plan.replace.push(c); return; } }
+      plan.had++; return;
+    }
     const c = cleanAttempt(a); if (!c) { plan.unknown++; return; }
     if (c.set.startsWith('custom-')) c.def = findDef(c.set);
     ids.add(c.id); plan.add.push(c);
   });
   (Array.isArray(o.inProgress) ? o.inProgress : []).forEach(st => {
     if (!st || st.phase !== 'exam' || !st.set || !(setInfo(st.set) || findDef(st.set))) return;
+    if (ids.has(st.set + '-' + st.startedAt)) return; // already submitted somewhere
     const local = loadState(st.set);
     if (!local || local.phase !== 'exam' || (local.startedAt || 0) < (st.startedAt || 0)) plan.prog.push(st);
   });
+  // a test in progress here that another device has since submitted
+  listInProgress().forEach(st => { if (ids.has(st.set + '-' + st.startedAt)) plan.done.push(st.set); });
   return plan;
 }
-export function applyMerge(plan) {
+export function applyMerge(plan, what) {
   plan.add.forEach(a => H.push(a));
+  (plan.replace || []).forEach(a => { const i = H.findIndex(x => x.id === a.id); if (i >= 0) H[i] = a; else H.push(a); });
+  (plan.done || []).forEach(id => lsDel(stateKey(id)));
+  H.sort((p, q) => String(q.submittedAt).localeCompare(String(p.submittedAt)));
   saveAttempts();
   plan.prog.forEach(st => {
     const s = Object.assign({}, st);
@@ -592,9 +606,93 @@ export function applyMerge(plan) {
     s.savedAt = Date.now();
     lsSet(stateKey(s.set), s);
   });
-  settings.lastSync = { at: new Date().toISOString(), what: 'upload' }; saveSettings();
+  settings.lastSync = { at: new Date().toISOString(), what: what || 'upload' }; saveSettings();
   return 'Added ' + plan.add.length + (plan.add.length === 1 ? ' attempt' : ' attempts') + (plan.had ? ', ' + plan.had + ' already here' : '') + (plan.prog.length ? ', ' + plan.prog.length + (plan.prog.length === 1 ? ' test' : ' tests') + ' in progress' : '') + (plan.unknown ? ', ' + plan.unknown + ' skipped' : '') + '.';
 }
+
+// ---------- Sync progress (Google Drive hub through the owner's Apps Script web app) ----------
+// One tap merges this device with the hub: attempts are a union by id (a later submission of the same id wins),
+// tests in progress keep the newest copy, and nothing on either side is ever removed.
+let syncing = false, lastSig = '';
+const HUB_RE = /^https:\/\/script\.google(usercontent)?\.com\/macros\/s\/[\w-]+\/exec$/;
+const sig = () => H.length + ':' + (H[0] ? H[0].id + H[0].submittedAt : '') + ':' + listInProgress().map(st => st.set + (st.savedAt || 0)).join(',');
+function setSyncBusy(on) { syncing = on; $$('.syncb').forEach(b => b.classList.toggle('busy', on)); }
+function syncText(m) { const el = $('#syncMsg'); if (el) el.innerHTML = m; }
+export async function syncNow(quiet) {
+  const url = settings.syncUrl;
+  if (!url) { if (!quiet) openSync(); return null; }
+  if (syncing) return null;
+  if (quiet && navigator.onLine === false) return null;
+  setSyncBusy(true);
+  try {
+    const res = await fetch(url, { method: 'POST', body: JSON.stringify({ progress: progressFile() }), headers: { 'Content-Type': 'text/plain;charset=utf-8' }, redirect: 'follow' });
+    const o = await res.json();
+    if (!o || !o.ok || !o.progress) throw new Error((o && o.error) || 'bad reply');
+    await Promise.all([getKeys(), getIndex()]);
+    const plan = planMerge(o.progress);
+    const fresh = plan.add.length + plan.replace.length + plan.prog.length + plan.done.length;
+    applyMerge(plan, 'sync');
+    lastSig = sig();
+    settings.lastSync = { at: new Date().toISOString(), what: 'sync' }; settings.hubCount = (o.progress.attempts || []).length; saveSettings();
+    const msg = 'Synced. ' + (plan.add.length ? plan.add.length + (plan.add.length === 1 ? ' attempt' : ' attempts') + ' added from your other devices. ' : 'Nothing new from other devices. ') + H.length + ' attempts on this device.';
+    if (fresh && document.body.dataset.screen !== 'runner' && !sheetOpen()) render();
+    if (!quiet || plan.add.length) toast(msg, null, 4200);
+    syncText(esc(msg));
+    return msg;
+  } catch (e) {
+    const m = navigator.onLine === false ? 'You are offline. Your progress is safe on this device and will sync when you are back online.' : 'Could not reach your sync folder. Your progress is safe on this device; try again in a minute.';
+    if (!quiet) toast(m, null, 5000);
+    syncText(esc(m));
+    return null;
+  } finally { setSyncBusy(false); }
+}
+function pushOnLeave() {
+  const url = settings.syncUrl;
+  if (!url || !navigator.sendBeacon || sig() === lastSig) return;
+  try { if (navigator.sendBeacon(url, new Blob([JSON.stringify({ progress: progressFile() })], { type: 'text/plain;charset=utf-8' }))) lastSig = sig(); } catch (e) { }
+}
+export function openSync() {
+  if (!settings.syncUrl) return openSyncSetup();
+  const ls = settings.lastSync;
+  const el = sheet('<div class="shh"><h2>Sync progress</h2><button type="button" class="ib" data-close aria-label="Close">' + ICON.close + '</button></div>' +
+    '<p id="syncMsg" class="syncmsg">Syncing…</p>' +
+    '<p class="sub">Every attempt from this device, your other devices and the Mock Exam page is combined in your Google Drive. Nothing is ever removed. This device also syncs by itself when it opens, after each test, and when you leave the app.</p>' +
+    '<button type="button" class="wide grn" id="syncAgain" data-focus>' + ICON.sync + '<span>Sync again</span></button>' +
+    '<button type="button" class="wide sec" id="syncCopy">Copy sync link for another device</button>' +
+    '<details class="other"><summary>Other ways</summary><div class="two"><button type="button" class="btn grn-o" data-act="down">' + ICON.down + '<span>Backup file</span></button><button type="button" class="btn grn-o" data-act="up">' + ICON.up + '<span>Restore file</span></button></div>' +
+    '<button type="button" class="lnk" id="syncOff">Disconnect sync on this device</button></details><input id="syncLink" class="inp" hidden readonly>', { label: 'Sync progress' });
+  el.querySelector('#syncAgain').onclick = () => { syncText('Syncing…'); syncNow(false); };
+  el.querySelector('#syncCopy').onclick = () => copyText(settings.syncUrl, 'Sync link copied. Paste it in GPSCavy on your other device: Sync progress, then paste.');
+  el.querySelector('#syncOff').onclick = () => { delete settings.syncUrl; saveSettings(); closeSheet(); toast('Sync disconnected on this device. Your progress here is kept.'); };
+  syncNow(true).then(m => { if (!m && ls) syncText('Last synced ' + esc(day(ls.at)) + '.'); });
+}
+function copyText(t, ok) {
+  const done = () => toast(ok, null, 5000);
+  try { navigator.clipboard.writeText(t).then(done, () => prompt0(t)); } catch (e) { prompt0(t); }
+}
+function prompt0(t) { const i = $('#syncLink'); if (i) { i.value = t; i.hidden = false; i.select(); } toast('Select the link and copy it'); }
+function openSyncSetup() {
+  const el = sheet('<div class="shh"><h2>Sync progress</h2><button type="button" class="ib" data-close aria-label="Close">' + ICON.close + '</button></div>' +
+    '<p>Connect this device once. Paste your sync link: it starts with <b>https://script.google.com/macros/s/</b> and ends with <b>/exec</b>.</p>' +
+    '<input id="syncIn" class="inp" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://script.google.com/macros/s/…/exec" data-focus>' +
+    '<p class="err" id="syncErr" hidden></p>' +
+    '<button type="button" class="wide grn" id="syncGo">' + ICON.sync + '<span>Connect and sync</span></button>' +
+    '<p class="sub">Your other device already synced? Open GPSCavy there, tap Sync progress, then Copy sync link, and send it to yourself.</p>' +
+    '<input id="syncLink" class="inp" hidden readonly>' +
+    '<details class="other"><summary>Other ways</summary><div class="two"><button type="button" class="btn grn-o" data-act="down">' + ICON.down + '<span>Backup file</span></button><button type="button" class="btn grn-o" data-act="up">' + ICON.up + '<span>Restore file</span></button></div></details>', { label: 'Sync progress' });
+  const inp = el.querySelector('#syncIn'), err = el.querySelector('#syncErr'), go = el.querySelector('#syncGo');
+  go.onclick = async () => {
+    const u = (inp.value || '').trim().replace(/\?.*$/, '');
+    if (!HUB_RE.test(u)) { err.hidden = false; err.textContent = 'That is not a sync link. It should start with https://script.google.com/macros/s/ and end with /exec.'; return; }
+    err.hidden = true; go.disabled = true; go.lastChild.textContent = 'Connecting…';
+    try {
+      const o = await (await fetch(u + '?ping=1', { redirect: 'follow' })).json();
+      if (!o || !o.ok) throw new Error('no');
+    } catch (e) { go.disabled = false; go.lastChild.textContent = 'Connect and sync'; err.hidden = false; err.textContent = 'Could not reach that link. Check it was copied in full and that you are online.'; return; }
+    settings.syncUrl = u; saveSettings(); closeSheet(); openSync();
+  };
+}
+export function openOther() { openDownload(); }
 
 // ---------- boot ----------
 async function boot() {
@@ -623,10 +721,20 @@ async function boot() {
     })).catch(() => toast('Could not open the shared file. Try Upload progress instead.'));
   }
   idle(() => { getKeys().catch(() => { }); getMeta().catch(() => { }); }, 1500);
+  if (settings.syncUrl) setTimeout(() => syncNow(true), 1200);
+  window.addEventListener('gpsc-saved', () => setTimeout(() => syncNow(true), 15000)); // after the Undo window
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') pushOnLeave();
+    else if (settings.syncUrl && (!settings.lastSync || Date.now() - Date.parse(settings.lastSync.at) > 300000)) syncNow(true);
+  });
+  window.addEventListener('pagehide', pushOnLeave);
+  window.addEventListener('online', () => { if (settings.syncUrl) syncNow(true); });
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-    const offer = w => { if (!navigator.serviceWorker.controller) return; const ask = () => { if (document.body.dataset.screen === 'runner') return setTimeout(ask, 30000); toast('A new version of GPSCavy is ready', { label: 'Update', fn: () => { updating = true; w.postMessage('skipWaiting'); } }, 12000); }; ask(); };
+    // Updates apply by themselves: the new version takes over and the app reloads, never in the middle of a test.
+    const offer = w => { if (!navigator.serviceWorker.controller) return; const go = () => { if (document.body.dataset.screen === 'runner' || sheetOpen()) return setTimeout(go, 15000); updating = true; w.postMessage('skipWaiting'); }; go(); };
     let updating = false;
     navigator.serviceWorker.addEventListener('controllerchange', () => { if (updating) location.reload(); });
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') navigator.serviceWorker.getRegistration().then(r => r && r.update()).catch(() => { }); });
     window.addEventListener('load', () => idle(() => navigator.serviceWorker.register('sw.js').then(reg => {
       if (reg.waiting) offer(reg.waiting);
       reg.addEventListener('updatefound', () => { const w = reg.installing; if (w) w.addEventListener('statechange', () => { if (w.state === 'installed') offer(w); }); });

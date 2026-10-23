@@ -53,6 +53,13 @@ async function open(h) { if (page.url().startsWith(BASE)) await page.goto('about
 async function clickNav(sel) { await page.click(sel); await page.waitForTimeout(250); }
 async function clearAll() { await page.evaluate(() => localStorage.clear()); }
 const settle = () => page.waitForTimeout(300);
+// Backup / restore a file now live under Sync progress → Other ways.
+async function viaSync(act) {
+  if (await page.locator('#sheet').count()) { await page.keyboard.press('Escape'); await settle(); }
+  if (await page.locator('[data-act="sync"]').count() === 0) await open('#/');
+  await page.locator('[data-act="sync"]').first().click(); await settle();
+  await page.click('#sheet .other summary'); await page.click('#sheet .other [data-act="' + act + '"]'); await settle();
+}
 
 // ---------- 1. navigation ----------
 await section('1. tabs, buttons and back controls', async () => {
@@ -308,14 +315,14 @@ await section('6. progress file: export, clear, import, idempotent, mock-exam fo
   ok(before.length >= 1, 'have attempts to export');
   // share path when the Web Share API takes files
   await page.evaluate(() => { window.__shared = null; navigator.canShare = () => true; navigator.share = d => { window.__shared = d; return Promise.resolve(); }; });
-  await page.click('[data-act="down"]'); await settle();
+  await viaSync('down'); await settle();
   ok(await page.locator('#dShare').count() === 1, 'Share on WhatsApp shown when files can be shared');
   await page.click('#dShare'); await settle();
   const shared = await page.evaluate(() => window.__shared && { n: window.__shared.files[0].name, t: window.__shared.files[0].type });
   ok(shared && /^GPSC-progress-\d{4}-\d\d-\d\d\.json$/.test(shared.n) && shared.t === 'application/json', 'shares a JSON file', JSON.stringify(shared));
   // fallback to download
   await page.evaluate(() => { navigator.canShare = () => false; });
-  await page.click('[data-act="down"]'); await settle();
+  await viaSync('down'); await settle();
   ok(await page.locator('#dShare').count() === 0, 'no share button when files cannot be shared');
   const [dl] = await Promise.all([page.waitForEvent('download'), page.click('#dSave')]);
   const file = path.join(os.tmpdir(), dl.suggestedFilename());
@@ -325,13 +332,13 @@ await section('6. progress file: export, clear, import, idempotent, mock-exam fo
   ok(fs.statSync(file).size < 200000, 'file small enough for WhatsApp');
   // clear, import
   await clearAll(); await open('#/');
-  await page.click('[data-act="up"]'); await page.setInputFiles('#upf', file); await page.waitForSelector('#merge');
+  await viaSync('up'); await page.setInputFiles('#upf', file); await page.waitForSelector('#merge');
   await page.click('#merge'); await settle();
   const after = await page.evaluate(() => JSON.parse(localStorage.getItem('gpsc-cbrt-history-v1')));
   const strip = a => JSON.stringify(a.map(x => ({ id: x.id, set: x.set, score: x.score, total: x.total, wrong: x.wrong, skipped: x.skipped, usedMs: x.usedMs, auto: x.auto, submittedAt: x.submittedAt, answers: x.answers })).sort((p, q) => p.id.localeCompare(q.id)));
   ok(strip(after) === strip(before), 'export → clear → import gives identical data');
   // import again adds nothing
-  await page.click('[data-act="up"]'); await page.setInputFiles('#upf', file); await page.waitForSelector('#merge');
+  await viaSync('up'); await page.setInputFiles('#upf', file); await page.waitForSelector('#merge');
   const prevTxt = await page.locator('.prev .t-grn b').textContent();
   await page.click('#merge'); await settle();
   const again = await page.evaluate(() => JSON.parse(localStorage.getItem('gpsc-cbrt-history-v1')));
@@ -343,7 +350,7 @@ await section('6. progress file: export, clear, import, idempotent, mock-exam fo
       { id: 'set1-1750000000000', set: 'set1', setName: 'Practice Set 1 (earlier version)', score: 1, total: 35, wrong: 0, skipped: 34, usedMs: 100000, auto: true, submittedAt: '2026-06-01T10:00:00.000Z', answers: { 1: byId.set1.questions[0].ans } }],
     inProgress: [{ set: 'set3', phase: 'exam', cur: 4, answers: { 1: 'A', 2: 'B' }, flags: {}, seen: { 1: 1, 2: 1 }, endAt: now + 1800000, startedAt: now - 600000, usedMs: 0, filter: 'all' }] };
   const mf = path.join(os.tmpdir(), 'GPSC-progress-mock.json'); fs.writeFileSync(mf, JSON.stringify(mock));
-  await page.click('[data-act="up"]'); await page.setInputFiles('#upf', mf); await page.waitForSelector('#merge');
+  await viaSync('up'); await page.setInputFiles('#upf', mf); await page.waitForSelector('#merge');
   await page.click('#merge'); await settle();
   const h3 = await page.evaluate(() => JSON.parse(localStorage.getItem('gpsc-cbrt-history-v1')));
   ok(h3.some(a => a.id === 'set12v2-1760000000000' && a.score === 2) && h3.some(a => a.id === 'set1-1750000000000'), 'mock-exam attempts import (legacy set re-graded)');
@@ -356,12 +363,80 @@ await section('6. progress file: export, clear, import, idempotent, mock-exam fo
   ok(refOk, 'exported file passes the mock-exam importer checks');
   // bad file
   const bf = path.join(os.tmpdir(), 'photo.json'); fs.writeFileSync(bf, '{"hello":1}');
-  await page.click('[data-act="up"]'); await page.setInputFiles('#upf', bf); await settle();
+  await viaSync('up'); await page.setInputFiles('#upf', bf); await settle();
   ok(await page.locator('.err').count() === 1, 'rejects a non-progress file');
   await page.keyboard.press('Escape');
 });
 
 // ---------- 7. notes ----------
+const closeSh = async () => { const c = page.locator('#sheet [data-close]'); if (await c.count()) { await c.first().click(); await settle(); } };
+await section('6b. Sync progress: hub merge, never loses anything, auto-sync, header button', async () => {
+  const gs = fs.readFileSync(path.join(ROOT, 'tools/sync-hub/Code.gs'), 'utf8');
+  const hubApi = {}; new Function('api', gs.replace(/function doGet[\s\S]*?function empty/, 'function empty') + ';api.merge=merge;api.empty=empty;')(hubApi);
+  const HUBURL = 'https://script.google.com/macros/s/TEST_hub-123/exec';
+  let hub = hubApi.empty(), posts = 0, down = false;
+  await page.route(HUBURL + '*', async r => {
+    if (down) return r.abort();
+    const req = r.request();
+    if (req.method() === 'GET') { if (/ping=1/.test(req.url())) return r.fulfill({ contentType: 'application/json', body: JSON.stringify({ ok: true }) }); return r.fulfill({ contentType: 'application/json', body: JSON.stringify({ ok: true, progress: hub }) }); }
+    posts++; const body = JSON.parse(req.postData() || '{}'); if (body.progress) hub = hubApi.merge(hub, body.progress);
+    return r.fulfill({ contentType: 'application/json', body: JSON.stringify({ ok: true, progress: hub }) });
+  });
+  await open('#/');
+  ok(await page.locator('.hhead .syncb').count() === 1, 'Sync progress button in the top right of Home');
+  ok(await page.locator('[data-act="down"]:visible, [data-act="up"]:visible').count() === 0, 'no Download/Upload buttons on Home');
+  const mine = await page.evaluate(() => JSON.parse(localStorage.getItem('gpsc-cbrt-history-v1')).length);
+  // the hub already holds attempts from the Mock Exam page and another device
+  const other = { format: 'gpsc-cbrt-progress', version: 1, attempts: [
+    { id: 'set14-1790000000001', set: 'set14', setName: 'Practice Set 14', score: 1, total: 60, wrong: 0, skipped: 59, usedMs: 1000, auto: false, submittedAt: '2026-10-20T10:00:00.000Z', answers: { 1: byId.set14.questions[0].ans } },
+    { id: 'gkd2-1790000000002', set: 'gkd2', setName: 'GK Drill 2', score: 0, total: 25, wrong: 1, skipped: 24, usedMs: 1000, auto: false, submittedAt: '2026-10-21T10:00:00.000Z', answers: { 1: 'E' } }],
+    inProgress: [{ set: 'set9v2', phase: 'exam', cur: 2, answers: { 1: 'A' }, flags: {}, seen: {}, startedAt: Date.now() - 60000, endAt: Date.now() + 3600000, usedMs: 0, savedAt: Date.now() - 1000 }] };
+  hub = hubApi.merge(hub, other);
+  // first tap: setup
+  await page.click('.hhead .syncb'); await settle();
+  ok(await page.locator('#syncIn').count() === 1, 'first Sync asks for the sync link');
+  await page.fill('#syncIn', 'https://example.com/not-a-hub'); await page.click('#syncGo'); await settle();
+  ok(await page.locator('#syncErr:visible').count() === 1, 'rejects a wrong link');
+  await page.fill('#syncIn', HUBURL); await page.click('#syncGo');
+  await page.waitForFunction(() => /Synced/.test((document.querySelector('#syncMsg') || {}).textContent || ''), null, { timeout: 8000 });
+  const after = await page.evaluate(() => JSON.parse(localStorage.getItem('gpsc-cbrt-history-v1')));
+  ok(after.length === mine + 2, 'sync adds the other devices\' attempts', after.length + ' vs ' + (mine + 2));
+  ok(hub.attempts.length === mine + 2, 'hub now holds this device\'s attempts too', hub.attempts.length);
+  ok(!!(await page.evaluate(() => localStorage.getItem('gpsc-cbrt-set9v2-v1'))), 'test in progress on another device arrives here');
+  await closeSh();
+  // offline: nothing is lost, sync later catches up
+  down = true;
+  await page.evaluate(() => { const h = JSON.parse(localStorage.getItem('gpsc-cbrt-history-v1')); h.unshift({ id: 'gkd3-1799999999999', set: 'gkd3', setName: 'GK Drill 3', score: 0, total: 25, wrong: 0, skipped: 25, usedMs: 1, auto: false, submittedAt: '2026-10-23T09:00:00.000Z', answers: {} }); localStorage.setItem('gpsc-cbrt-history-v1', JSON.stringify(h)); });
+  await open('#/'); await page.click('.hhead .syncb'); await page.waitForFunction(() => /safe on this device/.test((document.querySelector('#syncMsg') || {}).textContent || ''), null, { timeout: 8000 });
+  ok(true, 'offline sync says progress is safe');
+  for (let k = errors.length - 1; k >= 0; k--) if (/ERR_FAILED|ERR_INTERNET|Failed to fetch/.test(errors[k])) errors.splice(k, 1); // the simulated outage
+  ok(await page.evaluate(() => JSON.parse(localStorage.getItem('gpsc-cbrt-history-v1')).some(a => a.id === 'gkd3-1799999999999')), 'offline attempt kept');
+  await closeSh(); down = false;
+  await page.click('.hhead .syncb'); await page.waitForFunction(() => /Synced/.test((document.querySelector('#syncMsg') || {}).textContent || ''), null, { timeout: 8000 });
+  ok(hub.attempts.some(a => a.id === 'gkd3-1799999999999'), 'next sync sends the attempt made while offline');
+  for (let k = errors.length - 1; k >= 0; k--) if (/ERR_FAILED|ERR_INTERNET|Failed to fetch/.test(errors[k])) errors.splice(k, 1);
+  await closeSh();
+  // a later submission of the same attempt id replaces the earlier one everywhere; a submitted test leaves "in progress"
+  hub = hubApi.merge(hub, { format: 'gpsc-cbrt-progress', attempts: [{ id: 'set9v2-' + (hub.inProgress.find(s => s.set === 'set9v2') || {}).startedAt, set: 'set9v2', setName: 'Practice Set 9', score: 1, total: 60, wrong: 0, skipped: 59, usedMs: 5, auto: false, submittedAt: '2026-10-23T10:00:00.000Z', answers: { 1: byId.set9v2.questions[0].ans } }] });
+  ok(!hub.inProgress.some(s => s.set === 'set9v2'), 'hub drops a test in progress once it is submitted');
+  await page.click('.hhead .syncb'); await page.waitForFunction(() => /Synced/.test((document.querySelector('#syncMsg') || {}).textContent || ''), null, { timeout: 8000 });
+  ok(!(await page.evaluate(() => localStorage.getItem('gpsc-cbrt-set9v2-v1'))), 'test submitted on another device leaves "in progress" here');
+  await closeSh();
+  // auto-sync on open
+  const before = posts; await open('#/'); await page.waitForTimeout(2500);
+  ok(posts > before, 'syncs by itself when the app opens');
+  // Progress screen has Sync progress too
+  await open('#/progress'); ok(await page.locator('[data-act="sync"]').count() >= 1, 'Progress screen has Sync progress');
+  // never removes: hub with fewer attempts does not shrink this device
+  const n0 = await page.evaluate(() => JSON.parse(localStorage.getItem('gpsc-cbrt-history-v1')).length);
+  hub = hubApi.empty(); await open('#/'); await page.click('.hhead .syncb'); await page.waitForFunction(() => /Synced/.test((document.querySelector('#syncMsg') || {}).textContent || ''), null, { timeout: 8000 });
+  ok(await page.evaluate(() => JSON.parse(localStorage.getItem('gpsc-cbrt-history-v1')).length) === n0 && hub.attempts.length === n0, 'an empty hub never removes anything; it is refilled');
+  await closeSh();
+  await page.evaluate(() => { const k = 'gpscavy-settings-v1'; const o = JSON.parse(localStorage.getItem(k) || '{}'); delete o.syncUrl; localStorage.setItem(k, JSON.stringify(o)); });
+  await open('#/');
+  await page.unroute(HUBURL + '*');
+});
+
 await section('7. notes: 15 diagrams render, no sideways page scroll, quizzes', async () => {
   let total = 0;
   for (let t = 5; t <= 10; t++) {
