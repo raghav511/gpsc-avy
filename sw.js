@@ -1,5 +1,5 @@
 // GPSCavy service worker. The version is stamped by tools/build.py from a hash of the shell and data files.
-const V = 'gpscavy-a2d1475d8a';
+const V = 'gpscavy-dbdec1448e';
 const SHELL = ['./', 'index.html', 'js/app.js', 'js/core.js', 'js/runner.js', 'js/study.js', 'manifest.webmanifest',
   'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png', 'fonts/jakarta-latin.woff2', 'fonts/inter-latin.woff2', 'fonts/tiro-deva-subset.woff2', 'js/thought.js',
   'data/index.json', 'data/meta.json', 'data/keys.json'];
@@ -8,10 +8,21 @@ self.addEventListener('install', e => {
   // Fetch every shell file with the version in the query, so a CDN edge still holding the previous
   // deploy cannot hand back a mix of old and new files; store each under its plain URL.
   e.waitUntil(caches.open(V).then(c => Promise.all(SHELL.map(u => fetch(u + (u.includes('?') ? '&' : '?') + 'v=' + V, { cache: 'reload' })
-    .then(r => { if (!r.ok) throw new Error(u + ' ' + r.status); return c.put(u, r); })))));
+    .then(r => { if (!r.ok) throw new Error(u + ' ' + r.status); return c.put(u, r); })))).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith('gpscavy-') && k !== V).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+  // Take over at once (iOS often never closes the old page), then reload any open page that is not running:
+  // a page stuck on a half-updated cache cannot answer the ping, so it is reloaded onto this complete cache.
+  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith('gpscavy-') && k !== V).map(k => caches.delete(k))))
+    .then(() => self.clients.claim())
+    .then(() => self.clients.matchAll({ type: 'window' }))
+    .then(cs => Promise.all(cs.map(c => new Promise(done => {
+      let alive = false;
+      const ch = new MessageChannel();
+      ch.port1.onmessage = () => { alive = true; done(); };
+      try { c.postMessage('gps-ping', [ch.port2]); } catch (err) { }
+      setTimeout(() => { if (!alive && c.navigate) c.navigate(c.url).catch(() => { }); done(); }, 2000);
+    })))));
 });
 self.addEventListener('message', e => { if (e.data === 'skipWaiting') self.skipWaiting(); });
 

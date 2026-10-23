@@ -12,8 +12,10 @@ let cur = null;          // current screen {hash, unmount, onPop}
 let depth = 0;
 const scrolls = new Map();
 let runnerMod = null, studyMod = null;
-const loadRunner = () => runnerMod || (runnerMod = import('./runner.js'));
-const loadStudy = () => studyMod || (studyMod = import('./study.js'));
+// A lazily loaded module can come from a newer app version than the one already running; if it does not fit, reload once.
+const safeImport = u => import(u).catch(e => { try { if (!sessionStorage.getItem('gpscavy-reimport')) { sessionStorage.setItem('gpscavy-reimport', '1'); location.reload(); } } catch (x) { } throw e; });
+const loadRunner = () => runnerMod || (runnerMod = safeImport('./runner.js'));
+const loadStudy = () => studyMod || (studyMod = safeImport('./study.js'));
 
 // ---------- routing ----------
 export function parse(h) {
@@ -774,8 +776,16 @@ async function boot() {
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
     // Updates apply by themselves: the new version takes over and the app reloads, never in the middle of a test.
     const offer = w => { if (!navigator.serviceWorker.controller) return; const go = () => { if (document.body.dataset.screen === 'runner' || sheetOpen()) return setTimeout(go, 15000); swUpdating = true; w.postMessage('skipWaiting'); }; go(); };
-    navigator.serviceWorker.addEventListener('controllerchange', () => { if (swUpdating) location.reload(); });
-    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') navigator.serviceWorker.getRegistration().then(r => r && r.update()).catch(() => { }); });
+    // A new version took over this tab: switch to it straight away, or as soon as no test or sheet is open.
+    const reloadWhenFree = () => { if (document.body.dataset.screen === 'runner' || sheetOpen()) return setTimeout(reloadWhenFree, 15000); location.reload(); };
+    let hadCtrl = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange', () => { if (swUpdating || hadCtrl) reloadWhenFree(); hadCtrl = true; });
+    // Look for a new version whenever the tab comes back into view, and every 30 minutes while it is open.
+    const checkUpdate = () => navigator.serviceWorker.getRegistration().then(r => r && r.update()).catch(() => { });
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkUpdate(); });
+    addEventListener('pageshow', e => { if (e.persisted) checkUpdate(); });
+    addEventListener('focus', checkUpdate);
+    setInterval(() => { if (document.visibilityState === 'visible') checkUpdate(); }, 30 * 60 * 1000);
     // Register after the first paint. boot() awaits data first, so the load event has often fired already.
     const regSW = () => idle(() => navigator.serviceWorker.register('sw.js').then(reg => {
       if (reg.waiting) offer(reg.waiting);

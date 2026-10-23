@@ -471,6 +471,8 @@ body[data-screen=study] .nfoot~.bnav{display:none}
     try { if (navigator.serviceWorker) jobs.push(navigator.serviceWorker.getRegistrations().then(function (rs) { return Promise.all(rs.map(function (r) { return r.unregister(); })); })); } catch (e) { }
     Promise.all(jobs).catch(function () { }).then(function () { location.reload(); });
   }
+  // the service worker pings open pages after an update; only a page that started properly answers
+  try { if (navigator.serviceWorker) navigator.serviceWorker.addEventListener('message', function (e) { if (e.data === 'gps-ping' && window.__gpsBooted && e.ports && e.ports[0]) e.ports[0].postMessage('ok'); }); } catch (e) { }
   window.addEventListener('error', function (e) { var m = String(e && e.message || ''); if (/import|module|SyntaxError|ReferenceError|binding/i.test(m)) setTimeout(heal, 300); }, true);
   setTimeout(heal, 8000);
 })();
