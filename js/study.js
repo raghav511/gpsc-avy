@@ -35,7 +35,7 @@ async function library(chip, sub, r, me) {
   if (show('core')) {
     body += '<h2 class="label">Core subject notes</h2><div class="tiles2">' + META.notes.map(n => {
       const p = readPct(n.t);
-      return '<a class="ntile tc-' + TCOL[n.t] + (p > 0 && p < 95 ? ' cont' : '') + '" href="#/study/topic' + n.t + '"><span class="nk">Topic ' + n.t + '</span><span class="nt">' + esc(n.title) + '</span><span class="nm">' + (n.diagrams ? n.diagrams + ' diagrams · ' : '') + (p >= 95 ? 'read' : p > 0 ? 'continue · ' + p + '%' : 'new') + '</span></a>';
+      return '<a class="ntile tc-' + TCOL[n.t] + (p > 0 && p < 95 ? ' cont' : '') + '" href="#/study/topic' + n.t + '"><span class="nk">Topic ' + n.t + '</span><span class="nt">' + esc(n.title) + '</span><span class="nm">' + (n.diagrams + (n.pics || 0) ? n.diagrams + (n.pics || 0) + ' pictures · ' : '') + (p >= 95 ? 'read' : p > 0 ? 'continue · ' + p + '%' : 'new') + '</span></a>';
     }).join('') + '</div>';
     if (chip === 'core') body += '<h2 class="label">Quick-check quizzes</h2><div class="list">' + META.notes.map(n => row('#/test/quiz-topic' + n.t, 'Q' + n.t, 's-core-b', 'Topic ' + n.t + ' quiz', n.quiz + ' questions from the notes · learn mode')).join('') + '</div>'  +
       '<p class="sub">Every core topic is also mixed into the 25 mock sets. <a class="lnk" href="#/custom?sec=core&amp;topics=1,2,3,4">Practise topics 1–4</a></p>';
@@ -146,9 +146,13 @@ async function notesScreen(t, r, me) {
   nb.innerHTML = html;
   nb.querySelectorAll('figure.diagram svg').forEach(s => { s.removeAttribute('width'); s.removeAttribute('height'); s.setAttribute('role', s.getAttribute('role') || 'img'); });
   nb.addEventListener('click', e => {
+    const z = e.target.closest('.illus .zoom'); if (z) { openZoom(z.querySelector('img')); return; }
     const b = e.target.closest('.nh'); if (!b) return;
     const sec = b.closest('.ns'); const closed = sec.classList.toggle('closed'); b.setAttribute('aria-expanded', !closed);
   });
+  // pictures load lazily as you scroll; once the page is idle, fetch the rest so they are there offline too
+  const pics = Array.from(nb.querySelectorAll('figure.illus img'), i => i.getAttribute('src'));
+  if (pics.length && !(navigator.connection && navigator.connection.saveData)) setTimeout(() => idle(() => pics.forEach(u => fetch(u).catch(() => { }))), 4000);
   const toc = $('#toc');
   const secs = Array.from(nb.querySelectorAll('.ns'));
   function goSec(id) { const el = document.getElementById(id); if (!el) return; el.classList.remove('closed'); el.querySelector('.nh').setAttribute('aria-expanded', 'true'); const y = el.getBoundingClientRect().top + window.scrollY - tocH(); window.scrollTo({ top: y, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }
@@ -187,6 +191,20 @@ async function notesScreen(t, r, me) {
   $('#nFs').onclick = () => { settings.fs = settings.fs >= 1.25 ? 1 : (settings.fs || 1) >= 1.12 ? 1.25 : 1.12; nb.style.setProperty('--fs', settings.fs); saveSettings(); };
   $('#nShare').onclick = () => import('./runner.js').then(m => m.shareLink(location.href.split('#')[0] + '#/study/topic' + t, 'Topic ' + t + ' notes: ' + n.title));
   if (r.q.h) requestAnimationFrame(() => { const el = document.getElementById(r.q.h); if (el) { const s = el.closest('.ns'); if (s) s.classList.remove('closed'); window.scrollTo(0, el.getBoundingClientRect().top + scrollY - tocH()); } });
+}
+function openZoom(img) {
+  const z = document.createElement('div');
+  z.className = 'zm'; z.setAttribute('role', 'dialog'); z.setAttribute('aria-modal', 'true'); z.setAttribute('aria-label', img.alt);
+  z.innerHTML = '<div class="zs"></div><span class="zh">Tap the picture to zoom</span><button type="button" class="zx" aria-label="Close">×</button>';
+  const zs = z.firstChild, big = img.cloneNode(); big.removeAttribute('loading'); zs.appendChild(big);
+  const close = () => { z.remove(); document.documentElement.classList.remove('zoomed'); document.removeEventListener('keydown', key); window.removeEventListener('hashchange', close); };
+  const key = e => { if (e.key === 'Escape') close(); };
+  z.addEventListener('click', e => {
+    if (e.target === big) { const r = big.getBoundingClientRect(), fx = (e.clientX - r.left) / r.width, fy = (e.clientY - r.top) / r.height; z.classList.toggle('big'); zs.scrollTo(fx * big.offsetWidth - innerWidth / 2, big.offsetTop + fy * big.offsetHeight - innerHeight / 2); }
+    else close();
+  });
+  document.addEventListener('keydown', key); window.addEventListener('hashchange', close);
+  document.documentElement.classList.add('zoomed'); document.body.appendChild(z); z.querySelector('.zx').focus();
 }
 function shortSec(t) { const m = /^(\d+\.\d+)\s+(.*)$/.exec(t); if (m) return m[1] + ' ' + m[2].split(/[,:]| and /)[0]; return t.length > 28 ? t.split(/[,:(]/)[0].trim() : t; }
 

@@ -452,12 +452,25 @@ await section('6b. Sync progress: hub merge, never loses anything, auto-sync, he
 });
 
 await section('7. notes: diagrams render, colour cards, no sideways page scroll, quizzes', async () => {
-  let total = 0;
+  let total = 0, picsTotal = 0;
   for (const t of NOTE_TS) {
     await open('#/study/topic' + t); await page.waitForSelector('#nb .ns');
     const d = await page.$$eval('#nb figure.diagram svg', ss => ss.map(s => { s.closest('.ns').style.contentVisibility = 'visible'; const r = s.getBoundingClientRect(); return [r.width, r.height]; }));
     total += d.length;
     ok(d.every(([w, h]) => w > 100 && h > 50), 'diagrams render topic ' + t, JSON.stringify(d));
+    // pictures: lazy images that load, keep their shape before loading, and open full screen
+    const pics = await page.$$eval('#nb figure.illus img', is => is.map(i => [i.getAttribute('loading'), +i.getAttribute('width'), +i.getAttribute('height'), i.alt.length]));
+    picsTotal += pics.length;
+    ok(pics.every(([l, w, h, a]) => l === 'lazy' && w > 0 && h > 0 && a > 40), 'pictures are lazy, sized and described topic ' + t, JSON.stringify(pics));
+    if (pics.length) {
+      const loaded = await page.evaluate(async () => {
+        const is = Array.from(document.querySelectorAll('#nb figure.illus img'));
+        is.forEach(i => { i.closest('.ns').style.contentVisibility = 'visible'; i.loading = 'eager'; });
+        await Promise.all(is.map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
+        return is.map(i => [i.naturalWidth, Math.round(i.getBoundingClientRect().width)]);
+      });
+      ok(loaded.every(([n, w]) => n > 0 && w > 200), 'pictures load and fit topic ' + t, JSON.stringify(loaded));
+    }
     const sw = await page.evaluate(() => [document.documentElement.scrollWidth, innerWidth]);
     ok(sw[0] <= sw[1], 'no horizontal page scroll topic ' + t, sw.join(' vs '));
     const tbl = await page.$$eval('#nb .tw', ts => ts.length);
@@ -474,6 +487,17 @@ await section('7. notes: diagrams render, colour cards, no sideways page scroll,
   }
   const want = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/meta.json'), 'utf8')).notes.reduce((a, n) => a + n.diagrams, 0);
   ok(total === want, 'all ' + want + ' diagrams', String(total));
+  const wantPics = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/meta.json'), 'utf8')).notes.reduce((a, n) => a + (n.pics || 0), 0);
+  ok(picsTotal === wantPics && wantPics >= 30, 'all ' + wantPics + ' pictures', String(picsTotal));
+  // tap a picture: it opens full screen, a tap zooms in, the close button closes it
+  await open('#/study/topic9'); await page.waitForSelector('#nb figure.illus');
+  await page.evaluate(() => { const f = document.querySelector('#nb figure.illus'); f.closest('.ns').style.contentVisibility = 'visible'; f.scrollIntoView(); });
+  await page.click('#nb figure.illus .zoom'); await settle();
+  ok(await page.locator('.zm img').count() === 1, 'picture opens full screen');
+  await page.click('.zm img'); await settle();
+  ok(await page.locator('.zm.big').count() === 1, 'tap zooms the picture');
+  await page.click('.zm .zx'); await settle();
+  ok(await page.locator('.zm').count() === 0, 'close button closes the picture');
   await open('#/test/quiz-topic9'); await page.click('#go'); await page.waitForSelector('#rq .qt');
   const q = QUIZ['quiz-topic9'].questions[0];
   await page.click('#rq [data-o="' + q.ans + '"]');

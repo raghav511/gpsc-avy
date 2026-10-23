@@ -14,6 +14,9 @@ import json, os, re, html, hashlib, shutil
 import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from stylize import stylize
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'figs'))
+import make as figmake
+FIGS = {}
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 C = os.path.join(ROOT, 'content')
@@ -115,8 +118,27 @@ def parse_quiz(topic, src):
     return out
 
 
+def expand_figs(src):
+    """<figure class="illus" data-fig="ID"><figcaption>..</figcaption></figure> -> a lazy, zoomable picture."""
+    def rep(m):
+        fid, cap = m.group(1), m.group(2)
+        f = FIGS[fid]
+        f['used'] = True
+        return ('<figure class="illus"><button type="button" class="zoom" aria-label="Enlarge picture">'
+                '<img src="data/figs/%s.svg?v=%s" width="%d" height="%d" alt="%s" loading="lazy" decoding="async"></button>'
+                '<figcaption>%s</figcaption></figure>') % (fid, f['v'], f['w'], f['h'], html.escape(f['alt']), cap)
+    return re.sub(r'<figure class="illus" data-fig="([\w-]+)"><figcaption>(.*?)</figcaption></figure>', rep, src, flags=re.S)
+
+
+def slim_svg(src):
+    """Drop editor-only attributes from the inline diagrams: they are never used by the app."""
+    src = re.sub(r' data-claude-[a-z-]+="[^"]*"', '', src)
+    return src
+
+
 def clean_note(topic, src):
     src = re.sub(r'<h1[^>]*>.*?</h1>\s*', '', src, count=1, flags=re.S)
+    src = expand_figs(slim_svg(src))
     # the byline with an internal user mention and an atom date
     src = re.sub(r'<p>[^<]*<time data-atom[^>]*>[^<]*</time>\s*·\s*<span data-atom="mention"[^>]*>[^<]*</span></p>\s*', '', src, count=1)
     src = re.sub(r'<span data-atom="mention"[^>]*>[^<]*</span>', '', src)
@@ -147,7 +169,8 @@ def clean_note(topic, src):
         body.append('<section class="ns" id="' + sid + '"><h2><button type="button" class="nh" aria-expanded="true" data-ns="' + sid + '">' +
                     badge(title) + '</button></h2><div class="nb">' + rest + '</div></section>')
     diagrams = src.count('<figure class="diagram"')
-    return '\n'.join(body), toc, diagrams
+    pics = src.count('<figure class="illus"')
+    return '\n'.join(body), toc, (diagrams, pics)
 
 
 def badge(title):
@@ -166,17 +189,18 @@ def note_topics():
 
 
 def build_notes(index):
+    FIGS.update(figmake.build())
     notes = []
     search = []
     quizzes = []
     for t in note_topics():
         src = open(os.path.join(C, 'notes', 'topic%d.html' % t), encoding='utf-8').read()
         quiz = parse_quiz(t, src)
-        body, toc, diag = clean_note(t, src)
+        body, toc, (diag, pics) = clean_note(t, src)
         words = len(strip_tags(body).split())
         os.makedirs(os.path.join(OUT, 'notes'), exist_ok=True)
         open(os.path.join(OUT, 'notes', 'topic%d.html' % t), 'w', encoding='utf-8').write(body)
-        notes.append({'t': t, 'title': NOTE_TITLES[t], 'toc': toc, 'diagrams': diag, 'min': max(5, round(words / 200)), 'quiz': len(quiz)})
+        notes.append({'t': t, 'title': NOTE_TITLES[t], 'toc': toc, 'diagrams': diag, 'pics': pics, 'min': max(5, round(words / 200)), 'quiz': len(quiz)})
         # search: every h2/h3 heading with a little text after it
         for m in re.finditer(r'<h([23]) id="([^"]+)">(.*?)</h\1>(.*?)(?=<h[23] id=|$)', src, re.S):
             txt = re.sub(r'\s+', ' ', strip_tags(m.group(4))).strip()
@@ -376,7 +400,9 @@ def main():
     sizes = {f: os.path.getsize(os.path.join(OUT, f)) for f in ['index.json', 'meta.json', 'keys.json', 'search.json']}
     print('sets', len(allsets), 'compd', len(compd), 'quizzes', [len(q['questions']) for q in quizzes])
     print('sizes', sizes, 'pools', {k: len(v['q']) for k, v in pools.items()}, 'canon', len(canon))
-    print('diagrams', sum(n['diagrams'] for n in notes), 'playbook secs', playbooks)
+    unused = [k for k, f in FIGS.items() if not f.get('used')]
+    assert not unused, 'pictures not placed in any notes: %s' % unused
+    print('diagrams', sum(n['diagrams'] for n in notes), 'pictures', sum(n['pics'] for n in notes), 'playbook secs', playbooks)
 
 
 def stamp_sw():

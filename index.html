@@ -349,6 +349,17 @@ details.why summary{font-weight:700;color:var(--link);min-height:44px;display:fl
 .notes tr:last-child td{border-bottom:0}
 figure.diagram{margin:12px 0;background:var(--card);border-radius:16px;padding:8px;contain:content;border:1px solid var(--line)}
 figure.diagram svg{display:block;width:100%;height:auto;max-width:100%}
+figure.illus{margin:14px 0;contain:layout paint style}
+figure.illus .zoom{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in;border-radius:18px;-webkit-tap-highlight-color:transparent}
+figure.illus img{display:block;width:100%;height:auto;border-radius:18px;background:var(--card)}
+figure.illus figcaption,figure.diagram figcaption{font-size:.8rem;color:var(--mut,#5a6172);margin:6px 4px 0;line-height:1.35}
+html.zoomed,html.zoomed body{overflow:hidden}
+.zm{position:fixed;inset:0;z-index:70;background:rgba(10,12,20,.94)}
+.zs{position:absolute;inset:0;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:calc(var(--st,0px) + 56px) 0 calc(var(--sb,0px) + 16px)}
+.zm img{display:block;width:100%;max-width:1100px;height:auto;margin:0 auto;cursor:zoom-in}
+.zm.big img{width:220%;max-width:none;cursor:zoom-out}
+.zm .zx{position:fixed;z-index:3;top:calc(var(--st,0px) + 8px);right:10px;width:44px;height:44px;border-radius:22px;border:0;background:rgba(255,255,255,.16);color:#fff;font-size:24px;line-height:44px;text-align:center}
+.zm .zh{position:fixed;z-index:3;top:calc(var(--st,0px) + 18px);left:16px;color:#cfd3dc;font-size:.82rem}
 .notes blockquote{margin:10px 0;padding:10px 14px;border-radius:14px;background:var(--acc-soft);color:var(--acc-ink)}
 /* notes style A: colour cards, highlights, pills, callouts */
 :root{--k1:#2563eb;--k2:#0d9488;--k3:#7c3aed;--k4:#ea580c;--k5:#db2777;--k6:#65a30d;--hl:#fde68a;--pill-bg:#ccfbf1;--pill-ink:#0f766e;--hook-bg:#f3e8ff;--hook-ink:#3b0764;--hook-ic:#7c3aed;--trap-bg:#ffe4e6;--trap-ink:#881337;--trap-ic:#be123c;--tip-bg:#fef3c7;--tip-ink:#422006;--tip-ic:#b45309}
@@ -382,6 +393,7 @@ figure.diagram svg{display:block;width:100%;height:auto;max-width:100%}
 .hook .ico{color:var(--hook-ic)}.trap .ico{color:var(--trap-ic)}.tip .ico{color:var(--tip-ic)}
 .hook strong,.trap strong,.tip strong{background:none!important}
 .nc figure.diagram{margin:8px -6px;border:0;padding:4px 0;background:transparent}
+.nc figure.illus{margin:10px -6px}
 @media (max-width:640px){.notes table.stk{min-width:0;font-size:.92em}.notes table.stk thead{display:none}.notes table.stk,.notes table.stk tbody,.notes table.stk tr,.notes table.stk td{display:block;width:auto}.notes table.stk tr{padding:9px 12px;border-bottom:1px solid var(--line)}.notes table.stk tr:last-child{border-bottom:0}.notes table.stk td{border:0;padding:2px 0;background:none!important}.notes table.stk td::before{content:attr(data-label);display:block;font:800 .7rem/1.5 var(--ui);text-transform:uppercase;letter-spacing:.05em;color:var(--c,var(--muted))}.notes table.stk td[data-label=""]::before{display:none}.notes table.stk td:first-child{font-weight:700}.notes .nb table.stk tbody tr:nth-child(even){background:color-mix(in srgb,var(--c,var(--pri)) 5%,transparent)}}
 .notes code{font-size:.9em}.notes pre{overflow-x:auto;max-width:100%}.formula{font:600 1.05em var(--ui);background:var(--pri-soft);color:var(--pri-ink);border-radius:12px;padding:10px 14px;overflow-x:auto}.nfoot .btn{min-width:0}
 .nfoot{position:fixed;left:0;right:0;bottom:0;z-index:16;display:grid;grid-template-columns:1fr 1.5fr;gap:8px;padding:10px 12px calc(10px + var(--sb));background:var(--card);border-top:1px solid var(--line)}
