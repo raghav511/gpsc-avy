@@ -736,6 +736,52 @@ export async function updateApp(btn) {
   }
 }
 
+// ---------- Ask Gemini: a small tab tucked into the right-hand margin of every screen ----------
+function aiTab() {
+  const t = document.createElement('button');
+  t.type = 'button'; t.id = 'aitab'; t.setAttribute('aria-label', 'Ask Gemini AI'); t.setAttribute('aria-haspopup', 'menu');
+  t.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="aitg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f8cff"/><stop offset=".55" stop-color="#9b6bff"/><stop offset="1" stop-color="#ff6fae"/></linearGradient></defs><path d="M12 1.5c.7 5.6 3.9 8.8 9.5 9.5v2c-5.6.7-8.8 3.9-9.5 9.5h-2c-.7-5.6-3.9-8.8-9.5-9.5v-2C6.1 10.3 9.3 7.1 10 1.5z" fill="url(#aitg)" transform="translate(1 0)"/></svg>';
+  const place = y => { const v = Math.min(0.78, Math.max(0.14, y)); t.style.top = Math.round(v * innerHeight) + 'px'; return v; };
+  place(typeof settings.aiY === 'number' ? settings.aiY : 0.56);
+  // drag it up or down if it ever sits over something you want to see
+  let sy = 0, moved = false, startTop = 0;
+  t.addEventListener('pointerdown', e => { sy = e.clientY; moved = false; startTop = t.getBoundingClientRect().top + t.offsetHeight / 2; t.setPointerCapture && t.setPointerCapture(e.pointerId); });
+  t.addEventListener('pointermove', e => { if (!sy) return; const d = e.clientY - sy; if (Math.abs(d) > 8) moved = true; if (moved) place((startTop + d) / innerHeight); });
+  t.addEventListener('pointerup', e => { if (moved) { settings.aiY = parseFloat(t.style.top) / innerHeight; saveSettings(); } sy = 0; });
+  t.addEventListener('click', e => { if (moved) { moved = false; e.preventDefault(); return; } safeImport('./ai.js').then(m => m.menu(t)); });
+  document.body.appendChild(t);
+  // Never cover content: look at what lies under the tab and slide it to the nearest clear spot in the margin.
+  const FREE = 'html,body,#app,main,.pad,.notes,#nb,.ns,.nb,.stack';
+  const clearAt = y => {
+    for (const x of [innerWidth - 2, innerWidth - 9, innerWidth - 15]) for (let dy = -28; dy <= 28; dy += 8) {
+      const els = document.elementsFromPoint(x, y + dy).filter(e => e !== t && !t.contains(e));
+      const top = els[0];
+      if (top && !top.matches(FREE)) return false;
+    }
+    return true;
+  };
+  const settle = () => {
+    if (!t.isConnected || t.offsetParent === null) return;
+    const pref = (typeof settings.aiY === 'number' ? settings.aiY : 0.56) * innerHeight;
+    const lo = innerHeight * 0.14, hi = innerHeight * 0.78;
+    for (let d = 0; d <= hi - lo; d += 12) {
+      for (const y of d ? [pref - d, pref + d] : [pref]) {
+        if (y < lo || y > hi) continue;
+        if (clearAt(y)) { t.style.top = Math.round(y) + 'px'; t.classList.remove('thin'); return; }
+      }
+    }
+    t.style.top = Math.round(pref) + 'px'; t.classList.add('thin'); // nowhere clear: shrink to a sliver
+  };
+  let st = 0;
+  const later = ms => { clearTimeout(st); st = setTimeout(settle, ms); };
+  // fade while scrolling so it never draws the eye away from reading, then find a clear spot again
+  window.addEventListener('scroll', () => { t.classList.add('dim'); later(160); clearTimeout(t._f); t._f = setTimeout(() => t.classList.remove('dim'), 700); }, { passive: true });
+  window.addEventListener('resize', () => later(200));
+  new MutationObserver(() => later(250)).observe($('#app'), { childList: true, subtree: true });
+  t.addEventListener('pointerup', () => later(50));
+  later(300);
+}
+
 // ---------- boot ----------
 async function boot() {
   window.__gpsBooted = true;
@@ -756,6 +802,7 @@ async function boot() {
   } else depth = (history.state && history.state.d) || 0;
   if (!history.state) history.replaceState({ d: 0 }, '', location.hash || '#/');
   await render();
+  aiTab();
   if (/[?&]shared=1/.test(location.search) && 'caches' in window) {
     history.replaceState(history.state, '', location.pathname + (location.hash || '#/'));
     caches.open('inbox-gpscavy').then(c => c.match('inbox').then(res => {

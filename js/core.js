@@ -228,6 +228,7 @@ export function sheet(html, opts) {
   document.body.appendChild(sh);
   document.body.classList.add('noscroll');
   sh.addEventListener('click', e => { if (e.target === sh || e.target.closest('[data-close]')) closeSheet(); });
+  sh.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); closeSheet(); } });
   sheetClose = opts && opts.onClose;
   requestAnimationFrame(() => { sh.classList.add('on'); const f = sh.querySelector('[data-focus]') || sh.querySelector('button'); if (f) f.focus({ preventScroll: true }); });
   return sh.firstChild;
