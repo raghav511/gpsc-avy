@@ -247,6 +247,29 @@ await section('9. tab can be dragged and remembers its place', async () => {
   await page.evaluate(() => { const s = JSON.parse(localStorage.getItem('gpscavy-settings-v1')); delete s.aiY; localStorage.setItem('gpscavy-settings-v1', JSON.stringify(s)); });
 });
 
+
+await section('10. an overloaded model is skipped after a short wait', async () => {
+  await ctx.unroute('https://generativelanguage.googleapis.com/**');
+  const seen = [];
+  await ctx.route('https://generativelanguage.googleapis.com/**', async r => {
+    const m = r.request().url().split('/models/')[1].split(':')[0]; seen.push(m);
+    if (seen.length === 1) { await new Promise(x => setTimeout(x, 16000)); return r.abort().catch(() => { }); } // first model never starts answering
+    r.fulfill({ status: 200, headers: { 'content-type': 'text/event-stream', 'access-control-allow-origin': '*' }, body: 'data: ' + JSON.stringify({ candidates: [{ content: { parts: [{ text: 'Answered by the backup model.' }] } }] }) + '\r\n\r\n' });
+  });
+  await page.evaluate(() => { const c = JSON.parse(localStorage.getItem('gpscavy-ai-v1')); delete c.last; localStorage.setItem('gpscavy-ai-v1', JSON.stringify(c)); });
+  await open('#/');
+  await page.click('#aitab'); await settle(); await page.click('#aimenu [data-mode="text"]'); await settle();
+  if (await page.locator('#aiNew').count()) { await page.click('#aiNew'); await settle(); }
+  const t0 = Date.now();
+  await page.fill('#aiIn', 'hello'); await page.click('#aiSend');
+  await page.waitForSelector('.aim.model .aimd p', { timeout: 30000 });
+  const secs = (Date.now() - t0) / 1000;
+  ok(/backup model/.test(await page.locator('.aim.model').last().textContent()) && secs < 20 && seen.length === 2, 'moved to the next model after about 12 s', secs + ' s, tried ' + seen.join(' > '));
+  const last = await page.evaluate(() => JSON.parse(localStorage.getItem('gpscavy-ai-v1')).last);
+  ok(last === seen[1], 'the model that answered is remembered and tried first next time', String(last));
+  await page.keyboard.press('Escape'); await settle();
+});
+
 ok(!errors.filter(e => !/Failed to load resource|internetdisconnected|ERR_INTERNET/.test(e)).length, 'no page errors', errors.slice(0, 4).join(' | '));
 await browser.close();
 console.log(`\nAI ${prof}: ${pass} passed, ${fail} failed`);

@@ -5,10 +5,11 @@ import { $, esc, sheet, closeSheet, sheetOpen, toast, lsGet, lsSet, lsDel } from
 const AKEY = 'gpscavy-ai-v1';
 const API = 'https://generativelanguage.googleapis.com/v1beta/models/';
 // tried in turn: a busy (503), retired (404) or rate-limited (429) model falls through to the next one
-const MODELS = ['gemini-flash-latest', 'gemini-3.8-flash', 'gemini-3.5-flash', 'gemini-flash-lite-latest', 'gemini-3.5-flash-lite'];
+const MODELS = ['gemini-3.5-flash', 'gemini-flash-latest', 'gemini-3.8-flash', 'gemini-flash-lite-latest', 'gemini-3.5-flash-lite'];
+const WAIT = 12000; // a model that has not started answering by then is overloaded: move on to the next
 const MAX_MEDIA = 14 * 1024 * 1024; // inline request limit is 20 MB; base64 adds a third
 const conf = () => lsGet(AKEY, {}) || {};
-let goodModel = ''; // the model that last answered: tried first next time
+let goodModel = ''; // the model that last answered: tried first next time (also remembered on this device)
 const chat = []; // this session's conversation: {role:'user'|'model', parts:[...], view:{text, media, voice}}
 let busy = null; // AbortController of the running request
 
@@ -271,17 +272,24 @@ async function ask() {
   const sendBtn = $('#aiSend'); if (sendBtn) { sendBtn.innerHTML = ICONS.stop; sendBtn.setAttribute('aria-label', 'Stop'); }
   renderMsgs();
   const reply = { role: 'model', parts: [{ text: '' }], view: { text: '' } };
-  const body = JSON.stringify({ systemInstruction: { parts: [{ text: SYSTEM }] }, contents: chat.map(m => ({ role: m.role, parts: m.parts })), generationConfig: { temperature: 0.4, maxOutputTokens: 2048 } });
-  const first = c.model || goodModel;
+  const body = JSON.stringify({ systemInstruction: { parts: [{ text: SYSTEM }] }, contents: chat.map(m => ({ role: m.role, parts: m.parts })), generationConfig: { temperature: 0.4, maxOutputTokens: 8192 /* newer models think first; thinking counts towards this limit */ } });
+  const first = c.model || goodModel || c.last;
   const models = first ? [first].concat(MODELS.filter(m => m !== first)) : MODELS;
   let err = '';
   try {
     for (let i = 0; i < models.length; i++) {
-      const res = await fetch(API + encodeURIComponent(models[i]) + ':streamGenerateContent?alt=sse', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': c.key }, body, signal: busy.signal });
+      // each try has its own timer; Stop still cancels everything
+      const ac = new AbortController(), user = busy.signal;
+      const stop = () => ac.abort(); user.addEventListener('abort', stop);
+      let slow = false; const timer = setTimeout(() => { slow = true; ac.abort(); }, WAIT);
+      let res;
+      try { res = await fetch(API + encodeURIComponent(models[i]) + ':streamGenerateContent?alt=sse', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': c.key }, body, signal: ac.signal }); }
+      catch (e) { clearTimeout(timer); if (slow && !user.aborted && i < models.length - 1) { err = 'Gemini is very busy right now. Wait a moment and ask again.'; continue; } if (slow) { err = 'Gemini is very busy right now. Wait a moment and ask again.'; break; } throw e; }
+      clearTimeout(timer);
       if ([404, 429, 500, 503].includes(res.status) && i < models.length - 1) { if (res.status !== 404) err = await apiError(res); continue; }
       err = '';
       if (!res.ok) { err = await apiError(res); break; }
-      goodModel = models[i];
+      goodModel = models[i]; if (c.last !== goodModel) lsSet(AKEY, Object.assign(conf(), { last: goodModel }));
       chat.push(reply);
       const rd = res.body.getReader(), dec = new TextDecoder(); let buf = '';
       for (;;) {
@@ -293,7 +301,9 @@ async function ask() {
           if (!line.startsWith('data:')) continue;
           try {
             const j = JSON.parse(line.slice(5));
-            const t = ((j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts) || []).map(p => p.text || '').join('');
+            const cand = j.candidates && j.candidates[0];
+            const t = ((cand && cand.content && cand.content.parts) || []).filter(p => !p.thought).map(p => p.text || '').join('');
+            if (cand && cand.finishReason === 'MAX_TOKENS') reply.view.err = 'The answer was cut short. Ask for a shorter answer, or ask it to continue.';
             if (t) { reply.view.text += t; reply.parts[0].text = reply.view.text; paintLast(); }
             if (j.promptFeedback && j.promptFeedback.blockReason) reply.view.err = 'Gemini did not answer this one (' + j.promptFeedback.blockReason.toLowerCase() + ').';
           } catch (e) { }
