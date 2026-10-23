@@ -5,6 +5,7 @@ import {
   DRILL_FOR, wrongList, customs, saveCustom, deleteCustom, toast, hideToast, sheet, closeSheet, sheetOpen, ICON, navHtml, topbar, bar, lvlChip,
   SECS, SEC, LV, LVL, TOPIC_NAMES, prefetchSet, findDef, CKEY, lsDel
 } from './core.js';
+import { today as thoughtToday } from './thought.js';
 
 const app = $('#app');
 let cur = null;          // current screen {hash, unmount, onPop}
@@ -186,6 +187,7 @@ function homeScreen() {
     '<main class="pad stack home">' +
     '<section class="hero"><div><p class="hk">Exam on Sunday, 1 November</p><p class="hd">' + (dl === 0 ? 'Exam day' : dl + (dl === 1 ? ' day left' : ' days left')) + '</p><p class="hs">60 marks · 75 minutes · 5 sections</p></div>' +
     '<a class="badge" href="#/progress" aria-label="Last score ' + (last ? last.score : '–') + ' of ' + (last ? last.total : 60) + ', see progress"><small>Last score</small><b>' + (last ? last.score : '–') + '</b><small>of ' + (last ? last.total : 60) + '</small></a></section>' +
+    thoughtCard() +
     '<div id="a2hs"></div>' + resume +
     '<div class="two"><a class="big dark" href="#/test/' + nextMock() + '" data-pf="' + nextMock() + '"><b>Full mock</b><small>60 Q · 75 min</small></a><a class="big sun" href="#/custom"><b>Pick subjects</b><small>custom test</small></a></div>' +
     '<section class="card"><div class="ch"><h2 class="label">Your accuracy by section</h2><a class="lnk" href="#/progress">All progress</a></div><div id="acc" class="acc"><p class="sub">Loading…</p></div></section>' +
@@ -208,6 +210,15 @@ function fillAcc(el, home) {
   el.innerHTML = accRows(s, !home) + (w ? (home ? '<p class="sub">Weakest: ' + SEC[w].long + '. <a class="lnk" href="' + DRILL_FOR[w][0] + '">Practise ' + DRILL_FOR[w][1] + '</a></p>'
     : '<a class="wide sun" href="' + DRILL_FOR[w][0] + '">Practise weakest: ' + DRILL_FOR[w][1] + '</a>') : '');
 }
+function thoughtCard() {
+  const t = thoughtToday(), [en, by] = t.saying, [sa, src, mean] = t.shloka;
+  const date = new Date(t.day * 86400000).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
+  return '<section class="thought" aria-label="Thought for today"><p class="tlb">Thought for today<span>' + esc(date) + '</span></p>' +
+    '<p class="ten">“' + esc(en) + '”</p><p class="tby">' + esc(by) + '</p><hr>' +
+    '<p class="tsa" lang="sa">' + esc(sa) + '</p>' +
+    '<div class="tft"><p class="tby">' + esc(src) + '</p><button type="button" class="tmn" data-act="meaning" aria-expanded="false" aria-controls="tmean">Meaning</button></div>' +
+    '<p class="tmean" id="tmean" hidden>' + esc(mean) + '</p></section>';
+}
 function syncBtn() {
   return '<button type="button" class="syncb' + (syncing ? ' busy' : '') + '" data-act="sync" aria-label="Sync progress">' + ICON.sync + '<span>Sync progress</span></button>';
 }
@@ -224,6 +235,7 @@ document.addEventListener('click', e => {
   else if (act === 'up') openUpload();
   else if (act === 'sync') openSync();
   else if (act === 'update') updateApp(b);
+  else if (act === 'meaning') { const m = $('#tmean'), on = m.hidden; m.hidden = !on; b.setAttribute('aria-expanded', on); b.textContent = on ? 'Hide meaning' : 'Meaning'; }
   else if (act === 'other') openOther();
 });
 
