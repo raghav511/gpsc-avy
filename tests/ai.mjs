@@ -65,7 +65,7 @@ await section('1. the tab is on every screen and never covers content', async ()
     await open(h);
     if (h === '#/test/set14') { await page.click('#go'); await settle(900); }
     for (const y of [0, 600, 1800]) {
-      await page.evaluate(y => window.scrollTo(0, y), y); await settle(450);
+      await page.evaluate(y => document.getElementById('app').scrollTo(0, y), y); await settle(450);
       const r = await page.evaluate(() => {
         const t = document.getElementById('aitab'); if (!t) return { missing: true };
         const b = t.getBoundingClientRect(); const over = [];
@@ -114,9 +114,9 @@ await section('3. first use asks for a key; the key stays on this device', async
 await section('4. text question about the page: page sent once, streamed answer, follow-up', async () => {
   reqs.length = 0;
   await open('#/study/topic9');
-  await page.evaluate(() => { const s = document.querySelector('.ns[id^="92-"]'); window.scrollTo(0, s.getBoundingClientRect().top + scrollY - 100); });
+  await page.evaluate(() => { const s = document.querySelector('.ns[id^="92-"]'); document.getElementById('app').scrollTo(0, s.getBoundingClientRect().top + document.getElementById('app').scrollTop - 100); });
   await settle(500);
-  await page.evaluate(() => { const s = document.querySelector('.ns[id^="92-"]'); window.scrollTo(0, s.getBoundingClientRect().top + scrollY - 100); }); // again, once off-screen sections have laid out
+  await page.evaluate(() => { const s = document.querySelector('.ns[id^="92-"]'); document.getElementById('app').scrollTo(0, s.getBoundingClientRect().top + document.getElementById('app').scrollTop - 100); }); // again, once off-screen sections have laid out
   await settle(500);
   await page.click('#aitab'); await settle(); await page.click('#aimenu [data-mode="text"]'); await settle(500);
   const chip = await page.locator('#aiCtx').textContent();

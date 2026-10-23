@@ -1,7 +1,7 @@
 // Study: library with subject chips, notes reader with quick-check quizzes, playbooks, PDFs, Revise incorrect, past papers, search.
 import {
-  $, $$, esc, day, idle, getIndex, getMeta, getKeys, getSet, getText, getSearch, setInfo, IDX, META, H, wrongList, tokens,
-  settings, saveSettings, saveCustom, toast, ICON, topbar, navHtml, lvlChip, SEC, TOPIC_NAMES, loadAttempts, NOTE_TOPICS, hasNotes
+  $, $$, SC, esc, day, idle, getIndex, getMeta, getKeys, getSet, getText, getSearch, setInfo, IDX, META, H, wrongList, tokens,
+  settings, saveSettings, saveCustom, toast, sheet, ICON, topbar, navHtml, lvlChip, SEC, TOPIC_NAMES, loadAttempts, NOTE_TOPICS, hasNotes
 } from './core.js';
 
 const app = $('#app');
@@ -37,6 +37,8 @@ async function library(chip, sub, r, me) {
       const p = readPct(n.t);
       return '<a class="ntile tc-' + TCOL[n.t] + (p > 0 && p < 95 ? ' cont' : '') + '" href="#/study/topic' + n.t + '"><span class="nk">Topic ' + n.t + '</span><span class="nt">' + esc(n.title) + '</span><span class="nm">' + (n.diagrams + (n.pics || 0) ? n.diagrams + (n.pics || 0) + ' pictures · ' : '') + (p >= 95 ? 'read' : p > 0 ? 'continue · ' + p + '%' : 'new') + '</span></a>';
     }).join('') + '</div>';
+    const allPdf = META.pdfs.find(p => p.kind === 'notes');
+    if (allPdf) body += '<h2 class="label">Core notes as PDF · to download or share</h2><div class="list">' + pdfRow(allPdf) + (chip === 'core' ? META.pdfs.filter(p => p.kind === 'topic').map(pdfRow).join('') : row('#/study/pdfs', 'PDF', 's-core-b', 'Each topic as its own PDF', '10 files, about 0.5 to 1.5 MB each')) + '</div>';
     if (chip === 'core') body += '<h2 class="label">Quick-check quizzes</h2><div class="list">' + META.notes.map(n => row('#/test/quiz-topic' + n.t, 'Q' + n.t, 's-core-b', 'Topic ' + n.t + ' quiz', n.quiz + ' questions from the notes · learn mode')).join('') + '</div>'  +
       '<p class="sub">Every core topic is also mixed into the 25 mock sets. <a class="lnk" href="#/custom?sec=core&amp;topics=1,2,3,4">Practise topics 1–4</a></p>';
   }
@@ -46,31 +48,44 @@ async function library(chip, sub, r, me) {
   if (chip === 'all') body += '<h2 class="label">More</h2><div class="list">' + row('#/study/playbook/english', 'En', 's-comp-b', 'English Playbook (full)', 'Comprehension and grammar, with a 13-day plan') + row('#/study/papers', 'QP', 's-lr-b', 'Past GPSC question papers', META.papers.length + ' papers on the GPSC site') + row('#/study/pdfs', 'PDF', 's-ind-b', 'Printable PDFs', META.pdfs.length + ' files to print or share on WhatsApp') + '</div>';
   if (chip === 'pdfs') body += '<h2 class="label">Printable PDFs to share on WhatsApp</h2><div class="list">' + META.pdfs.map(pdfRow).join('') + '</div>';
   if (chip === 'wrong') body += await wrongBody(wl, sub, me);
-  app.innerHTML = '<header class="ph"><h1>Study</h1></header><main class="pad stack"><form class="sbox" role="search" id="sf"><span aria-hidden="true">' + ICON.search + '</span><input type="search" name="q" placeholder="Search notes: Ledum, PCOD, IMR…" aria-label="Search notes, questions and sets" enterkeyhint="search"></form>' +
-    '<div class="chips" role="tablist" aria-label="Subjects">' + chips + '</div>' + body + '</main>' + navHtml('study');
+  app.innerHTML = '<div class="ptop"><header class="ph"><h1>Study</h1></header><div class="ptabs"><div class="chips" role="tablist" aria-label="Subjects">' + chips + '</div></div></div>' +
+    '<main class="pad stack"><form class="sbox" role="search" id="sf"><span aria-hidden="true">' + ICON.search + '</span><input type="search" name="q" placeholder="Search notes: Ledum, PCOD, IMR…" aria-label="Search notes, questions and sets" enterkeyhint="search"></form>' +
+    body + '</main>' + navHtml('study');
   bindPdf(app);
   $('#sf').onsubmit = e => { e.preventDefault(); const q = e.target.q.value.trim(); if (q) API.go('#/search?q=' + encodeURIComponent(q)); };
   const wa = $('#wtest'); if (wa) wa.onclick = () => practiseWrong(wa.dataset.sub);
 }
+const kbTxt = kb => kb > 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb + ' KB';
+const pdfUrl = f => 'content/pdfs/' + encodeURIComponent(f);
 function pdfRow(p) {
-  return '<div class="row pdf"><a class="rowa" href="content/pdfs/' + encodeURIComponent(p.f) + '" target="_blank" rel="noopener"><span class="num s-ind-b">PDF</span><span class="rt"><span class="ttl">' + esc(p.name) + '</span><span class="sub">' + (p.kb > 1024 ? (p.kb / 1024).toFixed(1) + ' MB' : p.kb + ' KB') + ' · opens in a new tab</span></span></a>' +
+  return '<div class="row pdf"><a class="rowa" href="' + pdfUrl(p.f) + '" target="_blank" rel="noopener"><span class="num ' + (p.kind === 'topic' || p.kind === 'notes' ? 's-core-b' : 's-ind-b') + '">PDF</span><span class="rt"><span class="ttl">' + esc(p.name) + '</span><span class="sub">' + kbTxt(p.kb) + ' · opens in a new tab</span></span></a>' +
+    '<a class="ib" href="' + pdfUrl(p.f) + '" download="' + esc(p.f) + '" aria-label="Download ' + esc(p.name) + '">' + ICON.down + '</a>' +
     '<button type="button" class="ib" data-share="' + esc(p.f) + '" aria-label="Share ' + esc(p.name) + '">' + ICON.share + '</button></div>';
 }
+// Share the PDF file itself (WhatsApp, Mail, Files…); falls back to sharing or copying the link
+export async function sharePdf(f) {
+  const url = new URL(pdfUrl(f), location.href).href;
+  try {
+    if (navigator.canShare) {
+      toast('Preparing the PDF…');
+      const blob = await (await fetch(url)).blob();
+      const file = new File([blob], f, { type: 'application/pdf' });
+      if (navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: f.replace(/\.pdf$/, '').replace(/-/g, ' ') }); return; }
+    }
+    if (navigator.share) { await navigator.share({ title: f, url }); return; }
+    await navigator.clipboard.writeText(url); toast('Link copied. Paste it in WhatsApp to share.');
+  } catch (err) { if (!err || err.name !== 'AbortError') toast('Could not share. Open the PDF and share from there.'); }
+}
 function bindPdf(root) {
-  root.addEventListener('click', async e => {
-    const b = e.target.closest('[data-share]'); if (!b) return;
-    const f = b.dataset.share, url = new URL('content/pdfs/' + encodeURIComponent(f), location.href).href;
-    try {
-      if (navigator.canShare) {
-        toast('Preparing the PDF…');
-        const blob = await (await fetch(url)).blob();
-        const file = new File([blob], f, { type: 'application/pdf' });
-        if (navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: f }); return; }
-      }
-      if (navigator.share) { await navigator.share({ title: f, url }); return; }
-      await navigator.clipboard.writeText(url); toast('Link copied');
-    } catch (err) { if (!err || err.name !== 'AbortError') toast('Could not share. Open the PDF and share from there.'); }
-  });
+  root.addEventListener('click', e => { const b = e.target.closest('[data-share]'); if (b) sharePdf(b.dataset.share); });
+}
+// The notes as PDF: this topic, or all ten in one file
+function pdfSheet(t) {
+  const one = META.pdfs.find(p => p.kind === 'topic' && p.topic === t), all = META.pdfs.find(p => p.kind === 'notes');
+  const block = (p, lead) => p ? '<div class="pdfb"><p class="pdft"><b>' + esc(lead) + '</b><span class="sub">' + esc(p.name) + ' · ' + kbTxt(p.kb) + '</span></p><div class="row2"><a class="btn sec" href="' + pdfUrl(p.f) + '" download="' + esc(p.f) + '">' + ICON.down + 'Download</a><button type="button" class="btn vio" data-share="' + esc(p.f) + '">' + ICON.share + 'Share</button></div></div>' : '';
+  const el = sheet('<h2>Notes as PDF</h2><p class="sub">In colour, with every picture and diagram. Share it with friends on WhatsApp, or keep it to read offline.</p>' +
+    block(one, 'This topic') + block(all, 'All 10 core topics') + '<button type="button" class="btn sec" data-close>Close</button>', { label: 'Notes as PDF' });
+  el.addEventListener('click', e => { const b = e.target.closest('[data-share]'); if (b) sharePdf(b.dataset.share); });
 }
 
 // ---------- Revise incorrect ----------
@@ -134,7 +149,7 @@ async function notesScreen(t, r, me) {
   if (!n) throw new Error('No notes for topic ' + t);
   const fs = settings.fs || 1;
   app.innerHTML = '<header class="nhd tc-' + TCOL[t] + '"><div class="nrow"><button type="button" class="ib glass" data-back aria-label="Back">' + ICON.back + '</button><span class="sp"></span>' +
-    '<button type="button" class="ib glass" id="nShare" aria-label="Share these notes">' + ICON.share + '</button><button type="button" class="ib glass" id="nFs" aria-label="Text size">Aa</button></div>' +
+    '<button type="button" class="ib glass wide-ib" id="nPdf" aria-label="Download these notes as PDF">' + ICON.down + 'PDF</button><button type="button" class="ib glass" id="nShare" aria-label="Share these notes">' + ICON.share + '</button><button type="button" class="ib glass" id="nFs" aria-label="Text size">Aa</button></div>' +
     '<p class="nk">Core subject, topic ' + t + '</p><h1>' + esc(n.title) + '</h1><div class="nprog"><div class="trk wht"><i id="nBar" style="width:' + readPct(t) + '%"></i></div><span id="nPct">' + readPct(t) + '% read</span></div></header>' +
     '<nav class="toc" aria-label="Contents"><div class="tocs" id="toc">' + n.toc.map(x => '<a href="#' + x[0] + '" data-sec="' + x[0] + '">' + esc(x[1].replace(/^(\d+\.\d+)\s.*$/, '$1') === x[1] ? x[1] : shortSec(x[1])) + '</a>').join('') + '</div></nav>' +
     '<main class="notes" id="nb" style="--fs:' + fs + '"><p class="sub pad">Loading notes…</p></main>' +
@@ -155,7 +170,7 @@ async function notesScreen(t, r, me) {
   if (pics.length && !(navigator.connection && navigator.connection.saveData)) setTimeout(() => idle(() => pics.forEach(u => fetch(u).catch(() => { }))), 4000);
   const toc = $('#toc');
   const secs = Array.from(nb.querySelectorAll('.ns'));
-  function goSec(id) { const el = document.getElementById(id); if (!el) return; el.classList.remove('closed'); el.querySelector('.nh').setAttribute('aria-expanded', 'true'); const y = el.getBoundingClientRect().top + window.scrollY - tocH(); window.scrollTo({ top: y, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }
+  function goSec(id) { const el = document.getElementById(id); if (!el) return; el.classList.remove('closed'); el.querySelector('.nh').setAttribute('aria-expanded', 'true'); const y = el.getBoundingClientRect().top + SC().scrollTop - tocH(); SC().scrollTo({ top: y, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }
   const tocH = () => (toc.parentNode.getBoundingClientRect().height || 56) + 8;
   toc.addEventListener('click', e => { const a = e.target.closest('a[data-sec]'); if (!a) return; e.preventDefault(); goSec(a.dataset.sec); });
   let active = null;
@@ -165,7 +180,7 @@ async function notesScreen(t, r, me) {
     const i = secs.findIndex(s => s.id === id), nx = secs[i + 1];
     const nn = $('#nNext'); nn.textContent = nx ? (/^\d+\.\d+/.test(n.toc[i + 1][1]) ? 'Next: ' + n.toc[i + 1][1].split(' ')[0] : 'Next section') : 'Back to top'; nn.dataset.to = nx ? nx.id : '';
   }
-  $('#nNext').onclick = e => { const to = e.currentTarget.dataset.to; if (to) goSec(to); else window.scrollTo(0, 0); };
+  $('#nNext').onclick = e => { const to = e.currentTarget.dataset.to; if (to) goSec(to); else SC().scrollTo(0, 0); };
   setActive(secs[0] && secs[0].id);
   let raf = 0, saveT = 0;
   const bar = $('#nBar'), pct = $('#nPct');
@@ -173,11 +188,11 @@ async function notesScreen(t, r, me) {
     if (raf) return;
     raf = requestAnimationFrame(() => {
       raf = 0;
-      const H = document.documentElement.scrollHeight - innerHeight;
-      const p = Math.min(100, Math.round(H > 0 ? window.scrollY / H * 100 : 100));
+      const sc = SC(), H = sc.scrollHeight - sc.clientHeight;
+      const p = Math.min(100, Math.round(H > 0 ? sc.scrollTop / H * 100 : 100));
       const top = tocH() + 10;
       let cur = secs[0];
-      for (const s of secs) { if (s.offsetTop - top <= window.scrollY) cur = s; else break; }
+      for (const s of secs) { if (s.offsetTop - top <= sc.scrollTop) cur = s; else break; }
       if (cur) setActive(cur.id);
       if (p > readPct(t)) {
         bar.style.width = p + '%'; pct.textContent = p + '% read';
@@ -186,11 +201,12 @@ async function notesScreen(t, r, me) {
       }
     });
   };
-  window.addEventListener('scroll', onScroll, { passive: true });
-  me.unmount = () => { window.removeEventListener('scroll', onScroll); clearTimeout(saveT); saveSettings(); };
+  const scEl = SC(); scEl.addEventListener('scroll', onScroll, { passive: true });
+  me.unmount = () => { scEl.removeEventListener('scroll', onScroll); clearTimeout(saveT); saveSettings(); };
   $('#nFs').onclick = () => { settings.fs = settings.fs >= 1.25 ? 1 : (settings.fs || 1) >= 1.12 ? 1.25 : 1.12; nb.style.setProperty('--fs', settings.fs); saveSettings(); };
+  $('#nPdf').onclick = () => pdfSheet(t);
   $('#nShare').onclick = () => import('./runner.js').then(m => m.shareLink(location.href.split('#')[0] + '#/study/topic' + t, 'Topic ' + t + ' notes: ' + n.title));
-  if (r.q.h) requestAnimationFrame(() => { const el = document.getElementById(r.q.h); if (el) { const s = el.closest('.ns'); if (s) s.classList.remove('closed'); window.scrollTo(0, el.getBoundingClientRect().top + scrollY - tocH()); } });
+  if (r.q.h) requestAnimationFrame(() => { const el = document.getElementById(r.q.h); if (el) { const s = el.closest('.ns'); if (s) s.classList.remove('closed'); SC().scrollTo(0, el.getBoundingClientRect().top + SC().scrollTop - tocH()); } });
 }
 function openZoom(img) {
   const z = document.createElement('div');
@@ -237,7 +253,7 @@ async function playbookScreen(name, r, me) {
     const ft = box.querySelector('footer'); if (ft) ft.remove();
   }
   box.querySelectorAll('a[href^="#"]:not([href^="#/"])').forEach(a => { const id = a.getAttribute('href').slice(1); a.dataset.sec = 'pb-' + id; });
-  const go = id => { const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - 70, behavior: 'smooth' }); };
+  const go = id => { const el = document.getElementById(id); if (el) SC().scrollTo({ top: el.getBoundingClientRect().top + SC().scrollTop - 70, behavior: 'smooth' }); };
   document.querySelector('.toc').addEventListener('click', e => { const a = e.target.closest('a[data-sec]'); if (a) { e.preventDefault(); go(a.dataset.sec); } });
   box.addEventListener('click', e => {
     const a = e.target.closest('a[data-sec]'); if (a) { e.preventDefault(); go(a.dataset.sec); return; }

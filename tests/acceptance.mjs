@@ -179,7 +179,8 @@ await section('2c. each Study chip shows the right list', async () => {
     (not[k] || []).forEach(l => ok(!labels.includes(l), 'study ' + k + ' hides ' + l));
   }
   await open('#/study/pdfs');
-  ok(await page.locator('.row.pdf').count() === 30, 'all 30 PDFs listed');
+  const npdf = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/meta.json'), 'utf8')).pdfs.length;
+  ok(npdf >= 40 && await page.locator('.row.pdf').count() === npdf, 'all ' + npdf + ' PDFs listed, with the 10 core topics and the all-in-one');
   const href = await page.locator('.row.pdf a').first().getAttribute('href');
   const res = await page.request.get(BASE + href);
   ok(res.ok() && (res.headers()['content-type'] || '').includes('pdf'), 'PDF opens', href);
@@ -471,7 +472,7 @@ await section('7. notes: diagrams render, colour cards, no sideways page scroll,
       });
       ok(loaded.every(([n, w]) => n > 0 && w > 200), 'pictures load and fit topic ' + t, JSON.stringify(loaded));
     }
-    const sw = await page.evaluate(() => [document.documentElement.scrollWidth, innerWidth]);
+    const sw = await page.evaluate(() => [Math.max(document.documentElement.scrollWidth, document.getElementById('app').scrollWidth), innerWidth]);
     ok(sw[0] <= sw[1], 'no horizontal page scroll topic ' + t, sw.join(' vs '));
     const tbl = await page.$$eval('#nb .tw', ts => ts.length);
     ok(tbl > 0, 'tables wrapped for sideways scroll topic ' + t);
@@ -502,8 +503,26 @@ await section('7. notes: diagrams render, colour cards, no sideways page scroll,
   const q = QUIZ['quiz-topic9'].questions[0];
   await page.click('#rq [data-o="' + q.ans + '"]');
   ok(await page.locator('.fb.ok').count() === 1, 'learn mode reveals the answer');
-  for (const pb of ['gk', 'english']) { await open('#/study/playbook/' + pb); await page.waitForSelector('#pb section'); const sw = await page.evaluate(() => [document.documentElement.scrollWidth, innerWidth]); ok(sw[0] <= sw[1], 'no horizontal scroll playbook ' + pb, sw.join(' vs ')); }
-  for (const h of ['#/', '#/tests', '#/progress', '#/study', '#/custom?sec=core', '#/test/set1v3']) { await open(h); const sw = await page.evaluate(() => [document.documentElement.scrollWidth, innerWidth]); ok(sw[0] <= sw[1], 'no horizontal scroll ' + h, sw.join(' vs ')); }
+  for (const pb of ['gk', 'english']) { await open('#/study/playbook/' + pb); await page.waitForSelector('#pb section'); const sw = await page.evaluate(() => [Math.max(document.documentElement.scrollWidth, document.getElementById('app').scrollWidth), innerWidth]); ok(sw[0] <= sw[1], 'no horizontal scroll playbook ' + pb, sw.join(' vs ')); }
+  for (const h of ['#/', '#/tests', '#/progress', '#/study', '#/custom?sec=core', '#/test/set1v3']) { await open(h); const sw = await page.evaluate(() => [Math.max(document.documentElement.scrollWidth, document.getElementById('app').scrollWidth), innerWidth]); ok(sw[0] <= sw[1], 'no horizontal scroll ' + h, sw.join(' vs ')); }
+});
+
+
+await section('7b. headers and the bottom bar stay put while scrolling', async () => {
+  for (const [h, top] of [['#/tests', '.ptop'], ['#/study', '.ptop'], ['#/progress', '.ptop'], ['#/', '.ptop'], ['#/study/topic6', '.toc']]) {
+    await open(h);
+    const r = await page.evaluate(async sel => {
+      const a = document.getElementById('app'), hd = document.querySelector(sel), nav = document.querySelector('.bnav, .nfoot');
+      const before = [hd.getBoundingClientRect().top, nav && nav.getBoundingClientRect().bottom];
+      a.scrollTo(0, 1500); await new Promise(r => setTimeout(r, 300));
+      const after = [hd.getBoundingClientRect().top, nav && nav.getBoundingClientRect().bottom];
+      return { scrolled: a.scrollTop, page: document.scrollingElement.scrollTop, before, after, vh: innerHeight };
+    }, top);
+    ok(r.page === 0, 'the page itself never scrolls ' + h, JSON.stringify(r));
+    ok(r.scrolled > 0 || h === '#/', 'content scrolls ' + h, JSON.stringify(r));
+    ok(r.after[0] >= 0 && r.after[0] <= 2, 'top header pinned ' + h, JSON.stringify(r));
+    ok(r.after[1] === null || Math.abs(r.after[1] - r.vh) < 2, 'bottom bar pinned ' + h, JSON.stringify(r));
+  }
 });
 
 // ---------- 8. errors, PWA basics, search ----------

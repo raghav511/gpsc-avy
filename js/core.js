@@ -20,6 +20,8 @@ export const LVK = { easy: 'E', intermediate: 'I', hard: 'H' };
 export const TOPIC_NAMES = { 1: 'Organon', 2: 'Materia Medica', 3: 'Pharmacy', 4: 'Repertory', 5: 'Anatomy & Physio', 6: 'Pathology', 7: 'Medicine', 8: 'Obs, Gynae, Paeds', 9: 'Surgery, ENT, Eye', 10: 'Community & Forensic' };
 export const EXAM = new Date('2026-11-01T00:00:00+05:30');
 
+// the one scrolling area of the app (the page itself never scrolls)
+export const SC = () => document.getElementById('app');
 export const $ = (s, r = document) => r.querySelector(s);
 export const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };

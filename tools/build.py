@@ -376,11 +376,15 @@ def main():
             pdfs.append({'f': f, 'name': 'GK drills 1 to 6', 'kind': 'gk', 'kb': kb})
         elif 'English-Drills' in f:
             pdfs.append({'f': f, 'name': 'English drills 1 to 4', 'kind': 'en', 'kb': kb})
-        elif 'Topic-8' in f:
-            pdfs.append({'f': f, 'name': 'Topic 8 notes: Obs, Gynae & Paeds', 'kind': 'topic', 'topic': 8, 'kb': kb})
+        elif re.match(r'Topic-(\d+)-', f):
+            t = int(re.match(r'Topic-(\d+)-', f).group(1))
+            pdfs.append({'f': f, 'name': 'Topic %d notes: %s' % (t, NOTE_TITLES[t]), 'kind': 'topic', 'topic': t, 'num': t, 'kb': kb})
+        elif f == 'GPSC-Core-Notes-All-Topics.pdf':
+            pdfs.append({'f': f, 'name': 'Core notes: all 10 topics in one PDF', 'kind': 'notes', 'kb': kb})
         else:
             pdfs.append({'f': f, 'name': f[:-4].replace('-', ' '), 'kind': 'other', 'kb': kb})
-    pdfs.sort(key=lambda p: ({'all': 0, 'set': 1, 'lvl': 2, 'gk': 3, 'en': 4, 'topic': 5}.get(p['kind'], 9), p.get('num', 0)))
+    pdfs.sort(key=lambda p: ({'notes': 0, 'topic': 1, 'all': 2, 'set': 3, 'lvl': 4, 'gk': 5, 'en': 6}.get(p['kind'], 9), p.get('num', 0)))
+    notes_pdfs_fresh()
 
     playbooks = build_playbooks()
 
@@ -403,6 +407,23 @@ def main():
     unused = [k for k, f in FIGS.items() if not f.get('used')]
     assert not unused, 'pictures not placed in any notes: %s' % unused
     print('diagrams', sum(n['diagrams'] for n in notes), 'pictures', sum(n['pics'] for n in notes), 'playbook secs', playbooks)
+
+
+def notes_pdfs_fresh():
+    """The topic PDFs must match the notes: same hash as tools/notes_pdf.mjs computes."""
+    h = hashlib.sha1()
+    for t in note_topics():
+        h.update(open(os.path.join(OUT, 'notes', 'topic%d.html' % t), 'rb').read())
+    for f in sorted(os.listdir(os.path.join(OUT, 'figs'))):
+        h.update(open(os.path.join(OUT, 'figs', f), 'rb').read())
+    j = os.path.join(C, 'pdfs', 'notes-pdf.json')
+    made = json.load(open(j))['hash'] if os.path.exists(j) else ''
+    if made != h.hexdigest()[:12]:
+        msg = 'notes changed since the topic PDFs were made: serve the repo and run  node tools/notes_pdf.mjs  then build again'
+        if os.environ.get('GPSC_ALLOW_STALE_PDF'):
+            print('WARNING', msg)
+        else:
+            raise SystemExit(msg)
 
 
 def stamp_sw():

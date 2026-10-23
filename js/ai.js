@@ -4,9 +4,11 @@ import { $, esc, sheet, closeSheet, sheetOpen, toast, lsGet, lsSet, lsDel } from
 
 const AKEY = 'gpscavy-ai-v1';
 const API = 'https://generativelanguage.googleapis.com/v1beta/models/';
-const MODELS = ['gemini-flash-latest', 'gemini-2.5-flash'];
+// tried in turn: a busy (503), retired (404) or rate-limited (429) model falls through to the next one
+const MODELS = ['gemini-flash-latest', 'gemini-3.8-flash', 'gemini-3.5-flash', 'gemini-flash-lite-latest', 'gemini-3.5-flash-lite'];
 const MAX_MEDIA = 14 * 1024 * 1024; // inline request limit is 20 MB; base64 adds a third
 const conf = () => lsGet(AKEY, {}) || {};
+let goodModel = ''; // the model that last answered: tried first next time
 const chat = []; // this session's conversation: {role:'user'|'model', parts:[...], view:{text, media, voice}}
 let busy = null; // AbortController of the running request
 
@@ -270,13 +272,16 @@ async function ask() {
   renderMsgs();
   const reply = { role: 'model', parts: [{ text: '' }], view: { text: '' } };
   const body = JSON.stringify({ systemInstruction: { parts: [{ text: SYSTEM }] }, contents: chat.map(m => ({ role: m.role, parts: m.parts })), generationConfig: { temperature: 0.4, maxOutputTokens: 2048 } });
-  const models = c.model ? [c.model] : MODELS;
+  const first = c.model || goodModel;
+  const models = first ? [first].concat(MODELS.filter(m => m !== first)) : MODELS;
   let err = '';
   try {
     for (let i = 0; i < models.length; i++) {
       const res = await fetch(API + encodeURIComponent(models[i]) + ':streamGenerateContent?alt=sse', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': c.key }, body, signal: busy.signal });
-      if (res.status === 404 && i < models.length - 1) continue;
+      if ([404, 429, 500, 503].includes(res.status) && i < models.length - 1) { if (res.status !== 404) err = await apiError(res); continue; }
+      err = '';
       if (!res.ok) { err = await apiError(res); break; }
+      goodModel = models[i];
       chat.push(reply);
       const rd = res.body.getReader(), dec = new TextDecoder(); let buf = '';
       for (;;) {
@@ -320,6 +325,7 @@ async function apiError(res) {
   try { const j = await res.json(); msg = (j.error && j.error.message) || ''; } catch (e) { }
   if (res.status === 400 && /api key/i.test(msg) || res.status === 401 || res.status === 403) return 'Your Gemini API key was not accepted. Open settings (the gear) and check it.';
   if (res.status === 429) return 'Gemini\'s free limit is used up for now. Wait a minute and ask again.';
+  if (res.status === 503) return 'Gemini is very busy right now. Wait a moment and ask again.';
   if (res.status === 400 && /mime|unsupported|inline/i.test(msg)) return 'Gemini could not read that file type. Try a photo, or a shorter video.';
   return 'Gemini could not answer (' + res.status + (msg ? ': ' + msg.slice(0, 140) : '') + ').';
 }
@@ -333,6 +339,7 @@ export function md(s) {
     let m;
     if ((m = /^\s*[-*•]\s+(.*)/.exec(l))) { if (list !== 'ul') { end(); out += '<ul>'; list = 'ul'; } out += '<li>' + inl(m[1]) + '</li>'; }
     else if ((m = /^\s*\d+[.)]\s+(.*)/.exec(l))) { if (list !== 'ol') { end(); out += '<ol>'; list = 'ol'; } out += '<li>' + inl(m[1]) + '</li>'; }
+    else if (/^\s*([-*_])(\s*\1){2,}\s*$/.test(l)) { end(); out += '<hr>'; }
     else if ((m = /^#{1,4}\s+(.*)/.exec(l))) { end(); out += '<p class="aihd">' + inl(m[1]) + '</p>'; }
     else if (l.trim()) { end(); out += '<p>' + inl(l) + '</p>'; }
     else end();
@@ -356,7 +363,7 @@ export function keySheet(then) {
   $('#aiSave').onclick = () => {
     const k = $('#aiKey').value.trim(), m = $('#aiModel').value.trim();
     const e = $('#aiKeyErr');
-    if (!/^[A-Za-z0-9_\-]{20,}$/.test(k)) { e.hidden = false; e.textContent = 'That does not look like a Gemini API key. It is a long code, usually starting with AIza.'; return; }
+    if (!/^[A-Za-z0-9_.\-]{20,}$/.test(k)) { e.hidden = false; e.textContent = 'That does not look like a Gemini API key. It is a long code with no spaces, starting with AIza or AQ.'; return; }
     lsSet(AKEY, { key: k, model: m || '' });
     closeSheet(true); toast('Gemini is connected.');
     if (then) then();

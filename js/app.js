@@ -1,6 +1,6 @@
 // GPSCavy app shell: router, Home, Tests, drills, custom builder, Progress, progress-file sync.
 import {
-  $, $$, esc, fmt, day, daysLeft, idle, lsGet, lsSet, settings, saveSettings, getIndex, getMeta, getKeys, getPool, setInfo, IDX, KEYS,
+  $, $$, SC, esc, fmt, day, daysLeft, idle, lsGet, lsSet, settings, saveSettings, getIndex, getMeta, getKeys, getPool, setInfo, IDX, KEYS,
   H, loadAttempts, saveAttempts, findAttempt, cleanAttempt, grade, tokens, listInProgress, loadState, stateKey, remaining, stats, weakest,
   DRILL_FOR, wrongList, customs, saveCustom, deleteCustom, toast, hideToast, sheet, closeSheet, sheetOpen, ICON, navHtml, topbar, bar, lvlChip,
   SECS, SEC, LV, LVL, TOPIC_NAMES, prefetchSet, findDef, CKEY, lsDel, NOTE_TOPICS, hasNotes
@@ -65,7 +65,7 @@ export function back() {
   if (depth > 0) history.back();
   else go(parentOf(location.hash) || '#/', true);
 }
-function remember() { scrolls.set(location.hash, window.scrollY); }
+function remember() { scrolls.set(location.hash, SC().scrollTop); }
 window.addEventListener('popstate', e => {
   const d = (e.state && e.state.d) || 0;
   // a sheet open, or a running test: Back closes the sheet / asks before leaving
@@ -106,7 +106,7 @@ async function render(restore) {
   }
   if (me !== cur) return;
   const y = restore ? scrolls.get(r.hash) : 0;
-  window.scrollTo(0, y || 0);
+  SC().scrollTo(0, y || 0);
 }
 export const api = { go, back, parse, parentOf, testParent, render, openDownload, openUpload, loadRunner, loadStudy };
 
@@ -120,7 +120,7 @@ document.addEventListener('click', e => {
     e.preventDefault();
     const href = a.getAttribute('href');
     const nav = a.dataset.nav;
-    if (nav && cur && cur.hash === href) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    if (nav && cur && cur.hash === href) { SC().scrollTo({ top: 0, behavior: 'smooth' }); return; }
     go(href, !!a.dataset.replace);
   }
 });
@@ -185,7 +185,7 @@ function homeScreen() {
   const tnames = { 1: 'Organon & Philosophy', 2: 'Materia Medica', 3: 'Pharmacy', 4: 'Repertory', 5: 'Anatomy & Physiology', 6: 'Pathology', 7: 'Practice of Medicine', 8: 'Obs, Gynae & Paeds', 9: 'Surgery', 10: 'Community & Forensic' };
   const dl = daysLeft();
   app.innerHTML =
-    '<header class="hhead"><div class="brand"><span class="logo" aria-hidden="true">G</span><span><b>GPSCavy</b><small>Homoeopathic Physician · CBRT</small></span></div><div class="hact"><div class="hbtns"><button type="button" class="updb" data-act="update" aria-label="Update app">' + UPD_ICON + '<span>Update app</span></button>' + syncBtn() + '</div><a class="ib white" href="#/search" aria-label="Search questions, notes and sets">' + ICON.search + '</a></div></header>' +
+    '<div class="ptop"><header class="hhead"><div class="brand"><span class="logo" aria-hidden="true">G</span><span><b>GPSCavy</b><small>Homoeopathic Physician · CBRT</small></span></div><div class="hact"><div class="hbtns"><button type="button" class="updb" data-act="update" aria-label="Update app">' + UPD_ICON + '<span>Update app</span></button>' + syncBtn() + '</div><a class="ib white" href="#/search" aria-label="Search questions, notes and sets">' + ICON.search + '</a></div></header></div>' +
     '<main class="pad stack home">' +
     '<section class="hero"><div><p class="hk">Exam on Sunday, 1 November</p><p class="hd">' + (dl === 0 ? 'Exam day' : dl + (dl === 1 ? ' day left' : ' days left')) + '</p><p class="hs">60 marks · 75 minutes · 5 sections</p></div>' +
     '<a class="badge" href="#/progress" aria-label="Last score ' + (last ? last.score : '–') + ' of ' + (last ? last.total : 60) + ', see progress"><small>Last score</small><b>' + (last ? last.score : '–') + '</b><small>of ' + (last ? last.total : 60) + '</small></a></section>' +
@@ -289,7 +289,7 @@ async function testsScreen(r) {
       : '<p class="empty">Tests you build by subject and save are kept here so you can retake them.</p>') + '</div>' +
       '<h2 class="label">Past attempts</h2><div class="list cv">' + (H.length ? H.map(attRow).join('') : '<p class="empty">No attempts yet. Submit a test and it is listed here with its score, wrong answers and time used.</p>') + '</div>';
   }
-  app.innerHTML = '<header class="ph"><h1>Tests</h1></header><main class="pad stack">' + tabs + body + '</main>' +
+  app.innerHTML = '<div class="ptop"><header class="ph"><h1>Tests</h1></header><div class="ptabs">' + tabs + '</div></div><main class="pad stack">' + body + '</main>' +
     '<div class="fab-wrap"><a class="fab" href="#/custom">' + ICON.plus + 'Build a test by subject</a></div>' + navHtml('tests');
   app.onclick = null;
   const main = app.querySelector('main');
@@ -400,14 +400,14 @@ async function customScreen(r) {
       else if ('alltopics' in d) { const all = Object.values(cb.topics).every(Boolean); for (let i = 1; i <= 10; i++) cb.topics[i] = !all; if (all) cb.topics[1] = true; }
       else if (d.diff) cb.diff = d.diff; else if (d.time) cb.time = d.time; else if (d.mode) cb.mode = d.mode;
       else return;
-      const y = window.scrollY; draw(); window.scrollTo(0, y);
+      const y = SC().scrollTop; draw(); SC().scrollTo(0, y);
     };
     const nr = $('#norep'); nr.onchange = () => { cb.norep = nr.checked; if (cb.norep) getKeys().then(draw); else draw(); };
     const cm = $('#cmin'); if (cm) cm.onchange = () => { cb.custom = Math.max(1, +cm.value || 1); draw(); };
     $('#cgo').onclick = () => make(false);
     $('#csave').onclick = () => make(true);
   }
-  function loadPool(s) { if (pools[s]) return; getPool(s).then(p => { pools[s] = p; if (cur && cur.hash.startsWith('#/custom')) { const y = window.scrollY; draw(); window.scrollTo(0, y); } }); }
+  function loadPool(s) { if (pools[s]) return; getPool(s).then(p => { pools[s] = p; if (cur && cur.hash.startsWith('#/custom')) { const y = SC().scrollTop; draw(); SC().scrollTo(0, y); } }); }
   async function make(save) {
     await getKeys();
     const ss = selected();
@@ -439,7 +439,7 @@ function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.fl
 // ---------- Progress ----------
 async function progressScreen() {
   const me = cur;
-  app.innerHTML = '<header class="ph"><h1>Progress</h1></header><main class="pad stack" id="pm"><p class="sub">Loading…</p></main>' + navHtml('progress');
+  app.innerHTML = '<div class="ptop"><header class="ph"><h1>Progress</h1></header></div><main class="pad stack" id="pm"><p class="sub">Loading…</p></main>' + navHtml('progress');
   await getKeys();
   if (me !== cur) return;
   const full = H.filter(a => a.total === 60);
@@ -775,7 +775,7 @@ function aiTab() {
   let st = 0;
   const later = ms => { clearTimeout(st); st = setTimeout(settle, ms); };
   // fade while scrolling so it never draws the eye away from reading, then find a clear spot again
-  window.addEventListener('scroll', () => { t.classList.add('dim'); later(160); clearTimeout(t._f); t._f = setTimeout(() => t.classList.remove('dim'), 700); }, { passive: true });
+  document.addEventListener('scroll', e => { if (e.target !== SC()) return; t.classList.add('dim'); later(160); clearTimeout(t._f); t._f = setTimeout(() => t.classList.remove('dim'), 700); }, { passive: true, capture: true });
   window.addEventListener('resize', () => later(200));
   new MutationObserver(() => later(250)).observe($('#app'), { childList: true, subtree: true });
   t.addEventListener('pointerup', () => later(50));

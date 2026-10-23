@@ -502,6 +502,7 @@ body.noscroll #aitab,html.zoomed #aitab,body[data-screen=print] #aitab{display:n
 .aim.model{align-self:flex-start;background:var(--card2);color:var(--ink);border-bottom-left-radius:6px}
 .aimd ul,.aimd ol{margin:4px 0 8px;padding-left:20px}.aimd li{margin:2px 0}
 .aimd .aihd{font-weight:800}
+.aimd hr{border:0;border-top:1px solid var(--line);margin:8px 0}
 .aimd code{font-size:.85em;background:rgba(127,127,160,.15);padding:1px 4px;border-radius:4px}
 .aimedia{display:block;max-width:220px;max-height:220px;border-radius:12px;margin-bottom:6px}
 .aivoice{display:flex;align-items:center;gap:6px;opacity:.9}.aivoice svg{width:16px;height:16px}
@@ -527,6 +528,23 @@ body.noscroll #aitab,html.zoomed #aitab,body[data-screen=print] #aitab{display:n
 .aikey{width:100%;min-height:48px;border:1px solid var(--line);border-radius:12px;background:var(--card2);color:var(--ink);font:500 1rem var(--body);padding:0 12px;box-sizing:border-box}
 .aiadv summary{font:600 .85rem var(--ui);color:var(--muted);min-height:32px;cursor:pointer}
 .row2{display:grid;grid-template-columns:1fr 1.4fr;gap:8px}
+
+/* App shell: the page itself never scrolls, so iOS/Android toolbars and rubber-band bounce cannot drag the
+   bottom bar or the top headers off screen. #app is the one scrolling area; headers stick to its top. */
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+#app{position:fixed;inset:0;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;min-height:0}
+body.noscroll #app{overflow:hidden}
+.ptop{position:sticky;top:0;z-index:14;background:var(--bg)}
+.ptop .ph{padding-bottom:8px}
+.ptabs{max-width:760px;margin:0 auto;padding:0 16px 10px}
+.ptop .hhead{padding-bottom:10px}
+.pdfb{display:flex;flex-direction:column;gap:8px;background:var(--card2);border-radius:16px;padding:12px}
+.pdft{margin:0;display:flex;flex-direction:column;gap:2px}
+.pdfb .btn svg{width:18px;height:18px}
+.row.pdf .ib{flex:none}
+.ptabs .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:2px 16px 4px}
+.ptabs .chips::-webkit-scrollbar{display:none}
+.ptabs .chips>*{flex:none}
 </style>
 </head>
 <body>

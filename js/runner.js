@@ -1,7 +1,7 @@
 // Test runner, results and review. Ported from the GPSC CBRT mock-exam page (reference/mock-exam-standalone.html):
 // same saved-state shape and keys, same attempt records, same grading.
 import {
-  $, esc, fmt, day, idle, getIndex, getKeys, getSet, setInfo, KEYS, H, findAttempt, addAttempt, removeAttempt, grade, tokens,
+  $, SC, esc, fmt, day, idle, getIndex, getKeys, getSet, setInfo, KEYS, H, findAttempt, addAttempt, removeAttempt, grade, tokens,
   loadState, stateKey, lsSet, lsDel, remaining, toast, hideToast, sheet, closeSheet, ICON, topbar, bar, lvlChip, navHtml,
   SECS, SEC, LV, LVL, L5, TOPIC_NAMES, customs, saveCustom, findDef, NOTE_TOPICS, hasNotes
 } from './core.js';
@@ -187,7 +187,7 @@ function runner(set, S, me) {
     if (prevCur) { const pq = QS.find(x => String(x.n) === prevCur); if (pq) updCell(pq); }
     updCell(q); counts(); save();
   }
-  function goQ(i) { S.cur = Math.max(0, Math.min(N - 1, i)); show(); window.scrollTo(0, 0); }
+  function goQ(i) { S.cur = Math.max(0, Math.min(N - 1, i)); show(); SC().scrollTo(0, 0); }
 
   rq.addEventListener('click', e => {
     const o = e.target.closest('.opt');
