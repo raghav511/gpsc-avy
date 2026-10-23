@@ -78,18 +78,38 @@ def sentences(inner):
 PILL = re.compile(r'[§¶#]?[\d][\d\s.,:%–\-/×x·+<>≥≤°]*[A-Za-z%°]{0,3}\.?')
 
 
+def label_tables(h):
+    """Give each body cell its column heading, so narrow screens can stack rows as cards."""
+    def one(m):
+        t = m.group(0)
+        heads = [re.sub(r'<[^>]+>', '', x).strip() for x in re.findall(r'<th[^>]*>(.*?)</th>', t, re.S)]
+        if not heads:
+            return t
+        def row(r):
+            i = [0]
+            def cell(c):
+                k = i[0]; i[0] += 1
+                lab = heads[k] if k < len(heads) else ''
+                return '<td data-label="' + lab.replace('"', '&quot;') + '"' + c.group(1)
+            return re.sub(r'<td(\b[^>]*)?', lambda c: cell(c) if True else c.group(0), r.group(0).replace('<td>', '<td >'))
+        t = re.sub(r'<tbody>.*?</tbody>', lambda b: re.sub(r'<tr>.*?</tr>', row, b.group(0), flags=re.S), t, flags=re.S)
+        return t.replace('<table>', '<table class="stk">', 1)
+    return re.sub(r'<table>.*?</table>', one, h, flags=re.S)
+
+
 def inline(h):
     def pill(m):
         t = m.group(1)
         if len(t) <= 14 and PILL.fullmatch(re.sub(r'&[a-z]+;', '', t).strip()):
             return '<strong class="pill">' + t + '</strong>'
         return m.group(0)
-    return re.sub(r'<strong>([^<]{1,20})</strong>', pill, h)
+    return label_tables(re.sub(r'<strong>([^<]{1,20})</strong>', pill, h))
 
 
 LABEL = re.compile(r'<p><strong>([^<]{1,80})</strong>')
+HOOKP = re.compile(r'<p><strong>\s*(Memory hook|Hook\b|Mnemonic)', re.I)
 TRAP = re.compile(r'<p><strong>\s*(Exam trap|Trap|Traps|Pitfall|Caution|Warning|Do not confuse|Common mistake|One key to distrust)', re.I)
-TIP = re.compile(r'<p><strong>\s*(Exam tip|Tip|Remember|Note|Mnemonic|Key point|High yield)', re.I)
+TIP = re.compile(r'<p><strong>\s*(Exam tip|Tip|Remember|Note|Key point|High yield)', re.I)
 
 
 def para(b):
@@ -112,6 +132,8 @@ def callout(b):
         if re.search(r'Memory hook|Mnemonic', inner, re.I):
             return '<div class="hook">' + BULB + '<div>' + inner + '</div></div>'
         return '<div class="tip">' + STAR + '<div>' + inner + '</div></div>'
+    if HOOKP.match(b):
+        return '<div class="hook">' + BULB + '<div>' + b + '</div></div>'
     if TRAP.match(b):
         return '<div class="trap">' + WARN + '<div>' + para(b) + '</div></div>'
     if TIP.match(b):
