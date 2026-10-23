@@ -3,7 +3,7 @@
 import {
   $, esc, fmt, day, idle, getIndex, getKeys, getSet, setInfo, KEYS, H, findAttempt, addAttempt, removeAttempt, grade, tokens,
   loadState, stateKey, lsSet, lsDel, remaining, toast, hideToast, sheet, closeSheet, ICON, topbar, bar, lvlChip, navHtml,
-  SECS, SEC, LV, LVL, L5, TOPIC_NAMES, customs, saveCustom, findDef
+  SECS, SEC, LV, LVL, L5, TOPIC_NAMES, customs, saveCustom, findDef, NOTE_TOPICS, hasNotes
 } from './core.js';
 
 const app = $('#app');
@@ -378,7 +378,7 @@ async function reviewScreen(at, r, me) {
     lastP = q.passage || null;
     return '<article class="rev"><div class="qh"><b>Q' + q.n + '</b><span class="pill ' + (s === 'ok' ? 'pill-done">Right' : s === 'bad' ? 'pill-bad">Wrong' : 'pill-skip">Skipped') + '</span>' + (flags[q.n] ? '<span class="pill pill-flag">Flagged</span>' : '') + lvTag(q) + secTag(q) + '</div>' + pass +
       '<p class="qt">' + esc(q.q) + '</p><ol class="ro">' + optsOf(q).map((t, i) => { const L = L5[i]; const c = L === q.ans ? 'right' : L === a ? 'mine' : ''; if (i === 4 && L !== q.ans && L !== a) return ''; return '<li class="' + c + '"><span class="key">' + L + '</span><span>' + esc(t) + '</span><em>' + (L === q.ans ? (L === a ? 'Correct, your answer' : 'Correct answer') : L === a ? 'Your answer' : '') + '</em></li>'; }).join('') + '</ol>' +
-      '<p class="why"><b>Why ' + q.ans + ':</b> ' + esc(q.why) + '</p>' + (q.topic >= 5 ? '<a class="lnk" href="#/study/topic' + q.topic + '">Read Topic ' + q.topic + ' notes</a>' : '') + '</article>';
+      '<p class="why"><b>Why ' + q.ans + ':</b> ' + esc(q.why) + '</p>' + (hasNotes(q.topic) ? '<a class="lnk" href="#/study/topic' + q.topic + '">Read Topic ' + q.topic + ' notes</a>' : '') + '</article>';
   }).join('');
   app.innerHTML = topbar('Review', at.setName + ' · ' + at.score + '/' + at.total) + '<main class="pad stack"><div class="chips" role="group" aria-label="Filter answers">' + fchips + '</div>' + schips +
     '<div class="rlist">' + (items || '<p class="empty">Nothing in this group.</p>') + '</div><a class="wide sec" href="#/result/' + encodeURIComponent(at.id) + '">Back to result</a></main>' + navHtml('tests');

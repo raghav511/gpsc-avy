@@ -50,6 +50,9 @@ function getJSON(url) {
   return cache.get(url);
 }
 export let IDX = null, META = null, KEYS = null;
+// core topics that have notes in the app (kept in step with tools/build.py)
+export const NOTE_TOPICS = [1, 4, 5, 6, 7, 8, 9, 10];
+export const hasNotes = t => NOTE_TOPICS.includes(+t);
 const byId = new Map();
 export const getIndex = () => getJSON('data/index.json').then(d => { if (!IDX) { IDX = d; d.sets.forEach(s => byId.set(s.id, s)); } return d; });
 export const getMeta = () => getJSON('data/meta.json').then(d => (META = d));

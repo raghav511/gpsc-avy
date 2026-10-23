@@ -350,6 +350,38 @@ details.why summary{font-weight:700;color:var(--link);min-height:44px;display:fl
 figure.diagram{margin:12px 0;background:var(--card);border-radius:16px;padding:8px;contain:content;border:1px solid var(--line)}
 figure.diagram svg{display:block;width:100%;height:auto;max-width:100%}
 .notes blockquote{margin:10px 0;padding:10px 14px;border-radius:14px;background:var(--acc-soft);color:var(--acc-ink)}
+/* notes style A: colour cards, highlights, pills, callouts */
+:root{--k1:#2563eb;--k2:#0d9488;--k3:#7c3aed;--k4:#ea580c;--k5:#db2777;--k6:#65a30d;--hl:#fde68a;--pill-bg:#ccfbf1;--pill-ink:#0f766e;--hook-bg:#f3e8ff;--hook-ink:#3b0764;--hook-ic:#7c3aed;--trap-bg:#ffe4e6;--trap-ink:#881337;--trap-ic:#be123c;--tip-bg:#fef3c7;--tip-ink:#422006;--tip-ic:#b45309}
+@media (prefers-color-scheme:dark){:root{--k1:#60a5fa;--k2:#2dd4bf;--k3:#a78bfa;--k4:#fb923c;--k5:#f472b6;--k6:#a3e635;--hl:rgba(250,204,21,.32);--pill-bg:#0f3a36;--pill-ink:#5eead4;--hook-bg:#2a1748;--hook-ink:#e9d5ff;--hook-ic:#c4b5fd;--trap-bg:#3b1220;--trap-ink:#fecdd3;--trap-ic:#fb7185;--tip-bg:#3a2a0a;--tip-ink:#fde68a;--tip-ic:#fbbf24}}
+.ns{border-bottom:0;padding:4px 0 8px}
+.ns>h2 .nh{display:flex;align-items:center;gap:10px}
+.nnum{flex:none;min-width:34px;height:30px;padding:0 6px;border-radius:10px;background:var(--pri-soft);color:var(--pri-ink);font:800 .8rem/30px var(--ui);text-align:center}
+.nb{display:flex;flex-direction:column;gap:12px}
+.nb>*{margin:0}
+.nlead{color:var(--ink2)}.nlead>:first-child{margin-top:0}.nlead>:last-child{margin-bottom:0}
+.nc{--c:var(--k1);background:var(--card);border-radius:16px;padding:12px 14px 12px 16px;border-left:5px solid var(--c);box-shadow:var(--shadow);min-width:0}
+.nc.k2{--c:var(--k2)}.nc.k3{--c:var(--k3)}.nc.k4{--c:var(--k4)}.nc.k5{--c:var(--k5)}.nc.k6{--c:var(--k6)}
+.nc>:first-child{margin-top:0}.nc>:last-child{margin-bottom:0}
+.notes .nc h3{color:var(--c);margin:0 0 6px;font-size:1.02em}
+.nc>p:first-child>strong:first-child,.plead strong{color:var(--c);background:none;font-weight:800}
+.notes .nb strong{font-weight:700;background:linear-gradient(transparent 55%,var(--hl) 55%);border-radius:2px;padding:0 1px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.notes .nb strong.pill{display:inline-block;background:var(--pill-bg);color:var(--pill-ink);border-radius:7px;padding:0 6px;font-weight:800;line-height:1.45}
+.notes .nb th strong,.notes .nb h3 strong{background:none}
+.notes .nb ul{padding-left:0;list-style:none}
+.notes .nb ul>li{position:relative;padding-left:18px}
+.notes .nb ul>li::before{content:'';position:absolute;left:3px;top:.62em;width:7px;height:7px;border-radius:50%;background:var(--c,var(--pri))}
+.notes .nb ol{padding-left:1.3em}.notes .nb ol>li::marker{color:var(--c,var(--pri));font-weight:800}
+.pts>li{margin:4px 0}.plead{margin:0 0 2px}
+.nc .tw{border-color:color-mix(in srgb,var(--c) 30%,var(--line))}
+.nc th{background:color-mix(in srgb,var(--c) 14%,var(--card));color:var(--ink)}
+.notes .nb tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--c,var(--pri)) 4%,transparent)}
+.hook,.trap,.tip{display:flex;gap:10px;border-radius:16px;padding:12px 14px;align-items:flex-start}
+.hook>div,.trap>div,.tip>div{min-width:0;flex:1}.hook p,.trap p,.tip p{margin:0}
+.hook{background:var(--hook-bg);color:var(--hook-ink)}.trap{background:var(--trap-bg);color:var(--trap-ink)}.tip{background:var(--tip-bg);color:var(--tip-ink)}
+.hook .ico,.trap .ico,.tip .ico{flex:none;width:28px;height:28px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,currentColor 12%,transparent)}
+.hook .ico{color:var(--hook-ic)}.trap .ico{color:var(--trap-ic)}.tip .ico{color:var(--tip-ic)}
+.hook strong,.trap strong,.tip strong{background:none!important}
+.nc figure.diagram{margin:8px -6px;border:0;padding:4px 0;background:transparent}
 .notes code{font-size:.9em}.notes pre{overflow-x:auto;max-width:100%}.formula{font:600 1.05em var(--ui);background:var(--pri-soft);color:var(--pri-ink);border-radius:12px;padding:10px 14px;overflow-x:auto}.nfoot .btn{min-width:0}
 .nfoot{position:fixed;left:0;right:0;bottom:0;z-index:16;display:grid;grid-template-columns:1fr 1.5fr;gap:8px;padding:10px 12px calc(10px + var(--sb));background:var(--card);border-top:1px solid var(--line)}
 body[data-screen=study] .nfoot~.bnav{display:none}

@@ -3,7 +3,7 @@ import {
   $, $$, esc, fmt, day, daysLeft, idle, lsGet, lsSet, settings, saveSettings, getIndex, getMeta, getKeys, getPool, setInfo, IDX, KEYS,
   H, loadAttempts, saveAttempts, findAttempt, cleanAttempt, grade, tokens, listInProgress, loadState, stateKey, remaining, stats, weakest,
   DRILL_FOR, wrongList, customs, saveCustom, deleteCustom, toast, hideToast, sheet, closeSheet, sheetOpen, ICON, navHtml, topbar, bar, lvlChip,
-  SECS, SEC, LV, LVL, TOPIC_NAMES, prefetchSet, findDef, CKEY, lsDel
+  SECS, SEC, LV, LVL, TOPIC_NAMES, prefetchSet, findDef, CKEY, lsDel, NOTE_TOPICS, hasNotes
 } from './core.js';
 import { today as thoughtToday } from './thought.js';
 
@@ -179,8 +179,8 @@ function homeScreen() {
     const left = st.mode === 'learn' ? 'learn mode' : fmt(remaining(st)) + ' left';
     resume = '<a class="card resume" href="#/test/' + esc(st.set) + '" data-pf="' + esc(st.set) + '"><span class="ic ic-amb">' + ICON.play + '</span><span class="rt"><span class="ttl">Resume ' + esc(info.name) + '</span><span class="sub">' + done + ' of ' + total + ' answered · at question ' + ((st.cur || 0) + 1) + ' · ' + left + '</span>' + bar(done / total * 100, 'amb') + '</span></a>';
   }
-  const tday = Math.floor((Date.now() + 19800000) / 86400000) % 6 + 5;
-  const tnames = { 5: 'Anatomy & Physiology', 6: 'Pathology', 7: 'Practice of Medicine', 8: 'Obs, Gynae & Paeds', 9: 'Surgery', 10: 'Community & Forensic' };
+  const tday = NOTE_TOPICS[Math.floor((Date.now() + 19800000) / 86400000) % NOTE_TOPICS.length];
+  const tnames = { 1: 'Organon & Philosophy', 2: 'Materia Medica', 3: 'Pharmacy', 4: 'Repertory', 5: 'Anatomy & Physiology', 6: 'Pathology', 7: 'Practice of Medicine', 8: 'Obs, Gynae & Paeds', 9: 'Surgery', 10: 'Community & Forensic' };
   const dl = daysLeft();
   app.innerHTML =
     '<header class="hhead"><div class="brand"><span class="logo" aria-hidden="true">G</span><span><b>GPSCavy</b><small>Homoeopathic Physician · CBRT</small></span></div><div class="hact"><div class="hbtns"><button type="button" class="updb" data-act="update" aria-label="Update app">' + UPD_ICON + '<span>Update app</span></button>' + syncBtn() + '</div><a class="ib white" href="#/search" aria-label="Search questions, notes and sets">' + ICON.search + '</a></div></header>' +
@@ -492,7 +492,7 @@ function weakAreas(s) {
   SECS.forEach(k => { const b = s.sec[k]; if (b.n >= 5 && b.c / b.n < 0.65) out.push([b.c / b.n, '<a class="row" href="' + DRILL_FOR[k][0] + '"><span class="num s-' + k + '-b">' + Math.round(b.c / b.n * 100) + '%</span><span class="rt"><span class="ttl">' + SEC[k].long + '</span><span class="sub">Practise ' + DRILL_FOR[k][1] + '</span></span><span class="chev">' + ICON.chev + '</span></a>']); });
   const tp = {};
   H.forEach(a => { const g = grade(a.set, a.answers); if (g) g.rows.forEach(r => { if (r.sec === 'core' && r.topic) { const t = tp[r.topic] || (tp[r.topic] = { c: 0, n: 0 }); t.n++; if (r.st === 'ok') t.c++; } }); });
-  Object.keys(tp).forEach(t => { const b = tp[t]; if (b.n >= 4 && b.c / b.n < 0.6) out.push([b.c / b.n, '<a class="row" href="' + (t >= 5 ? '#/study/topic' + t : '#/custom?sec=core&topics=' + t) + '"><span class="num s-core-b">' + Math.round(b.c / b.n * 100) + '%</span><span class="rt"><span class="ttl">Core topic ' + t + ': ' + TOPIC_NAMES[t] + '</span><span class="sub">' + (t >= 5 ? 'Read the notes, then take the quiz' : 'Practise a topic ' + t + ' test') + ' · ' + b.c + ' of ' + b.n + ' right</span></span><span class="chev">' + ICON.chev + '</span></a>']); });
+  Object.keys(tp).forEach(t => { const b = tp[t]; if (b.n >= 4 && b.c / b.n < 0.6) out.push([b.c / b.n, '<a class="row" href="' + (hasNotes(t) ? '#/study/topic' + t : '#/custom?sec=core&topics=' + t) + '"><span class="num s-core-b">' + Math.round(b.c / b.n * 100) + '%</span><span class="rt"><span class="ttl">Core topic ' + t + ': ' + TOPIC_NAMES[t] + '</span><span class="sub">' + (hasNotes(t) ? 'Read the notes, then take the quiz' : 'Practise a topic ' + t + ' test') + ' · ' + b.c + ' of ' + b.n + ' right</span></span><span class="chev">' + ICON.chev + '</span></a>']); });
   out.sort((a, b) => a[0] - b[0]);
   return out.length ? '<div class="list flat">' + out.slice(0, 6).map(o => o[1]).join('') + '</div>' : '<p class="sub">' + (H.length ? 'No weak areas yet: every section and topic you have tried is at 65% or better.' : 'Weak sections and core topics show here once you have taken a few tests.') + '</p>';
 }

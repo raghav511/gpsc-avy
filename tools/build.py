@@ -11,6 +11,9 @@ Writes  data/index.json        set list, papers, pdfs (small, precached)
 Question ids and set ids are never changed.
 """
 import json, os, re, html, hashlib, shutil
+import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from stylize import stylize
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 C = os.path.join(ROOT, 'content')
@@ -22,7 +25,7 @@ TOPICS = {
     1: 'Organon and Philosophy', 2: 'Materia Medica', 3: 'Pharmacy', 4: 'Repertory',
     5: 'Anatomy and Physiology', 6: 'Pathology and Diagnostics', 7: 'Practice of Medicine',
     8: 'Obs, Gynae and Paeds', 9: 'Surgery, ENT and Eye', 10: 'Community and Forensic'}
-NOTE_TITLES = {5: 'Anatomy & Physiology', 6: 'Pathology & Diagnostics', 7: 'Practice of Medicine',
+NOTE_TITLES = {1: 'Organon & Philosophy', 2: 'Materia Medica', 3: 'Pharmacy', 4: 'Repertory', 5: 'Anatomy & Physiology', 6: 'Pathology & Diagnostics', 7: 'Practice of Medicine',
                8: 'Obs, Gynae & Paeds', 9: 'Surgery, ENT, Eye & First Aid', 10: 'Community & Forensic'}
 
 
@@ -130,26 +133,43 @@ def clean_note(topic, src):
     body = []
     if head.strip():
         body.append('<div class="nintro">' + head + '</div>')
-    for p in secs:
+    for si, p in enumerate(secs):
         m = re.match(r'<h2 id="([^"]+)">(.*?)</h2>', p, re.S)
         sid, title = m.group(1), strip_tags(m.group(2)).strip()
         rest = p[m.end():]
+        if 'practice-mcqs' not in sid:
+            rest = stylize(rest, seed=si)
         short = title
         mm = re.match(r'(\d+\.\d+)\s', title)
         if mm:
             short = title
         toc.append([sid, short])
         body.append('<section class="ns" id="' + sid + '"><h2><button type="button" class="nh" aria-expanded="true" data-ns="' + sid + '">' +
-                    html.escape(title) + '</button></h2><div class="nb">' + rest + '</div></section>')
+                    badge(title) + '</button></h2><div class="nb">' + rest + '</div></section>')
     diagrams = src.count('<figure class="diagram"')
     return '\n'.join(body), toc, diagrams
+
+
+def badge(title):
+    m = re.match(r'(\d+\.\d+)\s+(.*)', title)
+    if m:
+        return '<span class="nnum">' + m.group(1) + '</span><span>' + html.escape(m.group(2)) + '</span>'
+    return html.escape(title)
+
+
+def note_topics():
+    ts = [t for t in range(1, 11) if os.path.exists(os.path.join(C, 'notes', 'topic%d.html' % t))]
+    core = open(os.path.join(ROOT, 'js', 'core.js'), encoding='utf-8').read()
+    assert 'NOTE_TOPICS = [' + ', '.join(map(str, ts)) + '];' in core, 'update NOTE_TOPICS in js/core.js to %s' % ts
+    return ts
+    return [t for t in range(1, 11) if os.path.exists(os.path.join(C, 'notes', 'topic%d.html' % t))]
 
 
 def build_notes(index):
     notes = []
     search = []
     quizzes = []
-    for t in range(5, 11):
+    for t in note_topics():
         src = open(os.path.join(C, 'notes', 'topic%d.html' % t), encoding='utf-8').read()
         quiz = parse_quiz(t, src)
         body, toc, diag = clean_note(t, src)

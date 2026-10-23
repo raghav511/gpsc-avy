@@ -1,14 +1,14 @@
 // Study: library with subject chips, notes reader with quick-check quizzes, playbooks, PDFs, Revise incorrect, past papers, search.
 import {
   $, $$, esc, day, idle, getIndex, getMeta, getKeys, getSet, getText, getSearch, setInfo, IDX, META, H, wrongList, tokens,
-  settings, saveSettings, saveCustom, toast, ICON, topbar, navHtml, lvlChip, SEC, TOPIC_NAMES, loadAttempts
+  settings, saveSettings, saveCustom, toast, ICON, topbar, navHtml, lvlChip, SEC, TOPIC_NAMES, loadAttempts, NOTE_TOPICS, hasNotes
 } from './core.js';
 
 const app = $('#app');
 let API = null;
 const CHIPS = [['all', 'All'], ['core', 'Core'], ['gk', 'GK'], ['gram', 'English Grammar'], ['comp', 'English Comprehension'], ['pdfs', 'PDFs'], ['wrong', 'Revise incorrect']];
 const WSUB = [['all', 'All'], ['core', 'Core'], ['gk', 'GK'], ['comp', 'English comprehension'], ['gram', 'English grammar'], ['pdfs', 'PDFs']];
-const TCOL = { 5: 'core', 6: 'ind', 7: 'lr', 8: 'gk', 9: 'gram', 10: 'comp' };
+const TCOL = { 1: 'comp', 2: 'gram', 3: 'lr', 4: 'ind', 5: 'core', 6: 'ind', 7: 'lr', 8: 'gk', 9: 'gram', 10: 'comp' };
 
 export async function route(r, me, api) {
   API = api;
@@ -37,8 +37,8 @@ async function library(chip, sub, r, me) {
       const p = readPct(n.t);
       return '<a class="ntile tc-' + TCOL[n.t] + (p > 0 && p < 95 ? ' cont' : '') + '" href="#/study/topic' + n.t + '"><span class="nk">Topic ' + n.t + '</span><span class="nt">' + esc(n.title) + '</span><span class="nm">' + (n.diagrams ? n.diagrams + ' diagrams · ' : '') + (p >= 95 ? 'read' : p > 0 ? 'continue · ' + p + '%' : 'new') + '</span></a>';
     }).join('') + '</div>';
-    if (chip === 'core') body += '<h2 class="label">Quick-check quizzes</h2><div class="list">' + META.notes.map(n => row('#/test/quiz-topic' + n.t, 'Q' + n.t, 's-core-b', 'Topic ' + n.t + ' quiz', n.quiz + ' questions from the notes · learn mode')).join('') + '</div>' +
-      '<p class="sub">Topics 1 to 4 (Organon, Materia Medica, Pharmacy, Repertory) are covered by the 25 mock sets. <a class="lnk" href="#/custom?sec=core&amp;topics=1,2,3,4">Practise topics 1–4</a></p>';
+    if (chip === 'core') body += '<h2 class="label">Quick-check quizzes</h2><div class="list">' + META.notes.map(n => row('#/test/quiz-topic' + n.t, 'Q' + n.t, 's-core-b', 'Topic ' + n.t + ' quiz', n.quiz + ' questions from the notes · learn mode')).join('') + '</div>'  +
+      '<p class="sub">Every core topic is also mixed into the 25 mock sets. <a class="lnk" href="#/custom?sec=core&amp;topics=1,2,3,4">Practise topics 1–4</a></p>';
   }
   if (show('gk')) body += '<h2 class="label">General knowledge</h2><div class="list">' + row('#/study/playbook/gk', 'GK', 's-gk-b', 'GK Playbook', 'Goa and India GK: current affairs, Goa statehood, polity, days') + row('#/drills/gk', '6', 's-gk-b', 'GK drills 1–6', '25 questions each, 15 minutes') + '</div>';
   if (show('comp')) body += '<h2 class="label">English comprehension</h2><div class="list">' + row('#/study/playbook/english-comp', 'Rc', 's-comp-b', 'Reading a passage', 'English playbook: main idea, inference, tone, traps') + row('#/drills/comp', '12', 's-comp-b', 'Comprehension drills', 'Real GPSC passages: 2 drills + 10 passage drills') + '</div>';
@@ -114,7 +114,7 @@ async function wrongBody(wl, sub, me) {
     const opts = q.opts.concat(['None of the above']);
     return '<article class="rev"><div class="qh">' + (q.lvl ? lvlChip(q.lvl) : '') + '<span class="chip s-' + q.sec + '-c">' + esc(q.sec === 'core' && q.topic ? 'Topic ' + q.topic + ' · ' + TOPIC_NAMES[q.topic] : SEC[q.sec].name) + '</span><span class="sub">' + esc((setInfo(w.set) || { name: w.set.startsWith('custom-') ? 'Custom test' : w.set }).name) + ' · ' + day(w.when) + '</span></div>' +
       '<p class="qt">' + esc(q.q) + '</p><p class="yo"><span class="bad">You: ' + w.a + '. ' + esc(opts['ABCDE'.indexOf(w.a)] || '') + '</span><span class="good">Answer: ' + q.ans + '. ' + esc(opts['ABCDE'.indexOf(q.ans)]) + '</span></p>' +
-      '<details class="why"><summary>Why</summary><p>' + esc(q.why) + '</p></details>' + (q.topic >= 5 ? '<a class="lnk" href="#/study/topic' + q.topic + '">Read Topic ' + q.topic + ' notes</a>' : '') + '</article>';
+      '<details class="why"><summary>Why</summary><p>' + esc(q.why) + '</p></details>' + (hasNotes(q.topic) ? '<a class="lnk" href="#/study/topic' + q.topic + '">Read Topic ' + q.topic + ' notes</a>' : '') + '</article>';
   }).join('') + '</div>';
   return h;
 }

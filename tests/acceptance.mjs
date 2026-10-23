@@ -23,7 +23,8 @@ const PROFILES = {
 const prof = args.profile || 'pixel';
 const DATA = JSON.parse(fs.readFileSync(path.join(ROOT, 'content/data/sets.json'), 'utf8'));
 const byId = Object.fromEntries(DATA.sets.map(s => [s.id, s]));
-const QUIZ = {}; for (let t = 5; t <= 10; t++) QUIZ['quiz-topic' + t] = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/sets/quiz-topic' + t + '.json'), 'utf8'));
+const NOTE_TS = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/meta.json'), 'utf8')).notes.map(n => n.t);
+const QUIZ = {}; for (const t of NOTE_TS) QUIZ['quiz-topic' + t] = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/sets/quiz-topic' + t + '.json'), 'utf8'));
 fs.readdirSync(path.join(ROOT, 'data/sets')).filter(f => f.startsWith('compd')).forEach(f => { const s = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/sets', f), 'utf8')); byId[s.id] = s; });
 Object.assign(byId, QUIZ);
 
@@ -437,9 +438,9 @@ await section('6b. Sync progress: hub merge, never loses anything, auto-sync, he
   await page.unroute(HUBURL + '*');
 });
 
-await section('7. notes: 15 diagrams render, no sideways page scroll, quizzes', async () => {
+await section('7. notes: diagrams render, colour cards, no sideways page scroll, quizzes', async () => {
   let total = 0;
-  for (let t = 5; t <= 10; t++) {
+  for (const t of NOTE_TS) {
     await open('#/study/topic' + t); await page.waitForSelector('#nb .ns');
     const d = await page.$$eval('#nb figure.diagram svg', ss => ss.map(s => { s.closest('.ns').style.contentVisibility = 'visible'; const r = s.getBoundingClientRect(); return [r.width, r.height]; }));
     total += d.length;
@@ -448,13 +449,18 @@ await section('7. notes: 15 diagrams render, no sideways page scroll, quizzes', 
     ok(sw[0] <= sw[1], 'no horizontal page scroll topic ' + t, sw.join(' vs '));
     const tbl = await page.$$eval('#nb .tw', ts => ts.length);
     ok(tbl > 0, 'tables wrapped for sideways scroll topic ' + t);
+    const cards = await page.$$eval('#nb .nc', cs => cs.map(c => getComputedStyle(c).borderLeftWidth));
+    ok(cards.length >= 4 && cards.every(w => parseFloat(w) >= 4), 'colour cards topic ' + t, cards.length);
+    const hl = await page.$$eval('#nb .nc strong:not(.pill)', ss => ss.slice(0, 40).filter(x => getComputedStyle(x).backgroundImage.includes('gradient')).length);
+    ok(hl > 0, 'key words highlighted topic ' + t);
     ok(!(await page.locator('#nb').textContent()).includes('@u_'), 'no internal mention text topic ' + t);
     await page.click('a:has-text("Quiz me on Topic ' + t + '")'); await settle();
     ok(await hash() === '#/test/quiz-topic' + t, 'quiz link topic ' + t);
     const pressed = await page.locator('.seg.mode [data-m="learn"][aria-pressed="true"]').count();
     ok(pressed === 1, 'quiz defaults to learn mode topic ' + t);
   }
-  ok(total === 15, 'all 15 diagrams', String(total));
+  const want = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/meta.json'), 'utf8')).notes.reduce((a, n) => a + n.diagrams, 0);
+  ok(total === want, 'all ' + want + ' diagrams', String(total));
   await open('#/test/quiz-topic9'); await page.click('#go'); await page.waitForSelector('#rq .qt');
   const q = QUIZ['quiz-topic9'].questions[0];
   await page.click('#rq [data-o="' + q.ans + '"]');
