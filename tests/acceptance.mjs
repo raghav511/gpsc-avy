@@ -223,6 +223,19 @@ await section('3. runner: answer, flag, palette, reload, timer, submit, undo, au
   await page.goBack(); await settle();
   ok((await hash()).startsWith('#/test/set14') && await page.locator('#sheet:has-text("Leave test?")').count() === 1, 'Back opens Leave test sheet', await hash());
   await page.click('#lStay'); await settle();
+  // reset and exit: confirm, nothing saved, Undo restores
+  await page.goBack(); await settle();
+  ok(await page.locator('#sheet #lReset').count() === 1, 'Leave sheet offers Reset and exit');
+  await page.click('#lReset'); await settle();
+  ok(await page.locator('#sheet:has-text("Reset and exit?")').count() === 1, 'Reset asks to confirm');
+  await page.click('#rDo'); await settle();
+  ok(!(await hash()).startsWith('#/test/set14'), 'Reset leaves the test', await hash());
+  ok(await page.evaluate(() => localStorage.getItem('gpsc-cbrt-set14-v1')) === null, 'Reset clears the attempt');
+  ok((await page.evaluate(() => JSON.parse(localStorage.getItem('gpsc-cbrt-history-v1') || '[]'))).length === 0, 'Reset adds no result');
+  ok(await page.locator('#toast.on:has-text("Undo")').count() === 1, 'Reset offers Undo');
+  await page.click('#toast .tbtn'); await page.waitForSelector('#rq .qt'); await settle();
+  const st2 = await page.evaluate(() => JSON.parse(localStorage.getItem('gpsc-cbrt-set14-v1')));
+  ok((await hash()).startsWith('#/test/set14') && st2 && st2.answers[1] === 'B' && st2.flags[2], 'Undo restores the reset attempt');
   // submit with confirm step
   await page.click('#rSub'); await settle();
   const three = await page.$$eval('#sheet .three b', bs => bs.map(b => b.textContent));

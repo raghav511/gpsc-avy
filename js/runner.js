@@ -252,9 +252,34 @@ function runner(set, S, me) {
     if (!palS.hidden) { palClose(); return; }
     const d = answered();
     const el = sheet('<div class="shh"><h2>Leave test?</h2></div><p>Your answers are saved' + (exam ? ' (' + d + ' of ' + N + ') and the timer pauses at ' + fmt(S.endAt - Date.now()) + '.' : '.') + ' Resume any time from Home or Tests.</p>' +
-      '<button type="button" class="wide pri" id="lStay" data-focus>Keep going</button><button type="button" class="wide sec" id="lGo">Leave test</button>', { label: 'Leave test' });
+      '<button type="button" class="wide pri" id="lStay" data-focus>Keep going</button><button type="button" class="wide sec" id="lGo">Save and leave</button>' +
+      '<button type="button" class="wide rst" id="lReset">' + ICON.close + ' Reset and exit</button><p class="sub">Started by mistake? Reset clears this attempt so it does not count.</p>', { label: 'Leave test' });
     el.querySelector('#lStay').onclick = () => closeSheet();
     el.querySelector('#lGo').onclick = () => { closeSheet(true); pause(); allowLeave = true; API.back(); };
+    el.querySelector('#lReset').onclick = askReset;
+  }
+  function askReset() {
+    const d = answered();
+    const el = sheet('<div class="shh"><h2>Reset and exit?</h2></div><p>' + (d ? 'Your ' + d + (d === 1 ? ' answer' : ' answers') + ' in this attempt will be cleared' : 'This attempt will be cleared') +
+      ' and it will not count in your progress. Your earlier attempts and results stay as they are.</p>' +
+      '<button type="button" class="wide pri" id="rKeep" data-focus>Keep going</button><button type="button" class="wide rst" id="rDo">Reset and exit</button>', { label: 'Reset and exit' });
+    el.querySelector('#rKeep').onclick = () => closeSheet();
+    el.querySelector('#rDo').onclick = () => {
+      const snap = JSON.parse(JSON.stringify(S));
+      snap.paused = true;
+      if (exam) snap.remainMs = Math.max(0, S.endAt - Date.now()); else snap.spentMs = spent();
+      done = true; clearInterval(tick); clearTimeout(saveT); palClose(); closeSheet(true);
+      lsDel(stateKey(S.set));
+      window.dispatchEvent(new Event('gpsc-saved'));
+      allowLeave = true;
+      let shown = false;
+      const tell = () => { if (shown) return; shown = true; window.removeEventListener('hashchange', later);
+        toast('Test reset. This attempt was not saved.', { label: 'Undo', fn: () => { lsSet(stateKey(snap.set), snap); API.go('#/test/' + snap.set, true); toast('Back in the test, at question ' + (snap.cur + 1)); } }, 10000); };
+      const later = () => setTimeout(tell, 60);
+      window.addEventListener('hashchange', later);
+      setTimeout(tell, 700);
+      API.back();
+    };
   }
   function askSubmit() {
     const d = answered(), left = N - d, fl = Object.keys(S.flags).length;
