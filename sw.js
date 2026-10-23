@@ -1,11 +1,14 @@
 // GPSCavy service worker. The version is stamped by tools/build.py from a hash of the shell and data files.
-const V = 'gpscavy-7419aa5ba0';
+const V = 'gpscavy-fe18d9727f';
 const SHELL = ['./', 'index.html', 'js/app.js', 'js/core.js', 'js/runner.js', 'js/study.js', 'manifest.webmanifest',
   'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png', 'fonts/jakarta-latin.woff2', 'fonts/inter-latin.woff2', 'fonts/tiro-deva-subset.woff2', 'js/thought.js',
   'data/index.json', 'data/meta.json', 'data/keys.json'];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(V).then(c => c.addAll(SHELL.map(u => new Request(u, { cache: 'reload' })))));
+  // Fetch every shell file with the version in the query, so a CDN edge still holding the previous
+  // deploy cannot hand back a mix of old and new files; store each under its plain URL.
+  e.waitUntil(caches.open(V).then(c => Promise.all(SHELL.map(u => fetch(u + (u.includes('?') ? '&' : '?') + 'v=' + V, { cache: 'reload' })
+    .then(r => { if (!r.ok) throw new Error(u + ' ' + r.status); return c.put(u, r); })))));
 });
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith('gpscavy-') && k !== V).map(k => caches.delete(k)))).then(() => self.clients.claim()));

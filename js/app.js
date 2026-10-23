@@ -736,6 +736,8 @@ export async function updateApp(btn) {
 
 // ---------- boot ----------
 async function boot() {
+  window.__gpsBooted = true;
+  try { sessionStorage.removeItem('gpscavy-healed'); } catch (e) { }
   loadAttempts();
   await getIndex();
   // Deep link opened fresh (e.g. from WhatsApp): put its parents under it so Back moves up a level instead of leaving the app.
