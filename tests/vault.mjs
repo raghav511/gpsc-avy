@@ -15,7 +15,7 @@ const LIC = licenceSim({ owner: 'owner@gmail.com', clientId: CID, tokens, conten
 const H = { 'access-control-allow-origin': '*' };
 async function device(email) {
   const ctx = await browser.newContext(Object.assign({ serviceWorkers: 'block', acceptDownloads: true }, opts));
-  await ctx.addInitScript(e => { if (location.protocol === 'about:') return; if (!localStorage.getItem('gpscavy-settings-v1')) { localStorage.setItem('gpscavy-settings-v1', JSON.stringify(Object.assign({ a2hs: 1, welcomed: 1 }, e ? { account: { email: e } } : {}))); if (e) localStorage.setItem('gpscavy-gtoken', JSON.stringify({ token: 'T-' + e, exp: Date.now() + 3e6 })); } }, email || '');
+  await ctx.addInitScript(e => { if (location.protocol === 'about:') return; const P = /-staging\//.test(location.pathname) ? 'stg:' : ''; if (!localStorage.getItem(P + 'gpscavy-settings-v1')) { localStorage.setItem(P + 'gpscavy-settings-v1', JSON.stringify(Object.assign({ a2hs: 1, welcomed: 1 }, e ? { account: { email: e } } : {}))); if (e) localStorage.setItem(P + 'gpscavy-gtoken', JSON.stringify({ token: 'T-' + e, exp: Date.now() + 3e6 })); } }, email || '');
   if (email) tokens['T-' + email] = email;
   await ctx.route(/\/js\/config\.js/, r => r.fulfill({ status: 200, contentType: 'text/javascript', body: "export const GOOGLE_CLIENT_ID = '" + CID + "';\nexport const LICENCE_URL = '" + LURL + "';" }));
   await ctx.route('https://www.googleapis.com/**', r => r.fulfill({ status: 200, headers: H, contentType: 'application/json', body: '{"files":[],"id":"f"}' }));
