@@ -1,7 +1,7 @@
 // GPSCavy core: storage, data loading, grading, router helpers, small UI primitives.
 // Storage keys are shared with the GPSC CBRT mock-exam page (gpsc-cbrt-*), so a progress file moves between them.
 
-import { fetchText } from './vault.js?v=gpscavy-e033a53e35';
+import { fetchText } from './vault.js?v=gpscavy-9efef9e283';
 
 export const HKEY = 'gpsc-cbrt-history-v1';
 export const CKEY = 'gpscavy-custom-v1';
