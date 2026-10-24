@@ -56,3 +56,11 @@ Run `tools/build.py` after any change to `content/`, `js/` or `index.html`, so t
 **AI assistant.** Settings → AI assistant: choose Google Gemini, Anthropic Claude, OpenAI or OpenRouter, paste your own API key and pick a model (default: the company's recommended model, set in `PROVIDERS` in `js/ai.js`). Keys stay on the device. Videos and voice recordings need Gemini; photos and text work with all four.
 
 When changing the app, run `python3 tools/build.py` before pushing: it stamps a new service-worker version, which is how phones and iPads notice the update.
+
+## Sandbox and production (after the repo switch)
+
+- `raghav511/gpsc-avy-content` (private): everything readable. Work happens on its **`sandbox`** branch; `main` is what production runs.
+- `raghav511/gpsc-avy-staging` (public): the **sandbox website**, https://raghav511.github.io/gpsc-avy-staging/ , built from the `sandbox` branch. Content scrambled, same sign-in and access script as production. Test here first.
+- `raghav511/gpsc-avy` (public): **production**, https://raghav511.github.io/gpsc-avy/ , built from `main` after the sandbox has been checked.
+- Publish: `python3 tools/build.py && sh tools/publish.sh OUT_DIR KEY_FILE`, then commit OUT_DIR to the staging or production repo. The key file is never committed to a public repo.
+- Every publish runs first: `tests/acceptance.mjs`, `ai.mjs`, `account.mjs`, `paid.mjs`, `heal.mjs`, `reset.mjs` (phone and iPad), `tests/vault.mjs` against the scrambled copy, and `tests/audit.mjs`.
