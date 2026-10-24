@@ -3,8 +3,8 @@
 // it made (scope drive.appdata: Drive's hidden, per-app folder), plus the email address to show who is signed in.
 // Sign-in uses Google's redirect page (works in iPad and iPhone home-screen apps, where pop-ups do not).
 // Google gives a browser app a one-hour pass; after that, Sync signs in again in a second, without a password.
-import { lsGet, lsSet, lsDel, settings, saveSettings } from './core.js?v=gpscavy-8d9c015c01';
-import { GOOGLE_CLIENT_ID } from './config.js?v=gpscavy-8d9c015c01';
+import { lsGet, lsSet, lsDel, settings, saveSettings } from './core.js?v=gpscavy-450e075df7';
+import { GOOGLE_CLIENT_ID } from './config.js?v=gpscavy-450e075df7';
 
 const TKEY = 'gpscavy-gtoken';   // {token, exp} on this device only: never in the progress file or synced
 const PKEY = 'gpscavy-gpending'; // {state, back, then} while the student is on Google's page

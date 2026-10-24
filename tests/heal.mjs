@@ -23,7 +23,7 @@ const ATT = JSON.stringify([{ id: 'set3-1', set: 'set3', setName: 'Practice Set 
 const state = p => p.evaluate(() => ({ booted: !!window.__gpsBooted, v: (document.querySelector('meta[name="gps-v"]') || {}).content, screen: document.body.dataset.screen, repair: !!document.querySelector('#fixGo'),
   kept: (localStorage.getItem('gpsc-cbrt-history-v1') || '').includes('set3-1') && (localStorage.getItem('gpscavy-ai-v1') || '').includes('AIzaKEEP') })).catch(e => ({ err: e.message }));
 async function fresh() {
-  const ctx = await browser.newContext(opts); const p = await ctx.newPage(); const errs = [];
+  const ctx = await browser.newContext(opts); await ctx.addInitScript(() => { window.__gpscTest = 1; }); const p = await ctx.newPage(); const errs = [];
   p.on('pageerror', e => errs.push(e.message));
   await p.goto(BASE + '#/');
   await p.evaluate(a => { localStorage.setItem('gpsc-cbrt-history-v1', a); localStorage.setItem('gpscavy-ai-v1', JSON.stringify({ key: 'AIzaKEEP0123456789abcdefghijklmn' })); localStorage.setItem('gpscavy-settings-v1', '{"a2hs":1,"welcomed":1}'); }, ATT);

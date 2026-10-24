@@ -23,7 +23,7 @@ await ctx.route(HUB + '*', async r => {
   if (b) { b.attempts.forEach(a => { if (!hub.attempts.some(x => x.id === a.id)) hub.attempts.push(a); }); (b.inProgress || []).forEach(s => { if (!hub.inProgress.some(x => x.set === s.set && x.startedAt === s.startedAt)) hub.inProgress.push(s); }); }
   r.fulfill({ status: 200, headers: { 'access-control-allow-origin': '*' }, contentType: 'application/json', body: JSON.stringify({ ok: true, progress: hub }) });
 });
-await ctx.addInitScript(([h, a]) => { if (location.protocol === 'about:') return; if (!localStorage.getItem('gpscavy-settings-v1')) localStorage.setItem('gpscavy-settings-v1', JSON.stringify({ a2hs: 1, welcomed: 1, syncUrl: h })); if (!localStorage.getItem('gpsc-cbrt-history-v1')) localStorage.setItem('gpsc-cbrt-history-v1', JSON.stringify([a])); },
+await ctx.addInitScript(([h, a]) => { if (location.protocol === 'about:') return; window.__gpscTest = 1; if (!localStorage.getItem('gpscavy-settings-v1')) localStorage.setItem('gpscavy-settings-v1', JSON.stringify({ a2hs: 1, welcomed: 1, syncUrl: h })); if (!localStorage.getItem('gpsc-cbrt-history-v1')) localStorage.setItem('gpsc-cbrt-history-v1', JSON.stringify([a])); },
   [HUB, { id: 'set3-' + T0, set: 'set3', setName: 'Practice Set 3', score: 41, total: 60, wrong: 19, skipped: 0, usedMs: 1, auto: false, submittedAt: new Date(T0).toISOString(), answers: { 1: 'A' } }]);
 const page = await ctx.newPage(); const errs = [];
 page.on('pageerror', e => errs.push(e.message));

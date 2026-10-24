@@ -17,7 +17,7 @@ const PROFILES = {
 const { engine, ...opts } = PROFILES[prof];
 const browser = await PW[engine].launch(engine === 'chromium' && fs.existsSync('/opt/pw-browsers/chromium') ? { executablePath: '/opt/pw-browsers/chromium' } : {});
 const ctx = await browser.newContext(Object.assign({ serviceWorkers: 'block' }, opts));
-await ctx.addInitScript(() => { try { if (!localStorage.getItem('gpscavy-settings-v1')) localStorage.setItem('gpscavy-settings-v1', JSON.stringify({ a2hs: 1, welcomed: 1 })); } catch (e) { } window.alert = window.confirm = window.prompt = () => { throw new Error('native dialog used'); }; });
+await ctx.addInitScript(() => { window.__gpscTest = 1; try { if (!localStorage.getItem('gpscavy-settings-v1')) localStorage.setItem('gpscavy-settings-v1', JSON.stringify({ a2hs: 1, welcomed: 1 })); } catch (e) { } window.alert = window.confirm = window.prompt = () => { throw new Error('native dialog used'); }; });
 await ctx.route(/^https?:\/\/(?!localhost)/, r => r.abort()); // stay offline from the outside world
 const page = await ctx.newPage();
 const issues = []; const add = (route, kind, detail) => issues.push({ route, kind, detail: String(detail).slice(0, 220) });

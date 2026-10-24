@@ -1,12 +1,12 @@
 // Paid access. The owner's script (tools/licence/Code.gs, in the owner's Google Sheet) is the only judge of who has
 // paid, which plans exist and what is free; the app keeps the last answer so it also works offline.
 // Off (everything free, no pay screen) until LICENCE_URL and Google sign-in are both set up.
-import { $, esc, day, lsGet, lsSet, lsDel, toast, sheet, closeSheet, ICON, topbar, navHtml, IDX, META, getIndex, getMeta } from './core.js?v=gpscavy-8d9c015c01';
-import { LICENCE_URL } from './config.js?v=gpscavy-8d9c015c01';
-import * as G from './account.js?v=gpscavy-8d9c015c01';
+import { $, esc, day, lsGet, lsSet, lsDel, toast, sheet, closeSheet, ICON, topbar, navHtml, IDX, META, getIndex, getMeta } from './core.js?v=gpscavy-450e075df7';
+import { LICENCE_URL } from './config.js?v=gpscavy-450e075df7';
+import * as G from './account.js?v=gpscavy-450e075df7';
 
 const LKEY = 'gpscavy-licence';
-export const enabled = () => !!LICENCE_URL && G.configured();
+export const enabled = () => !!LICENCE_URL && G.configured() && !window.__gpscTest; // the test suites check screens, not payment
 export const lic = () => lsGet(LKEY, null);
 const forMe = l => l && G.account() && l.email === (G.account().email || '').toLowerCase();
 export function hasPaid() {
@@ -93,7 +93,7 @@ export async function payScreen(app, opts) {
     const chk = $('#pyChk'); if (chk) chk.onclick = async () => { chk.disabled = true; chk.textContent = 'Checking…'; await refresh(); if (hasPaid()) { toast('Approved. Welcome to GPSCavy.'); location.hash = back; } else draw(lic()); };
     if (!l || !$('#pySend') && !$('#pyRedeem')) return;
     let plan = (l.plans || [])[0];
-    const qr = () => { const box = $('#pyQr'); if (!box || !plan) return; const link = upiLink(l, plan); $('#pyApp').href = link; import('./qr.js?v=gpscavy-8d9c015c01').then(m => { const q = m.default(0, 'M'); q.addData(link); q.make(); box.innerHTML = q.createSvgTag({ cellSize: 4, margin: 2, scalable: true }); }).catch(() => { box.textContent = ''; }); };
+    const qr = () => { const box = $('#pyQr'); if (!box || !plan) return; const link = upiLink(l, plan); $('#pyApp').href = link; import('./qr.js?v=gpscavy-450e075df7').then(m => { const q = m.default(0, 'M'); q.addData(link); q.make(); box.innerHTML = q.createSvgTag({ cellSize: 4, margin: 2, scalable: true }); }).catch(() => { box.textContent = ''; }); };
     document.querySelectorAll('.plan').forEach(b => b.onclick = () => { document.querySelectorAll('.plan').forEach(x => { x.classList.toggle('on', x === b); x.setAttribute('aria-checked', x === b); }); plan = l.plans[+b.dataset.i]; qr(); });
     qr();
     const cp = $('#pyCopy'); if (cp) cp.onclick = () => { try { navigator.clipboard.writeText(l.upi).then(() => toast('UPI ID copied')); } catch (e) { } };
@@ -114,8 +114,9 @@ export async function payScreen(app, opts) {
       catch (e) { if (e.code === 'signin') return G.signIn({ silent: true, then: 'pay' }); red.disabled = false; red.textContent = 'Use voucher'; err.hidden = false; err.textContent = msg(e); }
     };
   };
-  draw(lic());
-  if (!G.signedIn() || G.token()) { const l = await refresh(); if (document.body.dataset.screen === 'pay') { if (hasPaid() && opts.locked) { location.reload(); return; } draw(l); } }
+  if (!lic()) app.innerHTML = topbar(opts.title || 'Unlock GPSCavy', '') + '<main class="pad stack pay"><p class="sub">Checking what you can open…</p></main>' + navHtml('');
+  else draw(lic());
+  if (!G.signedIn() || G.token()) { const l = await refresh(); if (document.body.dataset.screen === 'pay') { if (opts.locked && canHash(opts.back)) { window.dispatchEvent(new Event('gpsc-rerender')); return; } draw(l); } }
   else if (G.signedIn() && !lic()) draw(null, 'Sign in again to see the plans');
 }
 const upiLink = (l, p) => 'upi://pay?' + new URLSearchParams({ pa: l.upi, pn: l.upiName, am: String(p.price), cu: 'INR', tn: 'GPSCavy ' + p.name }).toString();
