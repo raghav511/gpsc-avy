@@ -1,10 +1,10 @@
 // Paid access. The owner's script (tools/licence/Code.gs, in the owner's Google Sheet) is the only judge of who has
 // paid, which plans exist and what is free; the app keeps the last answer so it also works offline.
 // Off (everything free, no pay screen) until LICENCE_URL and Google sign-in are both set up.
-import { $, esc, day, lsGet, lsSet, lsDel, toast, sheet, closeSheet, ICON, topbar, navHtml, IDX, META, getIndex, getMeta } from './core.js?v=gpscavy-e033a53e35';
-import { LICENCE_URL } from './config.js?v=gpscavy-e033a53e35';
-import * as G from './account.js?v=gpscavy-e033a53e35';
-import { forgetKeys } from './vault.js?v=gpscavy-e033a53e35';
+import { $, esc, day, lsGet, lsSet, lsDel, toast, sheet, closeSheet, ICON, topbar, navHtml, IDX, META, getIndex, getMeta } from './core.js?v=gpscavy-9efef9e283';
+import { LICENCE_URL } from './config.js?v=gpscavy-9efef9e283';
+import * as G from './account.js?v=gpscavy-9efef9e283';
+import { forgetKeys } from './vault.js?v=gpscavy-9efef9e283';
 
 const LKEY = 'gpscavy-licence';
 export const enabled = () => !!LICENCE_URL && G.configured() && !window.__gpscTest; // the test suites check screens, not payment
@@ -95,7 +95,7 @@ export async function payScreen(app, opts) {
     const chk = $('#pyChk'); if (chk) chk.onclick = async () => { chk.disabled = true; chk.textContent = 'Checking…'; await refresh(); if (hasPaid()) { toast('Approved. Welcome to GPSCavy.'); location.hash = back; } else draw(lic()); };
     if (!l || !$('#pySend') && !$('#pyRedeem')) return;
     let plan = (l.plans || [])[0];
-    const qr = () => { const box = $('#pyQr'); if (!box || !plan) return; const link = upiLink(l, plan); $('#pyApp').href = link; import('./qr.js?v=gpscavy-e033a53e35').then(m => { const q = m.default(0, 'M'); q.addData(link); q.make(); box.innerHTML = q.createSvgTag({ cellSize: 4, margin: 2, scalable: true }); }).catch(() => { box.textContent = ''; }); };
+    const qr = () => { const box = $('#pyQr'); if (!box || !plan) return; const link = upiLink(l, plan); $('#pyApp').href = link; import('./qr.js?v=gpscavy-9efef9e283').then(m => { const q = m.default(0, 'M'); q.addData(link); q.make(); box.innerHTML = q.createSvgTag({ cellSize: 4, margin: 2, scalable: true }); }).catch(() => { box.textContent = ''; }); };
     document.querySelectorAll('.plan').forEach(b => b.onclick = () => { document.querySelectorAll('.plan').forEach(x => { x.classList.toggle('on', x === b); x.setAttribute('aria-checked', x === b); }); plan = l.plans[+b.dataset.i]; qr(); });
     qr();
     const cp = $('#pyCopy'); if (cp) cp.onclick = () => { try { navigator.clipboard.writeText(l.upi).then(() => toast('UPI ID copied')); } catch (e) { } };
