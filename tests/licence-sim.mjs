@@ -32,7 +32,7 @@ export function licenceSim(conf) {
   };
   let src = fs.readFileSync(path.join(ROOT, 'tools/licence/Code.gs'), 'utf8')
     .replace("var OWNER_EMAIL = 'PASTE_YOUR_GMAIL';", "var OWNER_EMAIL = " + JSON.stringify(conf.owner) + ";")
-    .replace("var CLIENT_ID = 'PASTE_GOOGLE_CLIENT_ID';", "var CLIENT_ID = " + JSON.stringify(conf.clientId) + ";")
+    .replace(/var CLIENT_ID = '[^']*';/, "var CLIENT_ID = " + JSON.stringify(conf.clientId) + ";")
     .replace("var UPI_ID = 'PASTE_YOUR_UPI_ID';", "var UPI_ID = 'owner@okbank';").replace("var UPI_NAME = 'PASTE_NAME_SHOWN_IN_UPI';", "var UPI_NAME = 'GPSCavy Owner';");
   vm.createContext(ctx); vm.runInContext(src, ctx);
   ctx.setup();

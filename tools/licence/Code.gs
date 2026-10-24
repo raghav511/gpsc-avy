@@ -2,14 +2,14 @@
 // It never sees anyone's progress: only their Gmail address, the plan they chose, the UPI reference they typed, and vouchers.
 //
 // Set up once (about 5 minutes):
-//  1. Create a Google Sheet named "GPSCavy access". Extensions → Apps Script. Paste this whole file. Fill in the 4 values below.
+//  1. Create a Google Sheet named "GPSCavy access". Extensions → Apps Script. Paste this whole file. Fill in the 3 PASTE_ values below.
 //  2. Run setup() once (Run ▶, allow access). It makes the Users, Vouchers, Plans and Settings tabs.
 //  3. Deploy → New deployment → Web app. Execute as: Me. Who has access: Anyone. Send the /exec link to Claude (it goes in js/config.js).
 //
 // Everything else (plans, prices, what is free, approving people, vouchers) is done in the app: sign in as OWNER_EMAIL,
 // then Settings → Paid access. You can also edit the tabs by hand.
 var OWNER_EMAIL = 'PASTE_YOUR_GMAIL';                          // you: always has access, and sees the admin screen
-var CLIENT_ID = 'PASTE_GOOGLE_CLIENT_ID';                      // the app's Google sign-in client ID (…apps.googleusercontent.com)
+var CLIENT_ID = '338210814289-e4hu00vli2fiov21nb0t5ikqs2li7iiv.apps.googleusercontent.com';                    // the app's Google sign-in client ID (…apps.googleusercontent.com)
 var UPI_ID = 'PASTE_YOUR_UPI_ID';                               // for example yourname@okhdfcbank
 var UPI_NAME = 'PASTE_NAME_SHOWN_IN_UPI';                       // the payee name people see in their UPI app
 

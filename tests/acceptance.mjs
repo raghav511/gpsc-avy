@@ -409,6 +409,10 @@ await section('6b. Sync progress: hub merge, never loses anything, auto-sync, he
   hub = hubApi.merge(hub, other);
   // first tap: setup
   await page.click('.hhead .syncb'); await settle();
+  if (await page.locator('#gsLink').count()) { // Google sign-in is offered first; the owner's sync link is under Other ways
+    ok(await page.locator('#gsGo').count() === 1, 'first Sync offers Sign in with Google');
+    await page.click('#sheet details.other summary'); await page.click('#gsLink'); await settle();
+  }
   ok(await page.locator('#syncIn').count() === 1, 'first Sync asks for the sync link');
   await page.fill('#syncIn', 'https://example.com/not-a-hub'); await page.click('#syncGo'); await settle();
   ok(await page.locator('#syncErr:visible').count() === 1, 'rejects a wrong link');
