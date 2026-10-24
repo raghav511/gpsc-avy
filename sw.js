@@ -1,14 +1,15 @@
 // GPSCavy service worker. The version is stamped by tools/build.py from a hash of the shell and data files.
-const V = 'gpscavy-921fe8aa6e';
+const V = 'gpscavy-f9e5c38e34';
 const SHELL = ['./', 'index.html', 'js/app.js', 'js/core.js', 'js/runner.js', 'js/study.js', 'manifest.webmanifest',
   'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png', 'fonts/jakarta-latin.woff2', 'fonts/inter-latin.woff2', 'fonts/tiro-deva-subset.woff2', 'js/thought.js', 'js/ai.js',
   'data/index.json', 'data/meta.json', 'data/keys.json'];
 
 self.addEventListener('install', e => {
   // Fetch every shell file with the version in the query, so a CDN edge still holding the previous
-  // deploy cannot hand back a mix of old and new files; store each under its plain URL.
+  // deploy cannot hand back a mix of old and new files. Modules are stored under their versioned URL
+  // (the page asks for js/app.js?v=V and they import each other the same way); the rest under the plain URL.
   e.waitUntil(caches.open(V).then(c => Promise.all(SHELL.map(u => fetch(u + (u.includes('?') ? '&' : '?') + 'v=' + V, { cache: 'reload' })
-    .then(r => { if (!r.ok) throw new Error(u + ' ' + r.status); return c.put(u, r); })))).then(() => self.skipWaiting()));
+    .then(r => { if (!r.ok) throw new Error(u + ' ' + r.status); return c.put(u.endsWith('.js') ? u + '?v=' + V : u, r); })))).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', e => {
   // Take over at once (iOS often never closes the old page), then reload any open page that is not running:
@@ -43,11 +44,29 @@ self.addEventListener('fetch', e => {
   if (url.origin !== location.origin) return;
   const path = url.pathname.slice(self.registration.scope.length - location.origin.length);
   if (path.startsWith('content/pdfs/')) return; // PDFs are never cached: fetched only when opened
+  if (path === 'version.json') return; // always straight from the website: it says which version is newest
   if (req.mode === 'navigate') {
-    e.respondWith(caches.open(V).then(c => c.match('index.html').then(hit => hit || fetch(req))));
+    // Network first (4 s), so a launch always gets the newest page when online; the saved copy when offline.
+    e.respondWith(new Promise(done => {
+      let settled = false;
+      const fromCache = () => caches.open(V).then(c => c.match('index.html')).then(hit => hit || fetch(req));
+      const t = setTimeout(() => { if (!settled) { settled = true; done(fromCache()); } }, 4000);
+      fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' }).then(res => {
+        if (settled) return; settled = true; clearTimeout(t);
+        done(res.ok ? res : fromCache());
+      }).catch(() => { if (!settled) { settled = true; clearTimeout(t); done(fromCache()); } });
+    }));
     return;
   }
-  // shell files: cache first (versioned); data files: stale-while-revalidate
+  // Modules: exact versioned URL only, so a module from one version is never handed to another.
+  if (path.startsWith('js/')) {
+    e.respondWith(caches.match(req).then(hit => hit || fetch(req).then(res => {
+      if (res.ok && res.type === 'basic' && url.search.includes('v=' + V)) { const copy = res.clone(); caches.open(V).then(c => c.put(req, copy)); }
+      return res;
+    })));
+    return;
+  }
+  // other shell files: cache first (versioned); data files: stale-while-revalidate
   e.respondWith(caches.open(V).then(c => c.match(req, { ignoreSearch: true }).then(hit => {
     const net = fetch(new Request(req, { cache: 'no-cache' })).then(res => { if (res.ok && res.type === 'basic') c.put(req, res.clone()); return res; });
     if (hit) { if (path.startsWith('data/')) net.catch(() => { }); return hit; }

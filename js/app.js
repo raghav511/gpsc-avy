@@ -3,9 +3,9 @@ import {
   $, $$, SC, esc, fmt, day, daysLeft, idle, lsGet, lsSet, settings, saveSettings, getIndex, getMeta, getKeys, getPool, setInfo, IDX, KEYS,
   H, loadAttempts, saveAttempts, findAttempt, cleanAttempt, grade, tokens, listInProgress, loadState, stateKey, remaining, stats, weakest,
   DRILL_FOR, wrongList, customs, saveCustom, deleteCustom, toast, hideToast, sheet, closeSheet, sheetOpen, ICON, navHtml, topbar, bar, lvlChip,
-  SECS, SEC, LV, LVL, TOPIC_NAMES, prefetchSet, findDef, CKEY, lsDel, NOTE_TOPICS, hasNotes
-} from './core.js';
-import { today as thoughtToday } from './thought.js';
+  SECS, SEC, LV, LVL, TOPIC_NAMES, prefetchSet, findDef, CKEY, lsDel, NOTE_TOPICS, hasNotes, topBtns, refreshTopBtns, UI
+} from './core.js?v=gpscavy-f9e5c38e34';
+import { today as thoughtToday } from './thought.js?v=gpscavy-f9e5c38e34';
 
 const app = $('#app');
 let cur = null;          // current screen {hash, unmount, onPop}
@@ -14,8 +14,8 @@ const scrolls = new Map();
 let runnerMod = null, studyMod = null;
 // A lazily loaded module can come from a newer app version than the one already running; if it does not fit, reload once.
 const safeImport = u => import(u).catch(e => { try { if (!sessionStorage.getItem('gpscavy-reimport')) { sessionStorage.setItem('gpscavy-reimport', '1'); location.reload(); } } catch (x) { } throw e; });
-const loadRunner = () => runnerMod || (runnerMod = safeImport('./runner.js'));
-const loadStudy = () => studyMod || (studyMod = safeImport('./study.js'));
+const loadRunner = () => runnerMod || (runnerMod = safeImport('./runner.js?v=gpscavy-f9e5c38e34'));
+const loadStudy = () => studyMod || (studyMod = safeImport('./study.js?v=gpscavy-f9e5c38e34'));
 
 // ---------- routing ----------
 export function parse(h) {
@@ -185,7 +185,7 @@ function homeScreen() {
   const tnames = { 1: 'Organon & Philosophy', 2: 'Materia Medica', 3: 'Pharmacy', 4: 'Repertory', 5: 'Anatomy & Physiology', 6: 'Pathology', 7: 'Practice of Medicine', 8: 'Obs, Gynae & Paeds', 9: 'Surgery', 10: 'Community & Forensic' };
   const dl = daysLeft();
   app.innerHTML =
-    '<div class="ptop"><header class="hhead"><div class="brand"><span class="logo" aria-hidden="true">G</span><span><b>GPSCavy</b><small>Homoeopathic Physician · CBRT</small></span></div><div class="hact"><div class="hbtns"><button type="button" class="updb" data-act="update" aria-label="Update app">' + UPD_ICON + '<span>Update app</span></button>' + syncBtn() + '</div><a class="ib white" href="#/search" aria-label="Search questions, notes and sets">' + ICON.search + '</a></div></header></div>' +
+    '<div class="ptop"><header class="hhead"><div class="brand"><span class="logo" aria-hidden="true">G</span><span><b>GPSCavy</b><small>Homoeopathic Physician · CBRT</small></span></div><div class="hact">' + topBtns() + '<a class="ib white srch" href="#/search" aria-label="Search questions, notes and sets">' + ICON.search + '</a></div></header></div>' +
     '<main class="pad stack home">' +
     '<section class="hero"><div><p class="hk">Exam on Sunday, 1 November</p><p class="hd">' + (dl === 0 ? 'Exam day' : dl + (dl === 1 ? ' day left' : ' days left')) + '</p><p class="hs">60 marks · 75 minutes · 5 sections</p></div>' +
     '<a class="badge" href="#/progress" aria-label="Last score ' + (last ? last.score : '–') + ' of ' + (last ? last.total : 60) + ', see progress"><small>Last score</small><b>' + (last ? last.score : '–') + '</b><small>of ' + (last ? last.total : 60) + '</small></a></section>' +
@@ -221,9 +221,6 @@ function thoughtCard() {
     '<div class="tft"><p class="tby">' + esc(src) + '</p><button type="button" class="tmn" data-act="meaning" aria-expanded="false" aria-controls="tmean">Meaning</button></div>' +
     '<p class="tmean" id="tmean" hidden>' + esc(mean) + '</p></section>';
 }
-function syncBtn() {
-  return '<button type="button" class="syncb' + (syncing ? ' busy' : '') + '" data-act="sync" aria-label="Sync progress">' + ICON.sync + '<span>Sync progress</span></button>';
-}
 function syncCard() {
   const ls = settings.lastSync;
   return '<section class="card sync"><div class="ch2"><span class="ic ic-grn">' + ICON.sync + '</span><span class="rt"><span class="ttl">Sync progress</span><span class="sub">' +
@@ -237,6 +234,7 @@ document.addEventListener('click', e => {
   else if (act === 'up') openUpload();
   else if (act === 'sync') openSync();
   else if (act === 'update') updateApp(b);
+  else if (act === 'settings') openSettings();
   else if (act === 'meaning') { const m = $('#tmean'), on = m.hidden; m.hidden = !on; b.setAttribute('aria-expanded', on); b.textContent = on ? 'Hide meaning' : 'Meaning'; }
   else if (act === 'other') openOther();
 });
@@ -289,7 +287,7 @@ async function testsScreen(r) {
       : '<p class="empty">Tests you build by subject and save are kept here so you can retake them.</p>') + '</div>' +
       '<h2 class="label">Past attempts</h2><div class="list cv">' + (H.length ? H.map(attRow).join('') : '<p class="empty">No attempts yet. Submit a test and it is listed here with its score, wrong answers and time used.</p>') + '</div>';
   }
-  app.innerHTML = '<div class="ptop"><header class="ph"><h1>Tests</h1></header><div class="ptabs">' + tabs + '</div></div><main class="pad stack">' + body + '</main>' +
+  app.innerHTML = '<div class="ptop"><header class="ph"><h1>Tests</h1>' + topBtns() + '</header><div class="ptabs">' + tabs + '</div></div><main class="pad stack">' + body + '</main>' +
     '<div class="fab-wrap"><a class="fab" href="#/custom">' + ICON.plus + 'Build a test by subject</a></div>' + navHtml('tests');
   app.onclick = null;
   const main = app.querySelector('main');
@@ -439,7 +437,7 @@ function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.fl
 // ---------- Progress ----------
 async function progressScreen() {
   const me = cur;
-  app.innerHTML = '<div class="ptop"><header class="ph"><h1>Progress</h1></header></div><main class="pad stack" id="pm"><p class="sub">Loading…</p></main>' + navHtml('progress');
+  app.innerHTML = '<div class="ptop"><header class="ph"><h1>Progress</h1>' + topBtns() + '</header></div><main class="pad stack" id="pm"><p class="sub">Loading…</p></main>' + navHtml('progress');
   await getKeys();
   if (me !== cur) return;
   const full = H.filter(a => a.total === 60);
@@ -631,7 +629,7 @@ export function applyMerge(plan, what) {
 let syncing = false, lastSig = '';
 const HUB_RE = /^https:\/\/script\.google(usercontent)?\.com\/macros\/s\/[\w-]+\/exec$/;
 const sig = () => H.length + ':' + (H[0] ? H[0].id + H[0].submittedAt : '') + ':' + listInProgress().map(st => st.set + (st.savedAt || 0)).join(',');
-function setSyncBusy(on) { syncing = on; $$('.syncb').forEach(b => b.classList.toggle('busy', on)); }
+function setSyncBusy(on) { syncing = on; UI.syncing = on; refreshTopBtns(); }
 function syncText(m) { const el = $('#syncMsg'); if (el) el.innerHTML = m; }
 export async function syncNow(quiet) {
   const url = settings.syncUrl;
@@ -648,13 +646,14 @@ export async function syncNow(quiet) {
     const fresh = plan.add.length + plan.replace.length + plan.prog.length + plan.done.length;
     applyMerge(plan, 'sync');
     lastSig = sig();
-    settings.lastSync = { at: new Date().toISOString(), what: 'sync' }; settings.hubCount = (o.progress.attempts || []).length; saveSettings();
+    UI.syncErr = false; settings.lastSync = { at: new Date().toISOString(), what: 'sync' }; settings.hubCount = (o.progress.attempts || []).length; saveSettings();
     const msg = 'Synced. ' + (plan.add.length ? plan.add.length + (plan.add.length === 1 ? ' attempt' : ' attempts') + ' added from your other devices. ' : 'Nothing new from other devices. ') + H.length + ' attempts on this device.';
     if (fresh && document.body.dataset.screen !== 'runner' && !sheetOpen()) render();
     if (!quiet || plan.add.length) toast(msg, null, 4200);
     syncText(esc(msg));
     return msg;
   } catch (e) {
+    UI.syncErr = navigator.onLine !== false;
     const m = navigator.onLine === false ? 'You are offline. Your progress is safe on this device and will sync when you are back online.' : 'Could not reach your sync folder. Your progress is safe on this device; try again in a minute.';
     if (!quiet) toast(m, null, 5000);
     syncText(esc(m));
@@ -678,7 +677,7 @@ export function openSync() {
     '<button type="button" class="lnk" id="syncOff">Disconnect sync on this device</button></details><input id="syncLink" class="inp" hidden readonly>', { label: 'Sync progress' });
   el.querySelector('#syncAgain').onclick = () => { syncText('Syncing…'); syncNow(false); };
   el.querySelector('#syncCopy').onclick = () => copyText(settings.syncUrl, 'Sync link copied. Paste it in GPSCavy on your other device: Sync progress, then paste.');
-  el.querySelector('#syncOff').onclick = () => { delete settings.syncUrl; saveSettings(); closeSheet(); toast('Sync disconnected on this device. Your progress here is kept.'); };
+  el.querySelector('#syncOff').onclick = () => { delete settings.syncUrl; UI.syncErr = false; saveSettings(); refreshTopBtns(); closeSheet(); toast('Sync disconnected on this device. Your progress here is kept.'); };
   syncNow(true).then(m => { if (!m && ls) syncText('Last synced ' + esc(day(ls.at)) + '.'); });
 }
 function copyText(t, ok) {
@@ -709,11 +708,51 @@ function openSyncSetup() {
 }
 export function openOther() { openDownload(); }
 
+// ---------- Settings: one place for sync, the AI assistant, notes text size, backups and the app itself ----------
+const appVersion = () => { const m = document.querySelector('meta[name="gps-v"]'); return m ? m.content.replace('gpscavy-', '') : 'dev'; };
+function openSettings() {
+  const ls = settings.lastSync, fs = settings.fs || 1;
+  const st = !settings.syncUrl ? 'Not connected on this device.' : 'Connected. ' + (ls && ls.what === 'sync' ? 'Last synced ' + esc(day(ls.at)) + ' at ' + esc(new Date(ls.at).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' })) + '.' : 'Not synced yet.');
+  const sz = [[1, 'Normal'], [1.12, 'Large'], [1.25, 'Larger']];
+  const el = sheet('<div class="shh"><h2>Settings</h2><button type="button" class="ib" data-close aria-label="Close">' + ICON.close + '</button></div>' +
+    '<section class="sset"><div class="ssh"><span class="ic ic-grn">' + ICON.sync + '</span><span class="rt"><span class="ttl">Sync progress</span><span class="sub" id="stSync">' + st + '</span></span></div>' +
+    '<div class="two"><button type="button" class="btn grn" id="stSyncGo">' + (settings.syncUrl ? 'Sync now' : 'Connect sync') + '</button>' +
+    (settings.syncUrl ? '<button type="button" class="btn sec" id="stCopy">Copy sync link</button>' : '') + '</div>' +
+    (settings.syncUrl ? '<button type="button" class="lnk" id="stOff">Disconnect sync on this device</button>' : '') + '<input id="syncLink" class="inp" hidden readonly></section>' +
+    '<section class="sset"><div class="ssh"><span class="ic ic-vio">✦</span><span class="rt"><span class="ttl">AI assistant</span><span class="sub" id="stAi">…</span></span></div>' +
+    '<div class="two"><button type="button" class="btn sec" id="stKey">Choose AI and model</button><button type="button" class="btn sec" id="stKeyDel" hidden>Remove key</button></div></section>' +
+    '<section class="sset"><div class="ssh"><span class="ic ic-core">Aa</span><span class="rt"><span class="ttl">Notes text size</span><span class="sub">For the study notes and playbooks.</span></span></div>' +
+    '<div class="seg" role="group" aria-label="Notes text size">' + sz.map(([v, t]) => '<button type="button" data-fs="' + v + '" class="' + (Math.abs(fs - v) < .01 ? 'on' : '') + '" aria-pressed="' + (Math.abs(fs - v) < .01) + '">' + t + '</button>').join('') + '</div></section>' +
+    '<section class="sset"><div class="ssh"><span class="ic ic-amb">' + ICON.down + '</span><span class="rt"><span class="ttl">Backup</span><span class="sub">' + H.length + (H.length === 1 ? ' attempt' : ' attempts') + ' on this device. Save a file you can restore on any device.</span></span></div>' +
+    '<div class="two"><button type="button" class="btn sec" data-act="down">' + ICON.down + '<span>Backup file</span></button><button type="button" class="btn sec" data-act="up">' + ICON.up + '<span>Restore file</span></button></div></section>' +
+    '<section class="sset"><div class="ssh"><span class="ic ic-pri">' + ICON.upd + '</span><span class="rt"><span class="ttl">App</span><span class="sub">Version ' + esc(appVersion()) + '. New versions install by themselves, never during a test.</span></span></div>' +
+    '<div class="two"><button type="button" class="btn sec" data-act="update">' + ICON.upd + '<span>Update app</span></button><button type="button" class="btn sec" id="stFix">Repair app</button></div>' +
+    '<p class="sub" id="stFixQ" hidden>Repair downloads a fresh copy of the app. Your progress, sync link, AI keys and reading places stay on this device. <button type="button" class="lnk" id="stFixGo">Repair now</button></p></section>',
+    { label: 'Settings' });
+  el.querySelector('#stSyncGo').onclick = () => { if (!settings.syncUrl) { closeSheet(true); openSyncSetup(); return; } const s0 = el.querySelector('#stSync'); s0.textContent = 'Syncing…'; syncNow(false).then(m => { s0.textContent = m ? 'Connected. Last synced just now.' : 'Could not sync just now. Your progress is safe on this device.'; }); };
+  const cp = el.querySelector('#stCopy'); if (cp) cp.onclick = () => copyText(settings.syncUrl, 'Sync link copied. Paste it in GPSCavy on your other device: Settings, Connect sync.');
+  const off = el.querySelector('#stOff'); if (off) off.onclick = () => { delete settings.syncUrl; UI.syncErr = false; saveSettings(); refreshTopBtns(); toast('Sync disconnected on this device. Your progress here is kept.'); openSettings(); };
+  el.querySelector('#stKey').onclick = () => safeImport('./ai.js?v=gpscavy-f9e5c38e34').then(m => m.keySheet(openSettings));
+  safeImport('./ai.js?v=gpscavy-f9e5c38e34').then(m => {
+    const a = m.summary(), t = el.querySelector('#stAi'), kd = el.querySelector('#stKeyDel'); if (!t) return;
+    t.textContent = a.text; el.querySelector('#stKey').textContent = a.on ? 'Change AI or model' : 'Set up AI';
+    kd.hidden = !a.on; kd.onclick = () => { m.removeKey(); toast('API key removed from this device.'); openSettings(); };
+  }).catch(() => { });
+  el.querySelectorAll('[data-fs]').forEach(b => b.onclick = () => { settings.fs = +b.dataset.fs; saveSettings(); el.querySelectorAll('[data-fs]').forEach(x => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); }); });
+  el.querySelector('#stFix').onclick = () => { el.querySelector('#stFixQ').hidden = false; };
+  el.querySelector('#stFixGo').onclick = () => { if (window.__gpsRepair) window.__gpsRepair('manual'); else location.reload(); };
+}
+
 // ---------- Update app: fetch the newest version now ----------
 let swUpdating = false;
 const UPD_ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>';
 const waitInstalled = w => new Promise(r => { const f = () => { if (w.state !== 'installing') { w.removeEventListener('statechange', f); r(); } }; w.addEventListener('statechange', f); f(); });
-export async function updateApp(btn) {
+// Called by the boot guard when the website has a newer version than this copy (checked on every launch).
+window.__gpsUpdate = () => {
+  const go = () => { if (document.body.dataset.screen === 'runner' || sheetOpen()) return setTimeout(go, 15000); updateApp(null, true); };
+  go();
+};
+export async function updateApp(btn, auto) {
   const busy = on => { if (btn) { btn.classList.toggle('busy', on); btn.disabled = on; } };
   if (!('serviceWorker' in navigator) || location.protocol === 'file:') { location.reload(); return; }
   busy(true);
@@ -722,8 +761,18 @@ export async function updateApp(btn) {
     if (!reg) { location.reload(); return; }
     await reg.update();
     let w = reg.installing || reg.waiting;
-    if (!w) { busy(false); toast('GPSCavy is up to date.'); return; }
-    toast('Updating GPSCavy…', null, 6000);
+    if (!w) {
+      busy(false);
+      // the website says there is a newer version but this copy did not get it: fetch it fresh (once per half hour)
+      if (auto && window.__gpsNewer) {
+        const f = lsGet('gpscavy-forced', {}) || {};
+        if (f.v !== window.__gpsNewer || Date.now() - f.at > 1800000) { lsSet('gpscavy-forced', { v: window.__gpsNewer, at: Date.now() }); if (window.__gpsRepair) window.__gpsRepair('newer version ' + window.__gpsNewer); }
+        return;
+      }
+      if (!auto) toast('GPSCavy is up to date.');
+      return;
+    }
+    if (!auto) toast('Updating GPSCavy…', null, 6000);
     await waitInstalled(w);
     w = reg.waiting || w;
     swUpdating = true;
@@ -736,10 +785,10 @@ export async function updateApp(btn) {
   }
 }
 
-// ---------- Ask Gemini: a small tab tucked into the right-hand margin of every screen ----------
+// ---------- Ask AI: a small tab tucked into the right-hand margin of every screen ----------
 function aiTab() {
   const t = document.createElement('button');
-  t.type = 'button'; t.id = 'aitab'; t.setAttribute('aria-label', 'Ask Gemini AI'); t.setAttribute('aria-haspopup', 'menu');
+  t.type = 'button'; t.id = 'aitab'; t.setAttribute('aria-label', 'Ask AI'); t.setAttribute('aria-haspopup', 'menu');
   t.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="aitg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f8cff"/><stop offset=".55" stop-color="#9b6bff"/><stop offset="1" stop-color="#ff6fae"/></linearGradient></defs><path d="M12 1.5c.7 5.6 3.9 8.8 9.5 9.5v2c-5.6.7-8.8 3.9-9.5 9.5h-2c-.7-5.6-3.9-8.8-9.5-9.5v-2C6.1 10.3 9.3 7.1 10 1.5z" fill="url(#aitg)" transform="translate(1 0)"/></svg>';
   const place = y => { const v = Math.min(0.78, Math.max(0.14, y)); t.style.top = Math.round(v * innerHeight) + 'px'; return v; };
   place(typeof settings.aiY === 'number' ? settings.aiY : 0.56);
@@ -748,7 +797,7 @@ function aiTab() {
   t.addEventListener('pointerdown', e => { sy = e.clientY; moved = false; startTop = t.getBoundingClientRect().top + t.offsetHeight / 2; t.setPointerCapture && t.setPointerCapture(e.pointerId); });
   t.addEventListener('pointermove', e => { if (!sy) return; const d = e.clientY - sy; if (Math.abs(d) > 8) moved = true; if (moved) place((startTop + d) / innerHeight); });
   t.addEventListener('pointerup', e => { if (moved) { settings.aiY = parseFloat(t.style.top) / innerHeight; saveSettings(); } sy = 0; });
-  t.addEventListener('click', e => { if (moved) { moved = false; e.preventDefault(); return; } safeImport('./ai.js').then(m => m.menu(t)); });
+  t.addEventListener('click', e => { if (moved) { moved = false; e.preventDefault(); return; } safeImport('./ai.js?v=gpscavy-f9e5c38e34').then(m => m.menu(t)); });
   document.body.appendChild(t);
   // Never cover content: look at what lies under the tab and slide it to the nearest clear spot in the margin.
   const FREE = 'html,body,#app,main,.pad,.notes,#nb,.ns,.nb,.stack';
@@ -784,8 +833,7 @@ function aiTab() {
 
 // ---------- boot ----------
 async function boot() {
-  window.__gpsBooted = true;
-  try { sessionStorage.removeItem('gpscavy-healed'); } catch (e) { }
+  window.__gpsLoaded = true; // the boot guard in index.html: the code arrived, now loading the question index
   loadAttempts();
   await getIndex();
   // Deep link opened fresh (e.g. from WhatsApp): put its parents under it so Back moves up a level instead of leaving the app.
@@ -802,6 +850,8 @@ async function boot() {
   } else depth = (history.state && history.state.d) || 0;
   if (!history.state) history.replaceState({ d: 0 }, '', location.hash || '#/');
   await render();
+  window.__gpsBooted = true; // only now: the first screen is on show
+  if (window.__gpsOK) window.__gpsOK();
   aiTab();
   if (/[?&]shared=1/.test(location.search) && 'caches' in window) {
     history.replaceState(history.state, '', location.pathname + (location.hash || '#/'));

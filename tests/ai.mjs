@@ -1,4 +1,4 @@
-// Ask Gemini tests. The Gemini API is mocked: no key or network needed.
+// Ask AI tests. Every AI company's API is mocked: no key or network needed.
 //   node tests/ai.mjs --base http://localhost:8765/gpsc-avy/ --profile pixel|ipad
 import fs from 'node:fs';
 import path from 'node:path';
@@ -100,7 +100,7 @@ await section('3. first use asks for a key; the key stays on this device', async
   await page.evaluate(() => localStorage.removeItem('gpscavy-ai-v1'));
   await open('#/study/topic9');
   await page.click('#aitab'); await settle(); await page.click('#aimenu [data-mode="text"]'); await settle();
-  ok(await page.locator('#sheet:has-text("Connect Gemini")').count() === 1, 'connect sheet shown without a key');
+  ok(await page.locator('#sheet:has-text("AI assistant")').count() === 1 && await page.locator('.aiprov [data-p="gemini"].on').count() === 1, 'AI set-up sheet shown without a key, Google Gemini chosen');
   ok(await page.locator('#sheet a[href="https://aistudio.google.com/apikey"]').count() === 1, 'links to Google AI Studio for a key');
   await page.fill('#aiKey', 'nope'); await page.click('#aiSave'); await settle();
   ok(await page.locator('#aiKeyErr:visible').count() === 1, 'rejects something that is not a key');
@@ -202,7 +202,7 @@ await section('6. voice: speech-to-text sends the question; recording fallback s
 });
 
 await section('7. errors are explained in plain words', async () => {
-  for (const [status, msg, want] of [[403, 'API key not valid', 'not accepted'], [429, 'quota', 'free limit'], [400, 'API key not valid. Please pass a valid API key.', 'not accepted'], [500, 'boom', 'could not answer']]) {
+  for (const [status, msg, want] of [[403, 'API key not valid', 'not accepted'], [429, 'quota', 'limit is used up'], [400, 'API key not valid. Please pass a valid API key.', 'not accepted'], [500, 'boom', 'could not answer']]) {
     reply = { status, msg };
     await open('#/');
     await page.click('#aitab'); await settle(); await page.click('#aimenu [data-mode="text"]'); await settle();
@@ -256,7 +256,7 @@ await section('10. an overloaded model is skipped after a short wait', async () 
     if (seen.length === 1) { await new Promise(x => setTimeout(x, 16000)); return r.abort().catch(() => { }); } // first model never starts answering
     r.fulfill({ status: 200, headers: { 'content-type': 'text/event-stream', 'access-control-allow-origin': '*' }, body: 'data: ' + JSON.stringify({ candidates: [{ content: { parts: [{ text: 'Answered by the backup model.' }] } }] }) + '\r\n\r\n' });
   });
-  await page.evaluate(() => { const c = JSON.parse(localStorage.getItem('gpscavy-ai-v1')); delete c.last; localStorage.setItem('gpscavy-ai-v1', JSON.stringify(c)); });
+  await page.evaluate(() => { const c = JSON.parse(localStorage.getItem('gpscavy-ai-v1')); delete c.lastBy; localStorage.setItem('gpscavy-ai-v1', JSON.stringify(c)); });
   await open('#/');
   await page.click('#aitab'); await settle(); await page.click('#aimenu [data-mode="text"]'); await settle();
   if (await page.locator('#aiNew').count()) { await page.click('#aiNew'); await settle(); }
@@ -265,9 +265,110 @@ await section('10. an overloaded model is skipped after a short wait', async () 
   await page.waitForSelector('.aim.model .aimd p', { timeout: 30000 });
   const secs = (Date.now() - t0) / 1000;
   ok(/backup model/.test(await page.locator('.aim.model').last().textContent()) && secs < 20 && seen.length === 2, 'moved to the next model after about 12 s', secs + ' s, tried ' + seen.join(' > '));
-  const last = await page.evaluate(() => JSON.parse(localStorage.getItem('gpscavy-ai-v1')).last);
+  ok(seen[0] === 'gemini-3.8-flash', 'starts with the model Google recommends', seen[0]);
+  const last = await page.evaluate(() => (JSON.parse(localStorage.getItem('gpscavy-ai-v1')).lastBy || {}).gemini);
   ok(last === seen[1], 'the model that answered is remembered and tried first next time', String(last));
   await page.keyboard.press('Escape'); await settle();
+});
+
+await section('11. choose the AI company, key and model: Claude, OpenAI and OpenRouter', async () => {
+  const sse = (p, text) => {
+    const bits = text.match(/[\s\S]{1,20}/g);
+    if (p === 'anthropic') return ['event: message_start\ndata: {"type":"message_start","message":{"id":"m"}}', 'event: content_block_start\ndata: {"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}']
+      .concat(bits.map(t => 'event: content_block_delta\ndata: ' + JSON.stringify({ type: 'content_block_delta', index: 0, delta: { type: 'text_delta', text: t } })))
+      .concat(['event: message_delta\ndata: {"type":"message_delta","delta":{"stop_reason":"end_turn"}}', 'event: message_stop\ndata: {"type":"message_stop"}']).join('\n\n') + '\n\n';
+    return bits.map(t => 'data: ' + JSON.stringify({ choices: [{ index: 0, delta: { content: t } }] })).concat(['data: ' + JSON.stringify({ choices: [{ index: 0, delta: {}, finish_reason: 'stop' }] }), 'data: [DONE]']).join('\n\n') + '\n\n';
+  };
+  const H = { 'access-control-allow-origin': '*' };
+  const got = []; let busyOnce = false;
+  await ctx.route('https://api.anthropic.com/**', async r => {
+    const q = r.request(); if (q.method() === 'OPTIONS') return r.fulfill({ status: 204, headers: H });
+    if (q.url().includes('/v1/models')) return r.fulfill({ status: 200, contentType: 'application/json', headers: H, body: JSON.stringify({ data: [{ id: 'claude-opus-5-5', display_name: 'Claude Opus 5.5' }, { id: 'claude-sonnet-5-5', display_name: 'Claude Sonnet 5.5' }, { id: 'claude-haiku-5-5', display_name: 'Claude Haiku 5.5' }] }) });
+    const body = JSON.parse(q.postData()); got.push({ p: 'anthropic', h: q.headers(), body });
+    if (busyOnce) { busyOnce = false; return r.fulfill({ status: 529, contentType: 'application/json', headers: H, body: JSON.stringify({ type: 'error', error: { type: 'overloaded_error', message: 'Overloaded' } }) }); }
+    r.fulfill({ status: 200, headers: Object.assign({ 'content-type': 'text/event-stream' }, H), body: sse('anthropic', 'Claude says: **Arnica** for bruises.') });
+  });
+  await ctx.route('https://api.openai.com/**', async r => {
+    const q = r.request(); if (q.method() === 'OPTIONS') return r.fulfill({ status: 204, headers: H });
+    if (q.url().includes('/v1/models')) return r.fulfill({ status: 200, contentType: 'application/json', headers: H, body: JSON.stringify({ data: ['gpt-6-astra', 'gpt-6.1-sol', 'gpt-6-luna', 'gpt-image-2', 'whisper-2', 'text-embedding-4'].map(id => ({ id })) }) });
+    got.push({ p: 'openai', h: q.headers(), body: JSON.parse(q.postData()) });
+    r.fulfill({ status: 200, headers: Object.assign({ 'content-type': 'text/event-stream' }, H), body: sse('openai', 'ChatGPT says: Rhus tox for stiffness.') });
+  });
+  await ctx.route('https://openrouter.ai/**', async r => {
+    const q = r.request(); if (q.method() === 'OPTIONS') return r.fulfill({ status: 204, headers: H });
+    if (q.url().endsWith('/api/v1/key')) return r.fulfill({ status: q.headers().authorization === 'Bearer sk-or-v1-TESTKEY0123456789abcdef' ? 200 : 401, contentType: 'application/json', headers: H, body: '{"data":{}}' });
+    if (q.url().includes('/api/v1/models')) return r.fulfill({ status: 200, contentType: 'application/json', headers: H, body: JSON.stringify({ data: [{ id: 'openrouter/auto', name: 'Auto Router' }, { id: 'meta-llama/llama-5-70b:free', name: 'Llama 5 70B (free)', architecture: { output_modalities: ['text'] } }, { id: 'some/image-model', architecture: { output_modalities: ['image'] } }] }) });
+    got.push({ p: 'openrouter', h: q.headers(), body: JSON.parse(q.postData()) });
+    r.fulfill({ status: 200, headers: Object.assign({ 'content-type': 'text/event-stream' }, H), body: sse('openrouter', 'OpenRouter model says hello.') });
+  });
+  const ask = async q => {
+    await page.click('#aitab'); await settle(); await page.click('#aimenu [data-mode="text"]'); await settle();
+    if (await page.locator('#aiNew').count()) { await page.click('#aiNew'); await settle(); }
+    await page.fill('#aiIn', q); await page.click('#aiSend');
+    await page.waitForFunction(() => { const m = document.querySelectorAll('.aim.model'); const l = m[m.length - 1]; return l && !l.querySelector('.aidots') && (l.querySelector('.aivia') || l.querySelector('.aierr')); }, null, { timeout: 20000 });
+    const out = await page.locator('.aim.model').last().textContent();
+    await page.keyboard.press('Escape'); await settle(); return out;
+  };
+  const setup = async () => { await open('#/'); await page.click('.tbn.gear'); await settle(500); await page.click('#stKey'); await settle(600); };
+  // the first version kept a single Gemini key: it carries over
+  await page.evaluate(() => localStorage.setItem('gpscavy-ai-v1', JSON.stringify({ key: 'AIzaSyOLDFORMAT0123456789abcdefghij', last: 'gemini-flash-latest' })));
+  await setup();
+  ok(await page.locator('.aiprov [data-p="gemini"].on').count() === 1 && (await page.inputValue('#aiKey')) === 'AIzaSyOLDFORMAT0123456789abcdefghij', 'a key saved by the earlier version carries over');
+  ok(/Recommended · gemini-3\.8-flash/.test(await page.locator('#aiModel option').first().textContent()), 'Gemini defaults to Google\'s recommended model');
+
+  // Claude: key, live model list, recommended model, request format
+  await page.click('[data-p="anthropic"]'); await settle();
+  ok((await page.inputValue('#aiKey')) === '' && /sk-ant-/.test(await page.locator('.aikh').textContent()) && await page.locator('.aikh a[href*="anthropic"]').count() === 1, 'Claude: own key box with where to get a key');
+  await page.fill('#aiKey', 'sk-ant-api03-TESTKEY0123456789abcdef'); await page.click('#aiLoad'); await settle(800);
+  const opts = await page.$$eval('#aiModel option', o => o.map(x => x.value));
+  ok(opts[0] === '' && opts.includes('claude-sonnet-5-5') && opts.includes('claude-haiku-5-5') && opts[opts.length - 1] === '*', 'Claude: the key lists its models, recommended first', opts.join(','));
+  ok(/claude-opus-5-5/.test(await page.locator('#aiModel option').first().textContent()), 'Claude: defaults to Anthropic\'s recommended model');
+  await page.click('#aiSave'); await settle(600);
+  ok(await page.locator('#stAi:has-text("Anthropic Claude")').count() === 1 || await page.locator('#sheet').count() === 0, 'Claude saved');
+  await page.keyboard.press('Escape'); await settle();
+  ok(/Ask Claude/.test(await page.getAttribute('#aitab', 'aria-label') + (await page.click('#aitab'), await page.locator('#aimenu').textContent())), 'the assistant is called Ask Claude');
+  await page.keyboard.press('Escape'); await settle();
+  let t = await ask('Remedy for bruises?');
+  let g = got[got.length - 1];
+  ok(/Claude says: Arnica for bruises/.test(t) && /claude-opus-5-5/.test(t), 'Claude: streamed answer shown with the model that wrote it', t.slice(0, 120));
+  ok(g.h['x-api-key'] === 'sk-ant-api03-TESTKEY0123456789abcdef' && g.h['anthropic-version'] && g.h['anthropic-dangerous-direct-browser-access'] === 'true' && g.body.model === 'claude-opus-5-5' && g.body.stream === true && g.body.system && g.body.messages[0].role === 'user', 'Claude: request in Anthropic\'s format', JSON.stringify(g.body).slice(0, 200));
+  // busy recommended model: falls through to the next
+  busyOnce = true; const n0 = got.length;
+  t = await ask('Again please');
+  ok(/Arnica/.test(t) && got.length - n0 === 2 && got[got.length - 1].body.model === 'claude-sonnet-5-5', 'Claude: a busy recommended model falls through to the next', got.slice(n0).map(x => x.body.model).join('>'));
+  // video is Gemini-only
+  await page.click('#aitab'); await settle(); await page.click('#aimenu [data-mode="text"]'); await settle();
+  await page.setInputFiles('#aiPick', { name: 'clip.mp4', mimeType: 'video/mp4', buffer: Buffer.alloc(2000) }); await settle(500);
+  ok(await page.locator('.aithumb').count() === 0 && /Gemini only/.test(await page.locator('#toast').textContent()), 'Claude: a video is refused with a clear message');
+  await page.keyboard.press('Escape'); await settle();
+
+  // OpenAI with a model chosen from the list: used on its own
+  await setup(); await page.click('[data-p="openai"]'); await settle();
+  await page.fill('#aiKey', 'sk-proj-TESTKEY0123456789abcdefghij'); await page.click('#aiLoad'); await settle(800);
+  const oo = await page.$$eval('#aiModel option', o => o.map(x => x.value));
+  ok(oo.includes('gpt-6-luna') && !oo.includes('gpt-image-2') && !oo.includes('whisper-2') && !oo.includes('text-embedding-4'), 'OpenAI: only chat models are listed', oo.join(','));
+  await page.selectOption('#aiModel', 'gpt-6-luna'); await page.click('#aiSave'); await settle(600); await page.keyboard.press('Escape'); await settle();
+  t = await ask('Stiffness better by motion?'); g = got[got.length - 1];
+  ok(/Rhus tox/.test(t) && g.p === 'openai' && g.body.model === 'gpt-6-luna' && g.h.authorization === 'Bearer sk-proj-TESTKEY0123456789abcdefghij' && g.body.messages[0].role === 'system' && g.body.stream && g.body.temperature === undefined, 'OpenAI: chosen model, Chat Completions format', JSON.stringify(g.body).slice(0, 160));
+
+  // OpenRouter: a typed model ID; key checked
+  await setup(); await page.click('[data-p="openrouter"]'); await settle();
+  await page.fill('#aiKey', 'sk-or-v1-WRONGKEY0123456789abcdef'); await page.click('#aiLoad'); await settle(800);
+  ok(await page.locator('#aiKeyErr:visible').count() === 1, 'OpenRouter: a wrong key is caught');
+  await page.fill('#aiKey', 'sk-or-v1-TESTKEY0123456789abcdef'); await page.click('#aiLoad'); await settle(800);
+  const ro = await page.$$eval('#aiModel option', o => o.map(x => x.value));
+  ok(ro.includes('meta-llama/llama-5-70b:free') && !ro.includes('some/image-model'), 'OpenRouter: text models listed', ro.join(','));
+  await page.selectOption('#aiModel', '*'); await page.fill('#aiModelId', 'vendor/custom-model'); await page.click('#aiSave'); await settle(600); await page.keyboard.press('Escape'); await settle();
+  t = await ask('hello'); g = got[got.length - 1];
+  ok(/OpenRouter model says hello/.test(t) && g.p === 'openrouter' && g.body.model === 'vendor/custom-model', 'OpenRouter: a typed model ID is used', g.body.model);
+
+  // every key is kept per company; switching back to Gemini works straight away
+  await setup(); await page.click('[data-p="anthropic"]'); await settle();
+  ok((await page.inputValue('#aiKey')) === 'sk-ant-api03-TESTKEY0123456789abcdef', 'switching company keeps each company\'s key');
+  await page.click('[data-p="gemini"]'); await settle(); await page.click('#aiSave'); await settle(600); await page.keyboard.press('Escape'); await settle();
+  const st = await page.evaluate(() => [localStorage.getItem('gpscavy-ai-v1'), localStorage.getItem('gpscavy-settings-v1') || '', localStorage.getItem('gpsc-cbrt-history-v1') || '']);
+  ok(!/sk-ant|sk-proj|sk-or|AIza/.test(st[1] + st[2]) && /sk-ant/.test(st[0]), 'keys never stored with settings or progress');
+  await ctx.unroute('https://api.anthropic.com/**'); await ctx.unroute('https://api.openai.com/**'); await ctx.unroute('https://openrouter.ai/**');
 });
 
 ok(!errors.filter(e => !/Failed to load resource|internetdisconnected|ERR_INTERNET/.test(e)).length, 'no page errors', errors.slice(0, 4).join(' | '));

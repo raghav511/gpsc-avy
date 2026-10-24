@@ -426,18 +426,48 @@ def notes_pdfs_fresh():
             raise SystemExit(msg)
 
 
+STAMP_RE = re.compile(r"(\./[a-z0-9_]+\.js)\?v=[A-Za-z0-9_-]+")
+IMPORT_RE = re.compile(r"""((?:from|[iI]mport\()\s*['"]\./[a-z0-9_]+\.js)(?:\?v=[A-Za-z0-9_-]+)?(['"])""")
+
+
 def stamp_sw():
+    """One version for everything: the service worker cache, the page, and every module URL.
+    Modules import each other as ./x.js?v=VERSION, so a page can never mix files from two versions
+    (the cause of 'Importing binding name ... is not found' on iPad after an update)."""
+    def norm(b):
+        t = b.decode('utf-8', 'surrogateescape')
+        t = STAMP_RE.sub(r'\1', t)
+        t = re.sub(r'<meta name="gps-v" content="[^"]*">', '', t)
+        t = re.sub(r'((?:src|href)="js/[a-z0-9_]+\.js)\?v=[^"]*"', r'\1"', t)
+        return t.encode('utf-8', 'surrogateescape')
     h = hashlib.sha1()
     for d in ['index.html', 'manifest.webmanifest', 'js', 'data', 'fonts', 'icons']:
         p = os.path.join(ROOT, d)
         files = [p] if os.path.isfile(p) else sorted(os.path.join(dp, f) for dp, _, fs in os.walk(p) for f in fs)
         for f in files:
-            h.update(f.encode()); h.update(open(f, 'rb').read())
+            if '__pycache__' in f:
+                continue
+            b = open(f, 'rb').read()
+            h.update(f.replace(ROOT, '').encode()); h.update(norm(b) if f.endswith(('.js', '.html')) else b)
     v = 'gpscavy-' + h.hexdigest()[:10]
     sw = os.path.join(ROOT, 'sw.js')
     s = open(sw, encoding='utf-8').read()
     s = re.sub(r"const V = '[^']*';", "const V = '" + v + "';", s, count=1)
     open(sw, 'w', encoding='utf-8').write(s)
+    jsdir = os.path.join(ROOT, 'js')
+    for f in sorted(os.listdir(jsdir)):
+        if f.endswith('.js'):
+            fp = os.path.join(jsdir, f)
+            t = open(fp, encoding='utf-8').read()
+            t2 = IMPORT_RE.sub(lambda m: m.group(1) + '?v=' + v + m.group(2), t)
+            if t2 != t:
+                open(fp, 'w', encoding='utf-8').write(t2)
+    ix = os.path.join(ROOT, 'index.html')
+    t = open(ix, encoding='utf-8').read()
+    t = re.sub(r'<meta name="gps-v" content="[^"]*">', '<meta name="gps-v" content="' + v + '">', t, count=1)
+    t = re.sub(r'((?:src|href)="js/[a-z0-9_]+\.js)(?:\?v=[^"]*)?"', lambda m: m.group(1) + '?v=' + v + '"', t)
+    open(ix, 'w', encoding='utf-8').write(t)
+    json.dump({'v': v}, open(os.path.join(ROOT, 'version.json'), 'w'))
     print('sw', v)
 
 

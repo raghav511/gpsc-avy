@@ -1,8 +1,8 @@
 // Study: library with subject chips, notes reader with quick-check quizzes, playbooks, PDFs, Revise incorrect, past papers, search.
 import {
   $, $$, SC, esc, day, idle, getIndex, getMeta, getKeys, getSet, getText, getSearch, setInfo, IDX, META, H, wrongList, tokens,
-  settings, saveSettings, saveCustom, toast, sheet, ICON, topbar, navHtml, lvlChip, SEC, TOPIC_NAMES, loadAttempts, NOTE_TOPICS, hasNotes
-} from './core.js';
+  settings, saveSettings, saveCustom, toast, sheet, ICON, topbar, navHtml, lvlChip, SEC, TOPIC_NAMES, loadAttempts, NOTE_TOPICS, hasNotes, topBtns
+} from './core.js?v=gpscavy-f9e5c38e34';
 
 const app = $('#app');
 let API = null;
@@ -48,7 +48,7 @@ async function library(chip, sub, r, me) {
   if (chip === 'all') body += '<h2 class="label">More</h2><div class="list">' + row('#/study/playbook/english', 'En', 's-comp-b', 'English Playbook (full)', 'Comprehension and grammar, with a 13-day plan') + row('#/study/papers', 'QP', 's-lr-b', 'Past GPSC question papers', META.papers.length + ' papers on the GPSC site') + row('#/study/pdfs', 'PDF', 's-ind-b', 'Printable PDFs', META.pdfs.length + ' files to print or share on WhatsApp') + '</div>';
   if (chip === 'pdfs') body += '<h2 class="label">Printable PDFs to share on WhatsApp</h2><div class="list">' + META.pdfs.map(pdfRow).join('') + '</div>';
   if (chip === 'wrong') body += await wrongBody(wl, sub, me);
-  app.innerHTML = '<div class="ptop"><header class="ph"><h1>Study</h1></header><div class="ptabs"><div class="chips" role="tablist" aria-label="Subjects">' + chips + '</div></div></div>' +
+  app.innerHTML = '<div class="ptop"><header class="ph"><h1>Study</h1>' + topBtns() + '</header><div class="ptabs"><div class="chips" role="tablist" aria-label="Subjects">' + chips + '</div></div></div>' +
     '<main class="pad stack"><form class="sbox" role="search" id="sf"><span aria-hidden="true">' + ICON.search + '</span><input type="search" name="q" placeholder="Search notes: Ledum, PCOD, IMR…" aria-label="Search notes, questions and sets" enterkeyhint="search"></form>' +
     body + '</main>' + navHtml('study');
   bindPdf(app);
@@ -205,7 +205,7 @@ async function notesScreen(t, r, me) {
   me.unmount = () => { scEl.removeEventListener('scroll', onScroll); clearTimeout(saveT); saveSettings(); };
   $('#nFs').onclick = () => { settings.fs = settings.fs >= 1.25 ? 1 : (settings.fs || 1) >= 1.12 ? 1.25 : 1.12; nb.style.setProperty('--fs', settings.fs); saveSettings(); };
   $('#nPdf').onclick = () => pdfSheet(t);
-  $('#nShare').onclick = () => import('./runner.js').then(m => m.shareLink(location.href.split('#')[0] + '#/study/topic' + t, 'Topic ' + t + ' notes: ' + n.title));
+  $('#nShare').onclick = () => import('./runner.js?v=gpscavy-f9e5c38e34').then(m => m.shareLink(location.href.split('#')[0] + '#/study/topic' + t, 'Topic ' + t + ' notes: ' + n.title));
   if (r.q.h) requestAnimationFrame(() => { const el = document.getElementById(r.q.h); if (el) { const s = el.closest('.ns'); if (s) s.classList.remove('closed'); SC().scrollTo(0, el.getBoundingClientRect().top + SC().scrollTop - tocH()); } });
 }
 function openZoom(img) {

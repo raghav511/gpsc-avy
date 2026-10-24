@@ -257,6 +257,8 @@ export const ICON = {
   share: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg>',
   plus: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
   ext: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></svg>',
+  gear: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>',
+  upd: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>',
   chev: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>'
 };
 export const NAV = [
@@ -270,7 +272,28 @@ export function navHtml(on) {
 }
 export function topbar(title, sub, opts) {
   opts = opts || {};
-  return '<header class="tb' + (opts.cls ? ' ' + opts.cls : '') + '"><button type="button" class="ib back" data-back aria-label="Back">' + ICON.back + '</button><div class="tbt"><h1>' + esc(title) + '</h1>' + (sub ? '<p>' + esc(sub) + '</p>' : '') + '</div>' + (opts.right || '') + '</header>';
+  return '<header class="tb' + (opts.cls ? ' ' + opts.cls : '') + '"><button type="button" class="ib back" data-back aria-label="Back">' + ICON.back + '</button><div class="tbt"><h1>' + esc(title) + '</h1>' + (sub ? '<p>' + esc(sub) + '</p>' : '') + '</div>' + (opts.right || '') + topBtns(true) + '</header>';
+}
+// Update app, Sync progress and Settings: the same three buttons at the top right of every screen
+// (labels on wide screens, icons on phones and iPad portrait; always icons beside a page title).
+export const UI = { syncing: false, syncErr: false };
+export function syncState() {
+  if (!settings.syncUrl) return 'off';
+  if (UI.syncErr) return 'err';
+  const ls = settings.lastSync;
+  return ls && ls.what === 'sync' && Date.now() - Date.parse(ls.at) < 600000 ? 'ok' : 'on';
+}
+const SYNC_TXT = { off: 'Sync progress, not connected', err: 'Sync progress, last try failed', ok: 'Synced', on: 'Sync progress' };
+export function topBtns(compact) {
+  const st = syncState();
+  return '<div class="tbtns' + (compact ? ' cpt' : '') + '">' +
+    '<button type="button" class="tbn updb" data-act="update" aria-label="Update app" title="Update app">' + ICON.upd + '<span>Update app</span></button>' +
+    '<button type="button" class="tbn syncb' + (UI.syncing ? ' busy' : '') + '" data-act="sync" data-st="' + st + '" aria-label="' + SYNC_TXT[st] + '" title="' + SYNC_TXT[st] + '">' + ICON.sync + '<span>' + (st === 'ok' ? 'Synced' : 'Sync progress') + '</span></button>' +
+    '<button type="button" class="tbn gear" data-act="settings" aria-label="Settings" title="Settings">' + ICON.gear + '</button></div>';
+}
+export function refreshTopBtns() {
+  const st = syncState();
+  $$('.tbn.syncb').forEach(b => { b.dataset.st = st; b.classList.toggle('busy', UI.syncing); b.setAttribute('aria-label', SYNC_TXT[st]); b.title = SYNC_TXT[st]; const t = b.querySelector('span'); if (t) t.textContent = st === 'ok' ? 'Synced' : 'Sync progress'; });
 }
 export function bar(pct, cls) { return '<div class="trk ' + (cls || '') + '"><i style="width:' + Math.max(0, Math.min(100, pct)) + '%"></i></div>'; }
 export function lvlChip(level) { if (!level) return ''; const k = LVK[level] || level; return '<span class="chip lv-' + k + '">' + (LV[k] || LVL[level]) + '</span>'; }
