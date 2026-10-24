@@ -1,7 +1,7 @@
 // GPSCavy core: storage, data loading, grading, router helpers, small UI primitives.
 // Storage keys are shared with the GPSC CBRT mock-exam page (gpsc-cbrt-*), so a progress file moves between them.
 
-import { fetchText } from './vault.js?v=gpscavy-969e1095da';
+import { fetchText } from './vault.js?v=gpscavy-e033a53e35';
 
 export const HKEY = 'gpsc-cbrt-history-v1';
 export const CKEY = 'gpscavy-custom-v1';
@@ -92,6 +92,7 @@ async function buildCustomSet(id) {
     const q = { n: i + 1, sec: r[1], q: row[3], opts: row[4], ans: row[5], why: row[6], ref: row[0] };
     if (row[1]) q.lvl = row[1];
     if (row[2]) q.topic = row[2];
+    if (row[9]) q.src = row[9];
     if (row[7]) { if (!passages[row[7]]) passages[row[7]] = Object.assign({}, p.p[row[7]]); q.passage = row[7]; }
     qs.push(q);
   });
@@ -325,4 +326,6 @@ export function refreshTopBtns() {
   $$('.tbn.syncb').forEach(b => { b.dataset.st = st; b.classList.toggle('busy', UI.syncing); b.setAttribute('aria-label', SYNC_TXT[st]); b.title = SYNC_TXT[st]; const t = b.querySelector('span'); if (t) t.textContent = st === 'ok' ? 'Synced' : 'Sync progress'; });
 }
 export function bar(pct, cls) { return '<div class="trk ' + (cls || '') + '"><i style="width:' + Math.max(0, Math.min(100, pct)) + '%"></i></div>'; }
+// the past exam a question appeared in, a small tag at the right of the question header
+export function srcTag(q) { return q && q.src ? '<span class="qsrc">(' + esc(q.src) + ')</span>' : ''; }
 export function lvlChip(level) { if (!level) return ''; const k = LVK[level] || level; return '<span class="chip lv-' + k + '">' + (LV[k] || LVL[level]) + '</span>'; }

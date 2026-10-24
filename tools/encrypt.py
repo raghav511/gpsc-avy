@@ -21,6 +21,8 @@ def item_for(path):
     if m: return 'notes:' + m.group(1)
     m = re.match(r'^data/playbooks/(gk|english)-playbook\.html$', p)
     if m: return 'playbook:' + m.group(1)
+    m = re.match(r'^data/cheats/(\w+)\.html$', p)
+    if m: return 'cheat:' + m.group(1)
     if p == 'data/search.json': return 'search'
     if p.startswith('data/pool/'): return 'custom'
     m = re.match(r'^content/pdfs/Topic-(\d+)-.*\.pdf$', p)

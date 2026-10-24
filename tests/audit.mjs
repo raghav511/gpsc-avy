@@ -88,6 +88,8 @@ while (queue.length && routes.length < MAX) {
     const n = await page.locator('#app button:visible').count();
     for (let i = 0; i < Math.min(n, 14); i++) {
       await page.goto('about:blank'); await page.goto(BASE + h); await page.waitForFunction(() => window.__gpsBooted, null, { timeout: 20000 }).catch(() => { }); await page.waitForTimeout(400);
+      // pressing an earlier button may have changed the page for good (e.g. un-saving a question), so it can have fewer buttons now
+      if (i >= await page.locator('#app button:visible').count()) break;
       const b = page.locator('#app button:visible').nth(i);
       const label = ((await b.getAttribute('aria-label').catch(() => '')) || (await b.innerText().catch(() => '')) || '').trim().slice(0, 30);
       cur = h + ' [press ' + label + ']';

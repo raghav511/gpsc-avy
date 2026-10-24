@@ -10,7 +10,7 @@ Writes  data/index.json        set list, papers, pdfs (small, precached)
         data/search.json       search index (questions, notes headings, sets)
 Question ids and set ids are never changed.
 """
-import json, os, re, html, hashlib, shutil
+import json, os, re, html, hashlib, shutil, random
 import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from stylize import stylize
@@ -234,7 +234,86 @@ def build_playbooks():
     return out
 
 
+# ---------------- cheat sheets ----------------
+CHEATS = {'grammar': 'English grammar', 'reasoning': 'Logical reasoning'}
+
+
+def build_cheats():
+    out = {}
+    os.makedirs(os.path.join(OUT, 'cheats'), exist_ok=True)
+    for name in CHEATS:
+        body = open(os.path.join(C, 'cheats', name + '.html'), encoding='utf-8').read().strip()
+        body = re.sub(r'<table>(.*?)</table>', r'<div class="tw"><table>\1</table></div>', body, flags=re.S)
+        open(os.path.join(OUT, 'cheats', name + '.html'), 'w', encoding='utf-8').write(body)
+        out[name] = [[m.group(1), strip_tags(m.group(2)).strip()] for m in re.finditer(r'<h2 id="([^"]+)">(.*?)</h2>', body, re.S)]
+        assert out[name], name
+    return out
+
+
 # ---------------- sets ----------------
+SRC_RE = re.compile(r'((?:Like )?GPSC (?:CBRT|JSO pre-screening|Medical Officer|pre-screening test[^,.;]*)[^.;]*?\b(?:19|20)\d\d)')
+
+
+def source_of(q):
+    """the past exam a question comes from (or is modelled on), shown beside it in the app; '' when none"""
+    if q.get('src'):
+        return q['src']
+    m = SRC_RE.search(q.get('why', ''))
+    if not m:
+        return ''
+    t = m.group(1).strip()
+    t = re.sub(r'^GPSC pre-screening test \(Junior Scale Officer\)', 'GPSC JSO pre-screening', t)
+    return t
+
+
+# ---------- drills from the question bank ----------
+# 50 drills of 10 questions per subject: 13 easy, 25 intermediate, 12 hard (about 25/50/25), each drawing first on
+# questions of its own level. The bank (content/data/bank/<sec>.json) holds questions written for the drills; the
+# questions already in the practice sets are used as well (never changed), so the drills cover the whole bank.
+BANK_DRILLS = {'gram': ('grd', 'Grammar drill', 'English Grammar', 'Grammar'), 'lr': ('lrd', 'Reasoning drill', 'Logical Reasoning', 'Reasoning')}
+DRILL_PLAN = ['E'] * 13 + ['I'] * 25 + ['H'] * 12
+LVNAME = {'E': 'easy', 'I': 'intermediate', 'H': 'hard'}
+
+
+def bank_drills(sets):
+    out = []
+    for sec, (prefix, title, long_, short) in BANK_DRILLS.items():
+        seen, cands = set(), []
+        f = os.path.join(C, 'data', 'bank', sec + '.json')
+        bank = json.load(open(f, encoding='utf-8')) if os.path.exists(f) else []
+        existing = [q for s in sets if not s.get('hidden') and not s.get('derived') for q in s['questions'] if q['sec'] == sec and not q.get('passage')]
+        for q in bank + existing:
+            k = norm(q['q']) + '|' + norm(' '.join(q['opts']))
+            if k in seen:
+                continue
+            seen.add(k)
+            cands.append(q)
+        byl = {'E': [], 'I': [], 'H': []}
+        for q in cands:
+            byl[q.get('lvl') if q.get('lvl') in byl else 'I'].append(q)
+        rnd = random.Random('gpscavy-' + sec)
+        for v in byl.values():
+            rnd.shuffle(v)
+        for i, lv in enumerate(DRILL_PLAN, 1):
+            pick = []
+            for l2 in {'E': 'EIH', 'I': 'IEH', 'H': 'HIE'}[lv]:
+                while len(pick) < 10 and byl[l2]:
+                    pick.append(byl[l2].pop())
+            if len(pick) < 10:
+                break
+            qs = []
+            for j, q in enumerate(pick, 1):
+                nq = {k: v for k, v in q.items() if k in ('sec', 'q', 'opts', 'ans', 'why', 'lvl', 'topic', 'src')}
+                nq['n'] = j
+                nq['sec'] = sec
+                nq.setdefault('lvl', 'I')
+                qs.append(nq)
+            out.append({'id': '%s%d' % (prefix, i), 'set': '%s %d' % (title, i), 'short': LVNAME[lv].capitalize(), 'minutes': 12,
+                        'drill': True, 'group': sec, 'dlevel': LVNAME[lv],
+                        'sections': [{'id': sec, 'name': long_, 'short': short, 'marks': len(qs)}], 'passages': {}, 'questions': qs})
+    return out
+
+
 def main():
     if os.path.isdir(OUT):
         shutil.rmtree(OUT)
@@ -274,7 +353,8 @@ def main():
                       'sections': [{'id': 'comp', 'name': 'English (Comprehension)', 'short': 'Comprehension', 'marks': len(qs)}],
                       'passages': passages, 'questions': qs, 'refs': refs})
 
-    allsets = sets + compd + quizzes
+    bank_sets = bank_drills(sets)
+    allsets = sets + compd + quizzes + bank_sets
 
     # canonical question ids (dedupe by text + options) so a question repeated in a level test counts once
     canon = {}
@@ -301,7 +381,7 @@ def main():
     for s in allsets:
         secs = ','.join(sec['id'] + ':' + str(sum(1 for q in s['questions'] if q['sec'] == sec['id'])) for sec in s['sections'])
         e = {'id': s['id'], 'name': s['set'], 'min': s['minutes'], 'n': len(s['questions']), 'secs': secs}
-        lv = s.get('lvlset') or level_of(s['questions'])
+        lv = s.get('lvlset') or s.get('dlevel') or level_of(s['questions'])
         if lv:
             e['level'] = lv
         mix = {'E': 0, 'I': 0, 'H': 0}
@@ -324,6 +404,9 @@ def main():
         idx.append(e)
         out = {k: v for k, v in s.items() if k in ('id', 'set', 'minutes', 'sections', 'passages', 'questions', 'refs', 'core', 'level', 'drill', 'group', 'short', 'lvlset', 'mix', 'hidden', 'quiz')}
         for q in out['questions']:
+            src = source_of(q)
+            if src:
+                q['src'] = src
             t = topic_of(s, q)
             if t:
                 q['topic'] = t
@@ -346,7 +429,7 @@ def main():
                     p = s['passages'][q['passage']]
                     pools['comp']['p'][pk] = {'title': p['title'], 'paras': p['paras']}
             t = topic_of(s, q)
-            pools[q['sec']]['q'].append([s['id'] + ':' + str(q['n']), q.get('lvl') or '', t or 0, q['q'], q['opts'], q['ans'], q['why'], pk or '', cid])
+            pools[q['sec']]['q'].append([s['id'] + ':' + str(q['n']), q.get('lvl') or '', t or 0, q['q'], q['opts'], q['ans'], q['why'], pk or '', cid, source_of(q)])
     for k, v in pools.items():
         wjson(os.path.join(OUT, 'pool', k + '.json'), v)
     pool_counts = {}
@@ -387,10 +470,11 @@ def main():
     notes_pdfs_fresh()
 
     playbooks = build_playbooks()
+    cheats = build_cheats()
 
     wjson(os.path.join(OUT, 'index.json'), {'v': 1, 'sets': idx})
     wjson(os.path.join(OUT, 'meta.json'), {'papers': data['papers'], 'pdfs': pdfs, 'notes': notes,
-                                            'playbooks': playbooks, 'pools': pool_counts, 'topics': TOPICS})
+                                            'playbooks': playbooks, 'cheats': cheats, 'pools': pool_counts, 'topics': TOPICS})
     wjson(os.path.join(OUT, 'keys.json'), keys)
 
     # search: questions (canonical only), note headings, sets

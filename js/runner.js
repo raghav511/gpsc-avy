@@ -2,9 +2,9 @@
 // same saved-state shape and keys, same attempt records, same grading.
 import {
   $, SC, esc, fmt, day, idle, getIndex, getKeys, getSet, setInfo, KEYS, H, findAttempt, addAttempt, removeAttempt, grade, tokens,
-  loadState, stateKey, lsSet, lsDel, remaining, toast, hideToast, sheet, closeSheet, ICON, topbar, bar, lvlChip, navHtml,
+  loadState, stateKey, lsSet, lsDel, remaining, toast, hideToast, sheet, closeSheet, ICON, topbar, bar, lvlChip, srcTag, navHtml,
   SECS, SEC, LV, LVL, L5, TOPIC_NAMES, customs, saveCustom, findDef, NOTE_TOPICS, hasNotes, saveBtn, addCleared, delCleared
-} from './core.js?v=gpscavy-969e1095da';
+} from './core.js?v=gpscavy-e033a53e35';
 
 const app = $('#app');
 let API = null;
@@ -161,7 +161,7 @@ function runner(set, S, me) {
     const q = QS[S.cur], n = q.n, a = S.answers[n], locked = !exam && !!a;
     const prevCur = rq.dataset.n;
     S.seen[n] = 1;
-    let h = '<div class="qh"><span class="qn">Question ' + n + ' of ' + N + '</span>' + lvTag(q) + secTag(q) + '</div>';
+    let h = '<div class="qh"><span class="qn">Question ' + n + ' of ' + N + '</span>' + lvTag(q) + secTag(q) + srcTag(q) + '</div>';
     if (q.passage && set.passages[q.passage]) {
       const p = set.passages[q.passage];
       const ns = QS.filter(x => x.passage === q.passage).map(x => x.n);
@@ -403,7 +403,7 @@ async function reviewScreen(at, r, me) {
     let pass = '';
     if (q.passage && q.passage !== lastP && set.passages[q.passage]) { const p = set.passages[q.passage]; pass = '<details class="passage"><summary>Show ' + esc(p.title.toLowerCase()) + '</summary><div>' + p.paras.map(t => '<p>' + esc(t) + '</p>').join('') + '</div></details>'; }
     lastP = q.passage || null;
-    return '<article class="rev"><div class="qh"><b>Q' + q.n + '</b><span class="pill ' + (s === 'ok' ? 'pill-done">Right' : s === 'bad' ? 'pill-bad">Wrong' : 'pill-skip">Skipped') + '</span>' + (flags[q.n] ? '<span class="pill pill-flag">Flagged</span>' : '') + lvTag(q) + secTag(q) + saveBtn(q.ref || refOf[q.n] || at.set + ':' + q.n, q.sec) + '</div>' + pass +
+    return '<article class="rev"><div class="qh"><b>Q' + q.n + '</b><span class="pill ' + (s === 'ok' ? 'pill-done">Right' : s === 'bad' ? 'pill-bad">Wrong' : 'pill-skip">Skipped') + '</span>' + (flags[q.n] ? '<span class="pill pill-flag">Flagged</span>' : '') + lvTag(q) + secTag(q) + srcTag(q) + saveBtn(q.ref || refOf[q.n] || at.set + ':' + q.n, q.sec) + '</div>' + pass +
       '<p class="qt">' + esc(q.q) + '</p><ol class="ro">' + optsOf(q).map((t, i) => { const L = L5[i]; const c = L === q.ans ? 'right' : L === a ? 'mine' : ''; if (i === 4 && L !== q.ans && L !== a) return ''; return '<li class="' + c + '"><span class="key">' + L + '</span><span>' + esc(t) + '</span><em>' + (L === q.ans ? (L === a ? 'Correct, your answer' : 'Correct answer') : L === a ? 'Your answer' : '') + '</em></li>'; }).join('') + '</ol>' +
       '<p class="why"><b>Why ' + q.ans + ':</b> ' + esc(q.why) + '</p>' + (hasNotes(q.topic) ? '<a class="lnk" href="#/study/topic' + q.topic + '">Read Topic ' + q.topic + ' notes</a>' : '') + '</article>';
   }).join('');

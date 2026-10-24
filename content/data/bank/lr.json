@@ -1,0 +1,3752 @@
+[
+ {
+  "q": "What comes next in the series? 9, 16, 25, 36, 49, …",
+  "opts": [
+   "62",
+   "64",
+   "67",
+   "56"
+  ],
+  "ans": "B",
+  "why": "Squares of 3, 4, 5, …. Next: 64. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "number-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If VILLAGE is written as XKNNCIG in a certain code, how is MEDICAL written in that code?",
+  "opts": [
+   "OGFKECN",
+   "NCEKFGO",
+   "NFEJDBM",
+   "OGFKECO"
+  ],
+  "ans": "A",
+  "why": "In the code each letter moves 2 places forward: MEDICAL → OGFKECN. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "coding",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next? FGH, IJK, LMN, OPQ, …",
+  "opts": [
+   "QRS",
+   "RST",
+   "RTS",
+   "STU"
+  ],
+  "ans": "B",
+  "why": "Each group starts 3 letters after the last one, with the same pattern inside: RST. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "letter-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Meera is 6th from the top and 18th from the bottom in a class. How many students are in the class?",
+  "opts": [
+   "22",
+   "23",
+   "25",
+   "24"
+  ],
+  "ans": "B",
+  "why": "Total = 6 + 18 − 1 = 23. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "ranking",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Vijay walks 6 km North, then turns left and walks 8 km. How far is Vijay from the starting point?",
+  "opts": [
+   "11 km",
+   "10 km",
+   "2 km",
+   "14 km"
+  ],
+  "ans": "B",
+  "why": "The two legs are at right angles: √(6² + 8²) = 10 km. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "direction",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What is the angle between the hands of a clock at 9:25?",
+  "opts": [
+   "140°",
+   "132.5°",
+   "137.5°",
+   "127.5°"
+  ],
+  "ans": "B",
+  "why": "Angle = |30×9 − 5.5×25| = 132.5°. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "clock",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Manoj is the brother of Rahul. Rahul is the mother of Anil. How is Manoj related to Anil?",
+  "opts": [
+   "Paternal uncle",
+   "Cousin",
+   "Father",
+   "Maternal uncle"
+  ],
+  "ans": "D",
+  "why": "Draw the family tree from the statements; the answer is Maternal uncle. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "blood-relation",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a group of 110 people, 47 like cricket, 58 like football and 45 like both. How many like neither?",
+  "opts": [
+   "54",
+   "50",
+   "56",
+   "48"
+  ],
+  "ans": "B",
+  "why": "Neither = 110 − (47 + 58 − 45) = 50. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "sets",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Statements: Some remedies are tablets. No tablets are liquids. Conclusions: I. No remedies are liquids. II. Some remedies are not liquids.",
+  "opts": [
+   "Neither I nor II follows",
+   "Only II follows",
+   "Both I and II follow",
+   "Only I follows"
+  ],
+  "ans": "B",
+  "why": "Checked against every possible diagram of the statements: I need not be true, II must be true. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "syllogism",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Find the odd one out:",
+  "opts": [
+   "OQT",
+   "BDF",
+   "RTV",
+   "EGI"
+  ],
+  "ans": "A",
+  "why": "In the others each letter is 2 after the one before; in OQT the last step is 3. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "odd-one-out",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "A shopkeeper marks an item 25% above cost and gives a 10% discount. What is the overall gain?",
+  "opts": [
+   "10.5%",
+   "12.5%",
+   "15%",
+   "14.5%"
+  ],
+  "ans": "B",
+  "why": "Net = (1 + 25/100)(1 − 10/100) − 1 = 12.5%. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "percentage",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next in the series? 36, 49, 64, 81, 100, …",
+  "opts": [
+   "121",
+   "113",
+   "127",
+   "122"
+  ],
+  "ans": "A",
+  "why": "Squares of 6, 7, 8, …. Next: 121. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "number-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If FOREST is written as IRUHVW in a certain code, how is PENCIL written in that code?",
+  "opts": [
+   "SHQFLO",
+   "QFODJM",
+   "SHQFLP",
+   "NKEPGR"
+  ],
+  "ans": "A",
+  "why": "In the code each letter moves 3 places forward: PENCIL → SHQFLO. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "coding",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next? BCD, EFG, HIJ, KLM, …",
+  "opts": [
+   "MNO",
+   "NOP",
+   "OPQ",
+   "NPO"
+  ],
+  "ans": "B",
+  "why": "Each group starts 3 letters after the last one, with the same pattern inside: NOP. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "letter-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Ravi is 21st from the top and 22nd from the bottom in a class. How many students are in the class?",
+  "opts": [
+   "41",
+   "43",
+   "44",
+   "42"
+  ],
+  "ans": "D",
+  "why": "Total = 21 + 22 − 1 = 42. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "ranking",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Ravi walks 9 km North, then turns left and walks 12 km. How far is Ravi from the starting point?",
+  "opts": [
+   "3 km",
+   "21 km",
+   "16 km",
+   "15 km"
+  ],
+  "ans": "D",
+  "why": "The two legs are at right angles: √(9² + 12²) = 15 km. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "direction",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What is the angle between the hands of a clock at 1:25?",
+  "opts": [
+   "102.5°",
+   "112.5°",
+   "107.5°",
+   "115°"
+  ],
+  "ans": "C",
+  "why": "Angle = |30×1 − 5.5×25| = 107.5°. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "clock",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Ravi is the sister of Sita. Sita is the father of Neha. How is Ravi related to Neha?",
+  "opts": [
+   "Sister",
+   "Mother",
+   "Paternal aunt",
+   "Maternal aunt"
+  ],
+  "ans": "C",
+  "why": "Draw the family tree from the statements; the answer is Paternal aunt. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "blood-relation",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a group of 40 people, 19 like Hindi, 20 like English and 13 like both. How many like neither?",
+  "opts": [
+   "10",
+   "12",
+   "14",
+   "15"
+  ],
+  "ans": "C",
+  "why": "Neither = 40 − (19 + 20 − 13) = 14. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "sets",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Statements: Some roses are flowers. No flowers are plants. Conclusions: I. Some roses are plants. II. Some roses are not plants.",
+  "opts": [
+   "Neither I nor II follows",
+   "Only II follows",
+   "Only I follows",
+   "Both I and II follow"
+  ],
+  "ans": "B",
+  "why": "Checked against every possible diagram of the statements: I need not be true, II must be true. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "syllogism",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "A shopkeeper marks an item 10% above cost and gives a 25% discount. What is the overall gain?",
+  "opts": [
+   "15.5% loss",
+   "17.5% loss",
+   "19.5% loss",
+   "15% loss"
+  ],
+  "ans": "B",
+  "why": "Net = (1 + 10/100)(1 − 25/100) − 1 = -17.5%. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "percentage",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next in the series? 16, 25, 36, 49, 64, …",
+  "opts": [
+   "77",
+   "81",
+   "87",
+   "78"
+  ],
+  "ans": "B",
+  "why": "Squares of 4, 5, 6, …. Next: 81. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "number-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If MOTHER is written as PRWKHU in a certain code, how is KNIGHT written in that code?",
+  "opts": [
+   "NQLJKW",
+   "VJIKPM",
+   "NQLJKX",
+   "LOJHIU"
+  ],
+  "ans": "A",
+  "why": "In the code each letter moves 3 places forward: KNIGHT → NQLJKW. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "coding",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next? CDE, EFG, GHI, IJK, …",
+  "opts": [
+   "KML",
+   "LMN",
+   "JKL",
+   "KLM"
+  ],
+  "ans": "D",
+  "why": "Each group starts 2 letters after the last one, with the same pattern inside: KLM. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "letter-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Rahul is 23rd from the top and 23rd from the bottom in a class. How many students are in the class?",
+  "opts": [
+   "44",
+   "46",
+   "47",
+   "45"
+  ],
+  "ans": "D",
+  "why": "Total = 23 + 23 − 1 = 45. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "ranking",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Ajay walks 6 km East, then turns left and walks 8 km. How far is Ajay from the starting point?",
+  "opts": [
+   "10 km",
+   "14 km",
+   "11 km",
+   "2 km"
+  ],
+  "ans": "A",
+  "why": "The two legs are at right angles: √(6² + 8²) = 10 km. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "direction",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What is the angle between the hands of a clock at 2:10?",
+  "opts": [
+   "0°",
+   "10°",
+   "12.5°",
+   "5°"
+  ],
+  "ans": "D",
+  "why": "Angle = |30×2 − 5.5×10| = 5°. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "clock",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Suresh is the father of Vijay. Vijay is the son of Pooja. Pooja is the wife of Suresh. How is Pooja related to Vijay?",
+  "opts": [
+   "Mother",
+   "Grandmother",
+   "Aunt",
+   "Sister"
+  ],
+  "ans": "A",
+  "why": "Draw the family tree from the statements; the answer is Mother. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "blood-relation",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a group of 110 people, 63 like chess, 40 like carrom and 3 like both. How many like neither?",
+  "opts": [
+   "11",
+   "5",
+   "10",
+   "14"
+  ],
+  "ans": "C",
+  "why": "Neither = 110 − (63 + 40 − 3) = 10. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "sets",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Statements: All chairs are tables. No tables are desks. Conclusions: I. Some chairs are not desks. II. Some chairs are desks.",
+  "opts": [
+   "Only II follows",
+   "Both I and II follow",
+   "Only I follows",
+   "Neither I nor II follows"
+  ],
+  "ans": "C",
+  "why": "Checked against every possible diagram of the statements: I must be true, II need not be true. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "syllogism",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "A shopkeeper marks an item 40% above cost and gives a 25% discount. What is the overall gain?",
+  "opts": [
+   "3%",
+   "5%",
+   "15%",
+   "7%"
+  ],
+  "ans": "B",
+  "why": "Net = (1 + 40/100)(1 − 25/100) − 1 = 5%. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "percentage",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next in the series? 4, 12, 36, 108, 324, …",
+  "opts": [
+   "962",
+   "975",
+   "972",
+   "976"
+  ],
+  "ans": "C",
+  "why": "Each term is multiplied by 3. Next: 972. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "number-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If KNIGHT is written as MPKIJV in a certain code, how is MEDICAL written in that code?",
+  "opts": [
+   "OGFKECN",
+   "OGFKECO",
+   "NFEJDBM",
+   "NCEKFGO"
+  ],
+  "ans": "A",
+  "why": "In the code each letter moves 2 places forward: MEDICAL → OGFKECN. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "coding",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next? JKL, MNO, PQR, STU, …",
+  "opts": [
+   "VWX",
+   "WXY",
+   "UVW",
+   "VXW"
+  ],
+  "ans": "A",
+  "why": "Each group starts 3 letters after the last one, with the same pattern inside: VWX. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "letter-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Neha is 20th from the top and 23rd from the bottom in a class. How many students are in the class?",
+  "opts": [
+   "42",
+   "43",
+   "44",
+   "41"
+  ],
+  "ans": "A",
+  "why": "Total = 20 + 23 − 1 = 42. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "ranking",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Rahul walks 3 km East, then turns left and walks 4 km. How far is Rahul from the starting point?",
+  "opts": [
+   "7 km",
+   "1 km",
+   "6 km",
+   "5 km"
+  ],
+  "ans": "D",
+  "why": "The two legs are at right angles: √(3² + 4²) = 5 km. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "direction",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What is the angle between the hands of a clock at 10:30?",
+  "opts": [
+   "135°",
+   "140°",
+   "142.5°",
+   "130°"
+  ],
+  "ans": "A",
+  "why": "Angle = |30×10 − 5.5×30| = 135°. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "clock",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Rekha is the sister of Suresh. Suresh is the father of Meera. How is Rekha related to Meera?",
+  "opts": [
+   "Mother",
+   "Sister",
+   "Paternal aunt",
+   "Maternal aunt"
+  ],
+  "ans": "C",
+  "why": "Draw the family tree from the statements; the answer is Paternal aunt. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "blood-relation",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a group of 90 people, 42 like tea, 57 like coffee and 21 like both. How many like neither?",
+  "opts": [
+   "10",
+   "12",
+   "14",
+   "6"
+  ],
+  "ans": "B",
+  "why": "Neither = 90 − (42 + 57 − 21) = 12. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "sets",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Statements: All cats are dogs. No dogs are pets. Conclusions: I. All pets are cats. II. Some pets are not cats.",
+  "opts": [
+   "Neither I nor II follows",
+   "Only I follows",
+   "Both I and II follow",
+   "Only II follows"
+  ],
+  "ans": "D",
+  "why": "Checked against every possible diagram of the statements: I need not be true, II must be true. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "syllogism",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "A shopkeeper marks an item 10% above cost and gives a 20% discount. What is the overall gain?",
+  "opts": [
+   "14% loss",
+   "7% loss",
+   "10% loss",
+   "12% loss"
+  ],
+  "ans": "D",
+  "why": "Net = (1 + 10/100)(1 − 20/100) − 1 = -12%. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "percentage",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next in the series? 2, 4, 8, 16, 32, …",
+  "opts": [
+   "72",
+   "62",
+   "54",
+   "64"
+  ],
+  "ans": "D",
+  "why": "Each term is multiplied by 2. Next: 64. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "number-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If PATIENT is written as SDWLHQW in a certain code, how is SUMMER written in that code?",
+  "opts": [
+   "TGOOWU",
+   "TVNNFS",
+   "VXPPHV",
+   "VXPPHU"
+  ],
+  "ans": "D",
+  "why": "In the code each letter moves 3 places forward: SUMMER → VXPPHU. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "coding",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next? HIJ, KLM, NOP, QRS, …",
+  "opts": [
+   "TVU",
+   "STU",
+   "TUV",
+   "UVW"
+  ],
+  "ans": "C",
+  "why": "Each group starts 3 letters after the last one, with the same pattern inside: TUV. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "letter-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Sita is 10th from the top and 20th from the bottom in a class. How many students are in the class?",
+  "opts": [
+   "29",
+   "30",
+   "28",
+   "31"
+  ],
+  "ans": "A",
+  "why": "Total = 10 + 20 − 1 = 29. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "ranking",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Anil walks 3 km North, then turns right and walks 4 km. How far is Anil from the starting point?",
+  "opts": [
+   "1 km",
+   "7 km",
+   "5 km",
+   "6 km"
+  ],
+  "ans": "C",
+  "why": "The two legs are at right angles: √(3² + 4²) = 5 km. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "direction",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What is the angle between the hands of a clock at 3:00?",
+  "opts": [
+   "97.5°",
+   "95°",
+   "90°",
+   "85°"
+  ],
+  "ans": "C",
+  "why": "Angle = |30×3 − 5.5×0| = 90°. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "clock",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Ajay is the sister of Vijay. Vijay is the father of Suresh. How is Ajay related to Suresh?",
+  "opts": [
+   "Paternal aunt",
+   "Sister",
+   "Mother",
+   "Maternal aunt"
+  ],
+  "ans": "A",
+  "why": "Draw the family tree from the statements; the answer is Paternal aunt. GPSC-style practice item.",
+  "lvl": "E",
+  "type": "blood-relation",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next in the series? 4, 6, 10, 18, 34, …",
+  "opts": [
+   "72",
+   "58",
+   "63",
+   "66"
+  ],
+  "ans": "D",
+  "why": "Each term is ×2 − 2. Next: 66. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "number-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If PENCIL is written as NKEPGR in a certain code, how is HOSPITAL written in that code?",
+  "opts": [
+   "CVKRUQJN",
+   "NCVKRUQJ",
+   "IPTQJUBM",
+   "NCVKRUQK"
+  ],
+  "ans": "B",
+  "why": "In the code each letter moves 2 places forward and the word is then reversed: HOSPITAL → NCVKRUQJ. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "coding",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next? BCD, GHI, LMN, QRS, …",
+  "opts": [
+   "WXY",
+   "VXW",
+   "VWX",
+   "UVW"
+  ],
+  "ans": "C",
+  "why": "Each group starts 5 letters after the last one, with the same pattern inside: VWX. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "letter-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a row of 45 students, Rahul is 16th from the left and Sita is 17th from the right. How many students sit between them?",
+  "opts": [
+   "12",
+   "14",
+   "11",
+   "13"
+  ],
+  "ans": "A",
+  "why": "Between them = 45 − (16 + 17) = 12. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ranking",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Pooja walks 8 m South, then turns left and walks 7 m, then turns right and walks 8 m. Which direction is Pooja facing now?",
+  "opts": [
+   "South",
+   "West",
+   "East",
+   "North"
+  ],
+  "ans": "A",
+  "why": "Follow each turn from the first direction: the last leg is towards the South. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "direction",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What is the angle between the hands of a clock at 9:30?",
+  "opts": [
+   "112.5°",
+   "105°",
+   "100°",
+   "110°"
+  ],
+  "ans": "B",
+  "why": "Angle = |30×9 − 5.5×30| = 105°. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "clock",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If 15 July 2020 was a Wednesday, what day of the week was 22 September 2020?",
+  "opts": [
+   "Thursday",
+   "Wednesday",
+   "Monday",
+   "Tuesday"
+  ],
+  "ans": "D",
+  "why": "69 days later; 69 mod 7 = 6, so count 6 days on from Wednesday. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "calendar",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Pointing to a woman, Asha (a man) said, \"She is the daughter of my grandfather's only son.\" How is the woman related to Asha?",
+  "opts": [
+   "Cousin",
+   "Niece",
+   "Aunt",
+   "Sister"
+  ],
+  "ans": "D",
+  "why": "Draw the family tree from the statements; the answer is Sister. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "blood-relation",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a group of 90 people, 42 like tea, 39 like coffee and 20 like neither. How many like only tea?",
+  "opts": [
+   "37",
+   "31",
+   "34",
+   "32"
+  ],
+  "ans": "B",
+  "why": "Both = 42 + 39 − (90 − 20) = 11; only tea = 42 − 11 = 31. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "sets",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Statements: No rivers are lakes. All lakes are ponds. Conclusions: I. Some ponds are rivers. II. Some ponds are not rivers.",
+  "opts": [
+   "Neither I nor II follows",
+   "Only I follows",
+   "Both I and II follow",
+   "Only II follows"
+  ],
+  "ans": "D",
+  "why": "Checked against every possible diagram of the statements: I need not be true, II must be true. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "syllogism",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "The present ages of Sunil and Deepak are in the ratio 4 : 3. After 7 years the ratio will be 31 : 25. What is Deepak's present age?",
+  "opts": [
+   "21",
+   "18",
+   "14",
+   "20"
+  ],
+  "ans": "B",
+  "why": "Let the ages be 4k and 3k: (4k + 7)/(3k + 7) = 31/25 gives k = 6, so Deepak is 18. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ages",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Find the wrong number in the series: 51, 56, 61, 63, 71, 76, 81",
+  "opts": [
+   "61",
+   "56",
+   "63",
+   "71"
+  ],
+  "ans": "C",
+  "why": "In the correct series each term adds 5, so 63 should be 66. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "wrong-number",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "A shopkeeper marks an item 40% above cost and gives a 20% discount. What is the overall gain?",
+  "opts": [
+   "12%",
+   "14%",
+   "20%",
+   "10%"
+  ],
+  "ans": "A",
+  "why": "Net = (1 + 40/100)(1 − 20/100) − 1 = 12%. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "percentage",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In how many different ways can the letters of the word TABLET be arranged?",
+  "opts": [
+   "180",
+   "360",
+   "1080",
+   "720"
+  ],
+  "ans": "B",
+  "why": "6 letters with repeats: 6! ÷ 2! = 360. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "arrangement",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next in the series? 3, 5, 9, 17, 33, …",
+  "opts": [
+   "67",
+   "65",
+   "66",
+   "62"
+  ],
+  "ans": "B",
+  "why": "Each term is ×2 − 1. Next: 65. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "number-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If SCHOOL is written as NQQJEU in a certain code, how is TEMPLE written in that code?",
+  "opts": [
+   "NROGVG",
+   "GNROGV",
+   "UFNQMF",
+   "GNROGW"
+  ],
+  "ans": "B",
+  "why": "In the code each letter moves 2 places forward and the word is then reversed: TEMPLE → GNROGV. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "coding",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next? GHI, KLM, OPQ, STU, …",
+  "opts": [
+   "VWX",
+   "WYX",
+   "XYZ",
+   "WXY"
+  ],
+  "ans": "D",
+  "why": "Each group starts 4 letters after the last one, with the same pattern inside: WXY. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "letter-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a row of 58 students, Geeta is 21st from the left and Anil is 24th from the right. How many students sit between them?",
+  "opts": [
+   "12",
+   "13",
+   "15",
+   "14"
+  ],
+  "ans": "B",
+  "why": "Between them = 58 − (21 + 24) = 13. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ranking",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Geeta walks 9 m West, then turns left and walks 2 m, then turns right and walks 3 m. Which direction is Geeta facing now?",
+  "opts": [
+   "North",
+   "East",
+   "South",
+   "West"
+  ],
+  "ans": "D",
+  "why": "Follow each turn from the first direction: the last leg is towards the West. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "direction",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What is the angle between the hands of a clock at 9:45?",
+  "opts": [
+   "30°",
+   "27.5°",
+   "17.5°",
+   "22.5°"
+  ],
+  "ans": "D",
+  "why": "Angle = |30×9 − 5.5×45| = 22.5°. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "clock",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If 6 August 2022 was a Saturday, what day of the week was 30 August 2022?",
+  "opts": [
+   "Tuesday",
+   "Thursday",
+   "Wednesday",
+   "Monday"
+  ],
+  "ans": "A",
+  "why": "24 days later; 24 mod 7 = 3, so count 3 days on from Saturday. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "calendar",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Lata is the son of Deepak. Ajay is the daughter of Deepak. Neha is the husband of Ajay. How is Neha related to Lata?",
+  "opts": [
+   "Brother-in-law",
+   "Father-in-law",
+   "Uncle",
+   "Brother"
+  ],
+  "ans": "A",
+  "why": "Draw the family tree from the statements; the answer is Brother-in-law. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "blood-relation",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a group of 40 people, 19 like cricket, 22 like football and 16 like neither. How many like only cricket?",
+  "opts": [
+   "6",
+   "4",
+   "8",
+   "2"
+  ],
+  "ans": "D",
+  "why": "Both = 19 + 22 − (40 − 16) = 17; only cricket = 19 − 17 = 2. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "sets",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Statements: Some pens are books. No books are bags. Conclusions: I. No pens are bags. II. No bags are pens.",
+  "opts": [
+   "Both I and II follow",
+   "Neither I nor II follows",
+   "Only I follows",
+   "Only II follows"
+  ],
+  "ans": "B",
+  "why": "Checked against every possible diagram of the statements: I need not be true, II need not be true. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "syllogism",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "The present ages of Meera and Deepak are in the ratio 3 : 5. After 2 years the ratio will be 13 : 21. What is Deepak's present age?",
+  "opts": [
+   "36",
+   "40",
+   "38",
+   "42"
+  ],
+  "ans": "B",
+  "why": "Let the ages be 3k and 5k: (3k + 2)/(5k + 2) = 13/21 gives k = 8, so Deepak is 40. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ages",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Find the wrong number in the series: 28, 37, 46, 55, 62, 73, 82",
+  "opts": [
+   "73",
+   "62",
+   "37",
+   "55"
+  ],
+  "ans": "B",
+  "why": "In the correct series each term adds 9, so 62 should be 64. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "wrong-number",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next in the series? 4, 7, 12, 19, 28, …",
+  "opts": [
+   "39",
+   "41",
+   "36",
+   "37"
+  ],
+  "ans": "A",
+  "why": "n² + 3 for n = 1, 2, …. Next: 39. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "number-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If MOTHER is written as TGJVQO in a certain code, how is SUMMER written in that code?",
+  "opts": [
+   "GOOWUT",
+   "TGOOWV",
+   "TVNNFS",
+   "TGOOWU"
+  ],
+  "ans": "D",
+  "why": "In the code each letter moves 2 places forward and the word is then reversed: SUMMER → TGOOWU. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "coding",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next? HIJ, LMN, PQR, TUV, …",
+  "opts": [
+   "XZY",
+   "XYZ",
+   "YZA",
+   "WXY"
+  ],
+  "ans": "B",
+  "why": "Each group starts 4 letters after the last one, with the same pattern inside: XYZ. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "letter-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a row of 49 students, Anil is 12th from the left and Ajay is 19th from the right. How many students sit between them?",
+  "opts": [
+   "18",
+   "20",
+   "19",
+   "17"
+  ],
+  "ans": "A",
+  "why": "Between them = 49 − (12 + 19) = 18. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ranking",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Rahul walks 5 m West, then turns right and walks 5 m, then turns right and walks 9 m. Which direction is Rahul facing now?",
+  "opts": [
+   "West",
+   "East",
+   "North",
+   "South"
+  ],
+  "ans": "B",
+  "why": "Follow each turn from the first direction: the last leg is towards the East. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "direction",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What is the angle between the hands of a clock at 3:15?",
+  "opts": [
+   "15°",
+   "2.5°",
+   "12.5°",
+   "7.5°"
+  ],
+  "ans": "D",
+  "why": "Angle = |30×3 − 5.5×15| = 7.5°. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "clock",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If 10 April 2025 was a Thursday, what day of the week was 20 June 2025?",
+  "opts": [
+   "Friday",
+   "Monday",
+   "Tuesday",
+   "Wednesday"
+  ],
+  "ans": "A",
+  "why": "71 days later; 71 mod 7 = 1, so count 1 day on from Thursday. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "calendar",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Sunil is the son of Pooja. Neha is the daughter of Pooja. Ajay is the husband of Neha. How is Ajay related to Sunil?",
+  "opts": [
+   "Uncle",
+   "Brother-in-law",
+   "Brother",
+   "Father-in-law"
+  ],
+  "ans": "B",
+  "why": "Draw the family tree from the statements; the answer is Brother-in-law. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "blood-relation",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a group of 40 people, 26 like Hindi, 16 like English and 3 like neither. How many like only Hindi?",
+  "opts": [
+   "26",
+   "19",
+   "21",
+   "24"
+  ],
+  "ans": "C",
+  "why": "Both = 26 + 16 − (40 − 3) = 5; only Hindi = 26 − 5 = 21. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "sets",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Statements: No pens are books. Some books are bags. Conclusions: I. Some bags are not pens. II. Some pens are not bags.",
+  "opts": [
+   "Neither I nor II follows",
+   "Both I and II follow",
+   "Only II follows",
+   "Only I follows"
+  ],
+  "ans": "D",
+  "why": "Checked against every possible diagram of the statements: I must be true, II need not be true. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "syllogism",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "The present ages of Neha and Deepak are in the ratio 4 : 2. After 6 years the ratio will be 19 : 11. What is Deepak's present age?",
+  "opts": [
+   "18",
+   "16",
+   "22",
+   "11"
+  ],
+  "ans": "B",
+  "why": "Let the ages be 4k and 2k: (4k + 6)/(2k + 6) = 19/11 gives k = 8, so Deepak is 16. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ages",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Find the wrong number in the series: 18, 26, 32, 42, 50, 58, 66",
+  "opts": [
+   "66",
+   "42",
+   "26",
+   "32"
+  ],
+  "ans": "D",
+  "why": "In the correct series each term adds 8, so 32 should be 34. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "wrong-number",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "A shopkeeper marks an item 50% above cost and gives a 25% discount. What is the overall gain?",
+  "opts": [
+   "14.5%",
+   "25%",
+   "10.5%",
+   "12.5%"
+  ],
+  "ans": "D",
+  "why": "Net = (1 + 50/100)(1 − 25/100) − 1 = 12.5%. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "percentage",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In how many different ways can the letters of the word GARDEN be arranged?",
+  "opts": [
+   "1440",
+   "360",
+   "720",
+   "2160"
+  ],
+  "ans": "C",
+  "why": "6 letters: 6! = 720. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "arrangement",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next in the series? 7, 14, 13, 20, 19, …",
+  "opts": [
+   "26",
+   "36",
+   "20",
+   "22"
+  ],
+  "ans": "A",
+  "why": "Alternately add 7 and subtract 1. Next: 26. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "number-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If MOTHER is written as SFIUPN in a certain code, how is SCHOOL written in that code?",
+  "opts": [
+   "TDIPPM",
+   "MPPIDT",
+   "MPPIDU",
+   "NQQJEU"
+  ],
+  "ans": "B",
+  "why": "In the code each letter moves 1 place forward and the word is then reversed: SCHOOL → MPPIDT. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "coding",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next? CDE, GHI, KLM, OPQ, …",
+  "opts": [
+   "STU",
+   "SUT",
+   "RST",
+   "TUV"
+  ],
+  "ans": "A",
+  "why": "Each group starts 4 letters after the last one, with the same pattern inside: STU. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "letter-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a row of 42 students, Manoj is 9th from the left and Lata is 17th from the right. How many students sit between them?",
+  "opts": [
+   "18",
+   "15",
+   "17",
+   "16"
+  ],
+  "ans": "D",
+  "why": "Between them = 42 − (9 + 17) = 16. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ranking",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Kavita walks 8 m North, then turns left and walks 4 m, then turns right and walks 4 m. Which direction is Kavita facing now?",
+  "opts": [
+   "West",
+   "North",
+   "South",
+   "East"
+  ],
+  "ans": "B",
+  "why": "Follow each turn from the first direction: the last leg is towards the North. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "direction",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What is the angle between the hands of a clock at 3:20?",
+  "opts": [
+   "20°",
+   "27.5°",
+   "15°",
+   "25°"
+  ],
+  "ans": "A",
+  "why": "Angle = |30×3 − 5.5×20| = 20°. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "clock",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If 27 May 2026 was a Wednesday, what day of the week was 14 July 2026?",
+  "opts": [
+   "Wednesday",
+   "Monday",
+   "Tuesday",
+   "Thursday"
+  ],
+  "ans": "C",
+  "why": "48 days later; 48 mod 7 = 6, so count 6 days on from Wednesday. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "calendar",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Pointing to a man, Suresh said, \"His only brother is the father of my daughter.\" How is the man related to Suresh?",
+  "opts": [
+   "Brother",
+   "Uncle",
+   "Brother-in-law",
+   "Father"
+  ],
+  "ans": "C",
+  "why": "Draw the family tree from the statements; the answer is Brother-in-law. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "blood-relation",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a group of 110 people, 57 like Hindi, 72 like English and 24 like neither. How many like only Hindi?",
+  "opts": [
+   "11",
+   "14",
+   "18",
+   "8"
+  ],
+  "ans": "B",
+  "why": "Both = 57 + 72 − (110 − 24) = 43; only Hindi = 57 − 43 = 14. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "sets",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Statements: All rivers are lakes. No lakes are ponds. Conclusions: I. All rivers are ponds. II. Some rivers are ponds.",
+  "opts": [
+   "Only I follows",
+   "Neither I nor II follows",
+   "Only II follows",
+   "Both I and II follow"
+  ],
+  "ans": "B",
+  "why": "Checked against every possible diagram of the statements: I need not be true, II need not be true. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "syllogism",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "The present ages of Kiran and Asha are in the ratio 2 : 5. After 10 years the ratio will be 16 : 25. What is Asha's present age?",
+  "opts": [
+   "11",
+   "15",
+   "10",
+   "19"
+  ],
+  "ans": "B",
+  "why": "Let the ages be 2k and 5k: (2k + 10)/(5k + 10) = 16/25 gives k = 3, so Asha is 15. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ages",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Find the wrong number in the series: 29, 33, 37, 41, 45, 54, 53",
+  "opts": [
+   "33",
+   "54",
+   "53",
+   "45"
+  ],
+  "ans": "B",
+  "why": "In the correct series each term adds 4, so 54 should be 49. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "wrong-number",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next in the series? 6, 11, 21, 41, 81, …",
+  "opts": [
+   "158",
+   "151",
+   "161",
+   "162"
+  ],
+  "ans": "C",
+  "why": "Each term is ×2 − 1. Next: 161. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "number-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If POTENCY is written as ZDOFUPQ in a certain code, how is SILVER written in that code?",
+  "opts": [
+   "SFWMJU",
+   "TJMWFS",
+   "TGXNKU",
+   "SFWMJT"
+  ],
+  "ans": "D",
+  "why": "In the code each letter moves 1 place forward and the word is then reversed: SILVER → SFWMJT. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "coding",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next? ABC, EFG, IJK, MNO, …",
+  "opts": [
+   "QSR",
+   "PQR",
+   "QRS",
+   "RST"
+  ],
+  "ans": "C",
+  "why": "Each group starts 4 letters after the last one, with the same pattern inside: QRS. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "letter-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a row of 32 students, Deepak is 12th from the left and Meera is 12th from the right. How many students sit between them?",
+  "opts": [
+   "7",
+   "8",
+   "9",
+   "10"
+  ],
+  "ans": "B",
+  "why": "Between them = 32 − (12 + 12) = 8. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ranking",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Rahul walks 3 m West, then turns right and walks 6 m, then turns right and walks 3 m. Which direction is Rahul facing now?",
+  "opts": [
+   "West",
+   "South",
+   "North",
+   "East"
+  ],
+  "ans": "D",
+  "why": "Follow each turn from the first direction: the last leg is towards the East. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "direction",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What is the angle between the hands of a clock at 11:30?",
+  "opts": [
+   "165°",
+   "160°",
+   "170°",
+   "172.5°"
+  ],
+  "ans": "A",
+  "why": "Angle = |30×11 − 5.5×30| = 165°. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "clock",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If 23 May 2024 was a Thursday, what day of the week was 10 July 2024?",
+  "opts": [
+   "Monday",
+   "Thursday",
+   "Wednesday",
+   "Tuesday"
+  ],
+  "ans": "C",
+  "why": "48 days later; 48 mod 7 = 6, so count 6 days on from Thursday. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "calendar",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Pointing to a woman, Ravi (a man) said, \"She is the daughter of my grandfather's only son.\" How is the woman related to Ravi?",
+  "opts": [
+   "Cousin",
+   "Sister",
+   "Aunt",
+   "Niece"
+  ],
+  "ans": "B",
+  "why": "Draw the family tree from the statements; the answer is Sister. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "blood-relation",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a group of 80 people, 40 like Konkani, 37 like Marathi and 19 like neither. How many like only Konkani?",
+  "opts": [
+   "27",
+   "19",
+   "24",
+   "30"
+  ],
+  "ans": "C",
+  "why": "Both = 40 + 37 − (80 − 19) = 16; only Konkani = 40 − 16 = 24. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "sets",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Statements: All roses are flowers. No flowers are plants. Conclusions: I. All roses are plants. II. No roses are plants.",
+  "opts": [
+   "Only II follows",
+   "Both I and II follow",
+   "Only I follows",
+   "Neither I nor II follows"
+  ],
+  "ans": "A",
+  "why": "Checked against every possible diagram of the statements: I need not be true, II must be true. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "syllogism",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "The present ages of Asha and Pooja are in the ratio 3 : 2. After 10 years the ratio will be 14 : 11. What is Pooja's present age?",
+  "opts": [
+   "9",
+   "12",
+   "16",
+   "6"
+  ],
+  "ans": "B",
+  "why": "Let the ages be 3k and 2k: (3k + 10)/(2k + 10) = 14/11 gives k = 6, so Pooja is 12. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ages",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Find the wrong number in the series: 20, 30, 45, 50, 60, 70, 80",
+  "opts": [
+   "80",
+   "45",
+   "30",
+   "50"
+  ],
+  "ans": "B",
+  "why": "In the correct series each term adds 10, so 45 should be 40. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "wrong-number",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "A shopkeeper marks an item 30% above cost and gives a 10% discount. What is the overall gain?",
+  "opts": [
+   "19%",
+   "17%",
+   "20%",
+   "15%"
+  ],
+  "ans": "B",
+  "why": "Net = (1 + 30/100)(1 − 10/100) − 1 = 17%. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "percentage",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next in the series? 5, 9, 17, 33, 65, …",
+  "opts": [
+   "132",
+   "129",
+   "137",
+   "126"
+  ],
+  "ans": "B",
+  "why": "Each term is ×2 − 1. Next: 129. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "number-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If BRIDGE is written as GIFKTD in a certain code, how is WINTER written in that code?",
+  "opts": [
+   "TGVPKY",
+   "TGVPKZ",
+   "GVPKYT",
+   "XJOUFS"
+  ],
+  "ans": "A",
+  "why": "In the code each letter moves 2 places forward and the word is then reversed: WINTER → TGVPKY. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "coding",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a row of 46 students, Sita is 14th from the left and Asha is 18th from the right. How many students sit between them?",
+  "opts": [
+   "16",
+   "15",
+   "14",
+   "13"
+  ],
+  "ans": "C",
+  "why": "Between them = 46 − (14 + 18) = 14. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ranking",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Deepak walks 8 m West, then turns left and walks 2 m, then turns right and walks 6 m. Which direction is Deepak facing now?",
+  "opts": [
+   "East",
+   "West",
+   "South",
+   "North"
+  ],
+  "ans": "B",
+  "why": "Follow each turn from the first direction: the last leg is towards the West. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "direction",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What is the angle between the hands of a clock at 3:40?",
+  "opts": [
+   "130°",
+   "135°",
+   "125°",
+   "137.5°"
+  ],
+  "ans": "A",
+  "why": "Angle = |30×3 − 5.5×40| = 130°. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "clock",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If 10 March 2022 was a Thursday, what day of the week was 11 June 2022?",
+  "opts": [
+   "Saturday",
+   "Wednesday",
+   "Monday",
+   "Tuesday"
+  ],
+  "ans": "A",
+  "why": "93 days later; 93 mod 7 = 2, so count 2 days on from Thursday. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "calendar",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Pointing to a woman, Suresh (a man) said, \"She is the daughter of my grandfather's only son.\" How is the woman related to Suresh?",
+  "opts": [
+   "Sister",
+   "Niece",
+   "Aunt",
+   "Cousin"
+  ],
+  "ans": "A",
+  "why": "Draw the family tree from the statements; the answer is Sister. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "blood-relation",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a group of 110 people, 46 like chess, 70 like carrom and 35 like neither. How many like only chess?",
+  "opts": [
+   "2",
+   "5",
+   "3",
+   "8"
+  ],
+  "ans": "B",
+  "why": "Both = 46 + 70 − (110 − 35) = 41; only chess = 46 − 41 = 5. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "sets",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Statements: Some cats are dogs. All dogs are pets. Conclusions: I. All cats are pets. II. Some pets are cats.",
+  "opts": [
+   "Only I follows",
+   "Both I and II follow",
+   "Only II follows",
+   "Neither I nor II follows"
+  ],
+  "ans": "C",
+  "why": "Checked against every possible diagram of the statements: I need not be true, II must be true. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "syllogism",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "The present ages of Pooja and Geeta are in the ratio 3 : 4. After 2 years the ratio will be 10 : 13. What is Geeta's present age?",
+  "opts": [
+   "30",
+   "19",
+   "24",
+   "22"
+  ],
+  "ans": "C",
+  "why": "Let the ages be 3k and 4k: (3k + 2)/(4k + 2) = 10/13 gives k = 6, so Geeta is 24. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ages",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Find the wrong number in the series: 39, 45, 51, 54, 63, 69, 75",
+  "opts": [
+   "51",
+   "45",
+   "54",
+   "63"
+  ],
+  "ans": "C",
+  "why": "In the correct series each term adds 6, so 54 should be 57. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "wrong-number",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "A shopkeeper marks an item 50% above cost and gives a 20% discount. What is the overall gain?",
+  "opts": [
+   "22%",
+   "20%",
+   "30%",
+   "18%"
+  ],
+  "ans": "B",
+  "why": "Net = (1 + 50/100)(1 − 20/100) − 1 = 20%. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "percentage",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In how many different ways can the letters of the word NURSE be arranged?",
+  "opts": [
+   "240",
+   "360",
+   "60",
+   "120"
+  ],
+  "ans": "D",
+  "why": "5 letters: 5! = 120. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "arrangement",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next in the series? 18, 23, 29, 36, 44, …",
+  "opts": [
+   "43",
+   "53",
+   "50",
+   "54"
+  ],
+  "ans": "B",
+  "why": "The differences go up by 1 each time (5, 6, 7, 8, 9). Next: 53. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "number-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If COUNTRY is written as ATVPWQE in a certain code, how is SILVER written in that code?",
+  "opts": [
+   "TJMWFS",
+   "GXNKUT",
+   "TGXNKV",
+   "TGXNKU"
+  ],
+  "ans": "D",
+  "why": "In the code each letter moves 2 places forward and the word is then reversed: SILVER → TGXNKU. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "coding",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a row of 34 students, Ravi is 6th from the left and Asha is 18th from the right. How many students sit between them?",
+  "opts": [
+   "11",
+   "9",
+   "12",
+   "10"
+  ],
+  "ans": "D",
+  "why": "Between them = 34 − (6 + 18) = 10. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ranking",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Sunil walks 9 m West, then turns left and walks 4 m, then turns right and walks 4 m. Which direction is Sunil facing now?",
+  "opts": [
+   "North",
+   "South",
+   "East",
+   "West"
+  ],
+  "ans": "D",
+  "why": "Follow each turn from the first direction: the last leg is towards the West. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "direction",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What is the angle between the hands of a clock at 6:10?",
+  "opts": [
+   "120°",
+   "132.5°",
+   "125°",
+   "130°"
+  ],
+  "ans": "C",
+  "why": "Angle = |30×6 − 5.5×10| = 125°. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "clock",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If 14 January 2026 was a Wednesday, what day of the week was 20 April 2026?",
+  "opts": [
+   "Tuesday",
+   "Monday",
+   "Wednesday",
+   "Thursday"
+  ],
+  "ans": "B",
+  "why": "96 days later; 96 mod 7 = 5, so count 5 days on from Wednesday. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "calendar",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Pointing to a man, Deepak said, \"His only brother is the father of my daughter.\" How is the man related to Deepak?",
+  "opts": [
+   "Uncle",
+   "Brother-in-law",
+   "Brother",
+   "Father"
+  ],
+  "ans": "B",
+  "why": "Draw the family tree from the statements; the answer is Brother-in-law. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "blood-relation",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a group of 90 people, 58 like cricket, 36 like football and 3 like neither. How many like only cricket?",
+  "opts": [
+   "54",
+   "57",
+   "51",
+   "47"
+  ],
+  "ans": "C",
+  "why": "Both = 58 + 36 − (90 − 3) = 7; only cricket = 58 − 7 = 51. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "sets",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Statements: No chairs are tables. All tables are desks. Conclusions: I. All chairs are desks. II. Some desks are not chairs.",
+  "opts": [
+   "Both I and II follow",
+   "Only II follows",
+   "Only I follows",
+   "Neither I nor II follows"
+  ],
+  "ans": "B",
+  "why": "Checked against every possible diagram of the statements: I need not be true, II must be true. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "syllogism",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "The present ages of Kavita and Meera are in the ratio 6 : 3. After 10 years the ratio will be 28 : 19. What is Meera's present age?",
+  "opts": [
+   "12",
+   "6",
+   "13",
+   "9"
+  ],
+  "ans": "D",
+  "why": "Let the ages be 6k and 3k: (6k + 10)/(3k + 10) = 28/19 gives k = 3, so Meera is 9. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ages",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Find the wrong number in the series: 51, 56, 61, 71, 71, 76, 81",
+  "opts": [
+   "81",
+   "61",
+   "71",
+   "56"
+  ],
+  "ans": "C",
+  "why": "In the correct series each term adds 5, so 71 should be 66. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "wrong-number",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next in the series? 9, 11, 17, 27, 41, …",
+  "opts": [
+   "59",
+   "56",
+   "58",
+   "61"
+  ],
+  "ans": "A",
+  "why": "The differences go up by 4 each time (2, 6, 10, 14, 18). Next: 59. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "number-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If NURSING is written as IPKUTWP in a certain code, how is CLINIC written in that code?",
+  "opts": [
+   "KPKNEE",
+   "EKPKNE",
+   "EKPKNF",
+   "DMJOJD"
+  ],
+  "ans": "B",
+  "why": "In the code each letter moves 2 places forward and the word is then reversed: CLINIC → EKPKNE. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "coding",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a row of 40 students, Anil is 25th from the left and Priya is 5th from the right. How many students sit between them?",
+  "opts": [
+   "12",
+   "9",
+   "10",
+   "11"
+  ],
+  "ans": "C",
+  "why": "Between them = 40 − (25 + 5) = 10. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ranking",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Manoj walks 5 m West, then turns left and walks 9 m, then turns right and walks 9 m. Which direction is Manoj facing now?",
+  "opts": [
+   "North",
+   "West",
+   "East",
+   "South"
+  ],
+  "ans": "B",
+  "why": "Follow each turn from the first direction: the last leg is towards the West. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "direction",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What is the angle between the hands of a clock at 8:45?",
+  "opts": [
+   "12.5°",
+   "2.5°",
+   "15°",
+   "7.5°"
+  ],
+  "ans": "D",
+  "why": "Angle = |30×8 − 5.5×45| = 7.5°. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "clock",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If 22 December 2024 was a Sunday, what day of the week was 4 March 2025?",
+  "opts": [
+   "Monday",
+   "Wednesday",
+   "Thursday",
+   "Tuesday"
+  ],
+  "ans": "D",
+  "why": "72 days later; 72 mod 7 = 2, so count 2 days on from Sunday. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "calendar",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Ajay is the son of Sita. Rahul is the daughter of Sita. Meera is the husband of Rahul. How is Meera related to Ajay?",
+  "opts": [
+   "Brother",
+   "Father-in-law",
+   "Brother-in-law",
+   "Uncle"
+  ],
+  "ans": "C",
+  "why": "Draw the family tree from the statements; the answer is Brother-in-law. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "blood-relation",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a group of 110 people, 73 like cricket, 50 like football and 24 like neither. How many like only cricket?",
+  "opts": [
+   "37",
+   "36",
+   "32",
+   "39"
+  ],
+  "ans": "B",
+  "why": "Both = 73 + 50 − (110 − 24) = 37; only cricket = 73 − 37 = 36. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "sets",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Statements: Some doctors are teachers. No teachers are singers. Conclusions: I. Some singers are not doctors. II. Some doctors are not singers.",
+  "opts": [
+   "Both I and II follow",
+   "Only II follows",
+   "Only I follows",
+   "Neither I nor II follows"
+  ],
+  "ans": "B",
+  "why": "Checked against every possible diagram of the statements: I need not be true, II must be true. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "syllogism",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "The present ages of Neha and Kiran are in the ratio 2 : 6. After 4 years the ratio will be 5 : 11. What is Kiran's present age?",
+  "opts": [
+   "20",
+   "23",
+   "16",
+   "18"
+  ],
+  "ans": "D",
+  "why": "Let the ages be 2k and 6k: (2k + 4)/(6k + 4) = 5/11 gives k = 3, so Kiran is 18. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ages",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Find the wrong number in the series: 27, 38, 46, 60, 71, 82, 93",
+  "opts": [
+   "60",
+   "46",
+   "38",
+   "93"
+  ],
+  "ans": "B",
+  "why": "In the correct series each term adds 11, so 46 should be 49. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "wrong-number",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In how many different ways can the letters of the word SCHOOL be arranged?",
+  "opts": [
+   "720",
+   "180",
+   "360",
+   "1080"
+  ],
+  "ans": "C",
+  "why": "6 letters with repeats: 6! ÷ 2! = 360. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "arrangement",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next in the series? 3, 7, 14, 24, 37, …",
+  "opts": [
+   "54",
+   "53",
+   "47",
+   "55"
+  ],
+  "ans": "B",
+  "why": "The differences go up by 3 each time (4, 7, 10, 13, 16). Next: 53. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "number-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If TEMPLE is written as GNROGV in a certain code, how is VILLAGE written in that code?",
+  "opts": [
+   "GICNNKY",
+   "GICNNKX",
+   "ICNNKXG",
+   "WJMMBHF"
+  ],
+  "ans": "B",
+  "why": "In the code each letter moves 2 places forward and the word is then reversed: VILLAGE → GICNNKX. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "coding",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a row of 48 students, Ajay is 19th from the left and Anil is 15th from the right. How many students sit between them?",
+  "opts": [
+   "15",
+   "16",
+   "14",
+   "13"
+  ],
+  "ans": "C",
+  "why": "Between them = 48 − (19 + 15) = 14. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ranking",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Ravi walks 4 m East, then turns right and walks 8 m, then turns right and walks 7 m. Which direction is Ravi facing now?",
+  "opts": [
+   "North",
+   "South",
+   "East",
+   "West"
+  ],
+  "ans": "D",
+  "why": "Follow each turn from the first direction: the last leg is towards the West. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "direction",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What is the angle between the hands of a clock at 8:00?",
+  "opts": [
+   "127.5°",
+   "120°",
+   "115°",
+   "125°"
+  ],
+  "ans": "B",
+  "why": "Angle = |30×8 − 5.5×0| = 120°. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "clock",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If 20 April 2019 was a Saturday, what day of the week was 27 May 2019?",
+  "opts": [
+   "Thursday",
+   "Wednesday",
+   "Tuesday",
+   "Monday"
+  ],
+  "ans": "D",
+  "why": "37 days later; 37 mod 7 = 2, so count 2 days on from Saturday. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "calendar",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Geeta is the mother of Kavita. Kavita is the sister of Deepak. Deepak is the father of Sita. How is Geeta related to Sita?",
+  "opts": [
+   "Mother",
+   "Great-grandmother",
+   "Grandmother",
+   "Aunt"
+  ],
+  "ans": "C",
+  "why": "Draw the family tree from the statements; the answer is Grandmother. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "blood-relation",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a group of 70 people, 31 like cricket, 24 like football and 32 like neither. How many like only cricket?",
+  "opts": [
+   "15",
+   "18",
+   "14",
+   "20"
+  ],
+  "ans": "C",
+  "why": "Both = 31 + 24 − (70 − 32) = 17; only cricket = 31 − 17 = 14. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "sets",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Statements: Some cats are dogs. No dogs are pets. Conclusions: I. Some cats are not pets. II. Some pets are cats.",
+  "opts": [
+   "Neither I nor II follows",
+   "Both I and II follow",
+   "Only II follows",
+   "Only I follows"
+  ],
+  "ans": "D",
+  "why": "Checked against every possible diagram of the statements: I must be true, II need not be true. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "syllogism",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "The present ages of Vijay and Ajay are in the ratio 2 : 3. After 6 years the ratio will be 3 : 4. What is Ajay's present age?",
+  "opts": [
+   "12",
+   "18",
+   "23",
+   "13"
+  ],
+  "ans": "B",
+  "why": "Let the ages be 2k and 3k: (2k + 6)/(3k + 6) = 3/4 gives k = 6, so Ajay is 18. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ages",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Find the wrong number in the series: 36, 49, 62, 77, 88, 101, 114",
+  "opts": [
+   "88",
+   "77",
+   "62",
+   "49"
+  ],
+  "ans": "B",
+  "why": "In the correct series each term adds 13, so 77 should be 75. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "wrong-number",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In how many different ways can the letters of the word PEPPER be arranged?",
+  "opts": [
+   "180",
+   "120",
+   "60",
+   "720"
+  ],
+  "ans": "C",
+  "why": "6 letters with repeats: 6! ÷ 3! ÷ 2! = 60. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "arrangement",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next in the series? 5, 8, 14, 26, 50, …",
+  "opts": [
+   "95",
+   "98",
+   "88",
+   "96"
+  ],
+  "ans": "B",
+  "why": "Each term is ×2 − 2. Next: 98. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "number-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If DOCTOR is written as TQVEQF in a certain code, how is HEALTH written in that code?",
+  "opts": [
+   "JVNCGJ",
+   "JVNCGK",
+   "VNCGJJ",
+   "IFBMUI"
+  ],
+  "ans": "A",
+  "why": "In the code each letter moves 2 places forward and the word is then reversed: HEALTH → JVNCGJ. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "coding",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a row of 51 students, Priya is 25th from the left and Lata is 15th from the right. How many students sit between them?",
+  "opts": [
+   "13",
+   "11",
+   "10",
+   "12"
+  ],
+  "ans": "B",
+  "why": "Between them = 51 − (25 + 15) = 11. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ranking",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Neha walks 6 m North, then turns left and walks 7 m, then turns right and walks 9 m. Which direction is Neha facing now?",
+  "opts": [
+   "South",
+   "East",
+   "North",
+   "West"
+  ],
+  "ans": "C",
+  "why": "Follow each turn from the first direction: the last leg is towards the North. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "direction",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What is the angle between the hands of a clock at 4:10?",
+  "opts": [
+   "70°",
+   "60°",
+   "72.5°",
+   "65°"
+  ],
+  "ans": "D",
+  "why": "Angle = |30×4 − 5.5×10| = 65°. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "clock",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If 2 September 2022 was a Friday, what day of the week was 23 September 2022?",
+  "opts": [
+   "Wednesday",
+   "Tuesday",
+   "Monday",
+   "Friday"
+  ],
+  "ans": "D",
+  "why": "21 days later; 21 mod 7 = 0, so count 0 days on from Friday. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "calendar",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Ajay is the son of Sunil. Anil is the daughter of Sunil. Rekha is the husband of Anil. How is Rekha related to Ajay?",
+  "opts": [
+   "Father-in-law",
+   "Brother-in-law",
+   "Brother",
+   "Uncle"
+  ],
+  "ans": "B",
+  "why": "Draw the family tree from the statements; the answer is Brother-in-law. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "blood-relation",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a group of 110 people, 57 like Konkani, 41 like Marathi and 22 like neither. How many like only Konkani?",
+  "opts": [
+   "47",
+   "50",
+   "42",
+   "49"
+  ],
+  "ans": "A",
+  "why": "Both = 57 + 41 − (110 − 22) = 10; only Konkani = 57 − 10 = 47. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "sets",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Statements: No pens are books. All books are bags. Conclusions: I. Some pens are bags. II. Some bags are not pens.",
+  "opts": [
+   "Neither I nor II follows",
+   "Only I follows",
+   "Only II follows",
+   "Both I and II follow"
+  ],
+  "ans": "C",
+  "why": "Checked against every possible diagram of the statements: I need not be true, II must be true. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "syllogism",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "The present ages of Asha and Anil are in the ratio 6 : 5. After 4 years the ratio will be 20 : 17. What is Anil's present age?",
+  "opts": [
+   "28",
+   "30",
+   "33",
+   "25"
+  ],
+  "ans": "B",
+  "why": "Let the ages be 6k and 5k: (6k + 4)/(5k + 4) = 20/17 gives k = 6, so Anil is 30. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ages",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Find the wrong number in the series: 31, 42, 53, 64, 75, 89, 97",
+  "opts": [
+   "75",
+   "42",
+   "89",
+   "97"
+  ],
+  "ans": "C",
+  "why": "In the correct series each term adds 11, so 89 should be 86. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "wrong-number",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In how many different ways can the letters of the word CANCER be arranged?",
+  "opts": [
+   "360",
+   "720",
+   "1080",
+   "180"
+  ],
+  "ans": "A",
+  "why": "6 letters with repeats: 6! ÷ 2! = 360. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "arrangement",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next in the series? 13, 16, 22, 31, 43, …",
+  "opts": [
+   "58",
+   "55",
+   "59",
+   "52"
+  ],
+  "ans": "A",
+  "why": "The differences go up by 3 each time (3, 6, 9, 12, 15). Next: 58. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "number-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If SILVER is written as TGXNKU in a certain code, how is GARDEN written in that code?",
+  "opts": [
+   "PGFTCI",
+   "HBSEFO",
+   "GFTCIP",
+   "PGFTCJ"
+  ],
+  "ans": "A",
+  "why": "In the code each letter moves 2 places forward and the word is then reversed: GARDEN → PGFTCI. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "coding",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next? DEF, IJK, NOP, STU, …",
+  "opts": [
+   "YZA",
+   "XYZ",
+   "WXY",
+   "XZY"
+  ],
+  "ans": "B",
+  "why": "Each group starts 5 letters after the last one, with the same pattern inside: XYZ. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "letter-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a row of 43 students, Ajay is 6th from the left and Lata is 24th from the right. How many students sit between them?",
+  "opts": [
+   "13",
+   "15",
+   "12",
+   "14"
+  ],
+  "ans": "A",
+  "why": "Between them = 43 − (6 + 24) = 13. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ranking",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Sita walks 5 m East, then turns left and walks 8 m, then turns left and walks 9 m. Which direction is Sita facing now?",
+  "opts": [
+   "East",
+   "North",
+   "West",
+   "South"
+  ],
+  "ans": "C",
+  "why": "Follow each turn from the first direction: the last leg is towards the West. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "direction",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What is the angle between the hands of a clock at 7:45?",
+  "opts": [
+   "37.5°",
+   "32.5°",
+   "45°",
+   "42.5°"
+  ],
+  "ans": "A",
+  "why": "Angle = |30×7 − 5.5×45| = 37.5°. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "clock",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If 19 October 2025 was a Sunday, what day of the week was 16 November 2025?",
+  "opts": [
+   "Tuesday",
+   "Monday",
+   "Wednesday",
+   "Sunday"
+  ],
+  "ans": "D",
+  "why": "28 days later; 28 mod 7 = 0, so count 0 days on from Sunday. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "calendar",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Sunil is the mother of Manoj. Manoj is the sister of Geeta. Geeta is the father of Pooja. How is Sunil related to Pooja?",
+  "opts": [
+   "Mother",
+   "Aunt",
+   "Great-grandmother",
+   "Grandmother"
+  ],
+  "ans": "D",
+  "why": "Draw the family tree from the statements; the answer is Grandmother. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "blood-relation",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a group of 70 people, 35 like tea, 24 like coffee and 27 like neither. How many like only tea?",
+  "opts": [
+   "19",
+   "23",
+   "22",
+   "20"
+  ],
+  "ans": "A",
+  "why": "Both = 35 + 24 − (70 − 27) = 16; only tea = 35 − 16 = 19. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "sets",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Statements: All cats are dogs. All dogs are pets. Conclusions: I. Some cats are not pets. II. Some cats are pets.",
+  "opts": [
+   "Neither I nor II follows",
+   "Both I and II follow",
+   "Only II follows",
+   "Only I follows"
+  ],
+  "ans": "C",
+  "why": "Checked against every possible diagram of the statements: I need not be true, II must be true. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "syllogism",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "The present ages of Deepak and Asha are in the ratio 6 : 5. After 4 years the ratio will be 13 : 11. What is Asha's present age?",
+  "opts": [
+   "44",
+   "46",
+   "37",
+   "40"
+  ],
+  "ans": "D",
+  "why": "Let the ages be 6k and 5k: (6k + 4)/(5k + 4) = 13/11 gives k = 8, so Asha is 40. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ages",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Find the wrong number in the series: 11, 22, 33, 44, 60, 66, 77",
+  "opts": [
+   "44",
+   "22",
+   "66",
+   "60"
+  ],
+  "ans": "D",
+  "why": "In the correct series each term adds 11, so 60 should be 55. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "wrong-number",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In how many different ways can the letters of the word LETTER be arranged?",
+  "opts": [
+   "540",
+   "360",
+   "720",
+   "180"
+  ],
+  "ans": "D",
+  "why": "6 letters with repeats: 6! ÷ 2! ÷ 2! = 180. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "arrangement",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next in the series? 14, 20, 29, 41, 56, …",
+  "opts": [
+   "74",
+   "70",
+   "80",
+   "76"
+  ],
+  "ans": "A",
+  "why": "The differences go up by 3 each time (6, 9, 12, 15, 18). Next: 74. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "number-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If KNIGHT is written as UIHJOL in a certain code, how is HOSPITAL written in that code?",
+  "opts": [
+   "MBUJQTPI",
+   "IPTQJUBM",
+   "MBUJQTPJ",
+   "NCVKRUQJ"
+  ],
+  "ans": "A",
+  "why": "In the code each letter moves 1 place forward and the word is then reversed: HOSPITAL → MBUJQTPI. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "coding",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next? LMN, OPQ, RST, UVW, …",
+  "opts": [
+   "WXY",
+   "XYZ",
+   "YZA",
+   "XZY"
+  ],
+  "ans": "B",
+  "why": "Each group starts 3 letters after the last one, with the same pattern inside: XYZ. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "letter-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a row of 34 students, Pooja is 9th from the left and Kiran is 16th from the right. How many students sit between them?",
+  "opts": [
+   "8",
+   "10",
+   "11",
+   "9"
+  ],
+  "ans": "D",
+  "why": "Between them = 34 − (9 + 16) = 9. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ranking",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Ravi walks 2 m North, then turns right and walks 5 m, then turns right and walks 2 m. Which direction is Ravi facing now?",
+  "opts": [
+   "North",
+   "East",
+   "West",
+   "South"
+  ],
+  "ans": "D",
+  "why": "Follow each turn from the first direction: the last leg is towards the South. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "direction",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What is the angle between the hands of a clock at 5:15?",
+  "opts": [
+   "62.5°",
+   "67.5°",
+   "72.5°",
+   "75°"
+  ],
+  "ans": "B",
+  "why": "Angle = |30×5 − 5.5×15| = 67.5°. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "clock",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If 28 January 2027 was a Thursday, what day of the week was 17 March 2027?",
+  "opts": [
+   "Monday",
+   "Tuesday",
+   "Thursday",
+   "Wednesday"
+  ],
+  "ans": "D",
+  "why": "48 days later; 48 mod 7 = 6, so count 6 days on from Thursday. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "calendar",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Pooja is the son of Lata. Ajay is the daughter of Lata. Sita is the husband of Ajay. How is Sita related to Pooja?",
+  "opts": [
+   "Brother-in-law",
+   "Uncle",
+   "Father-in-law",
+   "Brother"
+  ],
+  "ans": "A",
+  "why": "Draw the family tree from the statements; the answer is Brother-in-law. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "blood-relation",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a group of 40 people, 17 like Konkani, 19 like Marathi and 11 like neither. How many like only Konkani?",
+  "opts": [
+   "5",
+   "8",
+   "7",
+   "10"
+  ],
+  "ans": "D",
+  "why": "Both = 17 + 19 − (40 − 11) = 7; only Konkani = 17 − 7 = 10. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "sets",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Statements: All rivers are lakes. No lakes are ponds. Conclusions: I. Some rivers are ponds. II. All rivers are ponds.",
+  "opts": [
+   "Both I and II follow",
+   "Only II follows",
+   "Neither I nor II follows",
+   "Only I follows"
+  ],
+  "ans": "C",
+  "why": "Checked against every possible diagram of the statements: I need not be true, II need not be true. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "syllogism",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "The present ages of Vijay and Rekha are in the ratio 2 : 5. After 10 years the ratio will be 8 : 15. What is Rekha's present age?",
+  "opts": [
+   "40",
+   "31",
+   "35",
+   "38"
+  ],
+  "ans": "C",
+  "why": "Let the ages be 2k and 5k: (2k + 10)/(5k + 10) = 8/15 gives k = 7, so Rekha is 35. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "ages",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Find the wrong number in the series: 45, 52, 61, 66, 73, 80, 87",
+  "opts": [
+   "87",
+   "61",
+   "66",
+   "52"
+  ],
+  "ans": "B",
+  "why": "In the correct series each term adds 7, so 61 should be 59. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "wrong-number",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In how many different ways can the letters of the word APPLE be arranged?",
+  "opts": [
+   "120",
+   "60",
+   "30",
+   "180"
+  ],
+  "ans": "B",
+  "why": "5 letters with repeats: 5! ÷ 2! = 60. GPSC-style practice item.",
+  "lvl": "I",
+  "type": "arrangement",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next in the series? 7, 26, 63, 124, 215, …",
+  "opts": [
+   "341",
+   "345",
+   "346",
+   "342"
+  ],
+  "ans": "D",
+  "why": "n³ − 1 for n = 2, 3, …. Next: 342. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "number-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If TABLET is written as UCEPJZ in a certain code, how is HEALTH written in that code?",
+  "opts": [
+   "JVNCGJ",
+   "IGDPYN",
+   "IFBMUI",
+   "IGDPYO"
+  ],
+  "ans": "B",
+  "why": "In the code the 1st letter moves 1 place, the 2nd 2 places, the 3rd 3 places, and so on: HEALTH → IGDPYN. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "coding",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Geeta walks 2 m West, then turns right and walks 2 m, then turns right and walks 3 m, then turns right and walks 2 m. Which direction is Geeta facing now?",
+  "opts": [
+   "West",
+   "North",
+   "South",
+   "East"
+  ],
+  "ans": "C",
+  "why": "Follow each turn from the first direction: the last leg is towards the South. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "direction",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What is the angle between the hands of a clock at 2:40?",
+  "opts": [
+   "165°",
+   "160°",
+   "167.5°",
+   "155°"
+  ],
+  "ans": "B",
+  "why": "Angle = |30×2 − 5.5×40| = 160°. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "clock",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If 20 June 2020 was a Saturday, what day of the week was 20 June 2021?",
+  "opts": [
+   "Wednesday",
+   "Sunday",
+   "Monday",
+   "Tuesday"
+  ],
+  "ans": "B",
+  "why": "365 days later; 365 mod 7 = 1, so count 1 day on from Saturday. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "calendar",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Meera is the brother of Rahul. Rekha is the father of Meera. Sita is the brother of Priya. Priya is the daughter of Rahul. Who is the uncle of Sita?",
+  "opts": [
+   "Meera",
+   "Priya",
+   "Rahul",
+   "Rekha"
+  ],
+  "ans": "A",
+  "why": "Draw the family tree from the statements; the answer is Meera. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "blood-relation",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a group of 60 people, 27 like Hindi, 32 like English and 4 like neither. How many like only Hindi?",
+  "opts": [
+   "29",
+   "24",
+   "20",
+   "19"
+  ],
+  "ans": "B",
+  "why": "Both = 27 + 32 − (60 − 4) = 3; only Hindi = 27 − 3 = 24. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "sets",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Statements: All rivers are lakes. All lakes are ponds. Conclusions: I. All ponds are rivers. II. Some rivers are ponds.",
+  "opts": [
+   "Only II follows",
+   "Only I follows",
+   "Both I and II follow",
+   "Neither I nor II follows"
+  ],
+  "ans": "A",
+  "why": "Checked against every possible diagram of the statements: I need not be true, II must be true. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "syllogism",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "The present ages of Sunil and Ajay are in the ratio 2 : 4. After 8 years the ratio will be 5 : 8. What is Ajay's present age?",
+  "opts": [
+   "19",
+   "24",
+   "27",
+   "22"
+  ],
+  "ans": "B",
+  "why": "Let the ages be 2k and 4k: (2k + 8)/(4k + 8) = 5/8 gives k = 6, so Ajay is 24. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "ages",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Find the wrong number in the series: 41, 52, 74, 107, 151, 209, 272",
+  "opts": [
+   "52",
+   "151",
+   "272",
+   "209"
+  ],
+  "ans": "D",
+  "why": "In the correct series the differences increase by 11 each time, so 209 should be 206. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "wrong-number",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next in the series? 3, 3, 6, 21, 102, …",
+  "opts": [
+   "603",
+   "609",
+   "605",
+   "617"
+  ],
+  "ans": "B",
+  "why": "Multiply by 2, 3, 4, … and subtract 3 each time. Next: 609. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "number-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If TABLET is written as UCEPJZ in a certain code, how is SYMPTOM written in that code?",
+  "opts": [
+   "TZNQUPN",
+   "OQVROAU",
+   "TAPTYUU",
+   "TAPTYUT"
+  ],
+  "ans": "D",
+  "why": "In the code the 1st letter moves 1 place, the 2nd 2 places, the 3rd 3 places, and so on: SYMPTOM → TAPTYUT. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "coding",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Asha walks 3 m North, then turns left and walks 4 m, then turns right and walks 7 m, then turns right and walks 5 m. Which direction is Asha facing now?",
+  "opts": [
+   "West",
+   "South",
+   "East",
+   "North"
+  ],
+  "ans": "C",
+  "why": "Follow each turn from the first direction: the last leg is towards the East. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "direction",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What is the angle between the hands of a clock at 9:40?",
+  "opts": [
+   "45°",
+   "55°",
+   "57.5°",
+   "50°"
+  ],
+  "ans": "D",
+  "why": "Angle = |30×9 − 5.5×40| = 50°. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "clock",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If 18 December 2026 was a Friday, what day of the week was 18 July 2027?",
+  "opts": [
+   "Tuesday",
+   "Monday",
+   "Sunday",
+   "Wednesday"
+  ],
+  "ans": "C",
+  "why": "212 days later; 212 mod 7 = 2, so count 2 days on from Friday. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "calendar",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Kiran's mother is the only daughter of Deepak's father. How is Deepak related to Kiran if Deepak is a man?",
+  "opts": [
+   "Father",
+   "Maternal uncle",
+   "Brother",
+   "Grandfather"
+  ],
+  "ans": "B",
+  "why": "Draw the family tree from the statements; the answer is Maternal uncle. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "blood-relation",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a group of 60 people, 34 like Konkani, 36 like Marathi and 3 like neither. How many like only Konkani?",
+  "opts": [
+   "25",
+   "15",
+   "24",
+   "21"
+  ],
+  "ans": "D",
+  "why": "Both = 34 + 36 − (60 − 3) = 13; only Konkani = 34 − 13 = 21. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "sets",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Statements: All roses are flowers. No flowers are plants. Conclusions: I. All roses are plants. II. Some plants are roses.",
+  "opts": [
+   "Only II follows",
+   "Neither I nor II follows",
+   "Both I and II follow",
+   "Only I follows"
+  ],
+  "ans": "B",
+  "why": "Checked against every possible diagram of the statements: I need not be true, II need not be true. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "syllogism",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "The present ages of Vijay and Ajay are in the ratio 2 : 6. After 9 years the ratio will be 23 : 51. What is Ajay's present age?",
+  "opts": [
+   "36",
+   "42",
+   "45",
+   "37"
+  ],
+  "ans": "B",
+  "why": "Let the ages be 2k and 6k: (2k + 9)/(6k + 9) = 23/51 gives k = 7, so Ajay is 42. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "ages",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Find the wrong number in the series: 19, 27, 43, 67, 99, 137, 187",
+  "opts": [
+   "187",
+   "137",
+   "27",
+   "99"
+  ],
+  "ans": "B",
+  "why": "In the correct series the differences increase by 8 each time, so 137 should be 139. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "wrong-number",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In how many different ways can the letters of the word MEDICINE be arranged?",
+  "opts": [
+   "40320",
+   "10080",
+   "30240",
+   "20160"
+  ],
+  "ans": "B",
+  "why": "8 letters with repeats: 8! ÷ 2! ÷ 2! = 10080. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "arrangement",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next in the series? 25, 62, 123, 214, 341, …",
+  "opts": [
+   "510",
+   "507",
+   "512",
+   "514"
+  ],
+  "ans": "A",
+  "why": "n³ − 2 for n = 3, 4, …. Next: 510. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "number-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If TABLET is written as UCEPJZ in a certain code, how is NURSING written in that code?",
+  "opts": [
+   "OWUWNTN",
+   "OWUWNTO",
+   "OVSTJOH",
+   "IPKUTWP"
+  ],
+  "ans": "A",
+  "why": "In the code the 1st letter moves 1 place, the 2nd 2 places, the 3rd 3 places, and so on: NURSING → OWUWNTN. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "coding",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Sita walks 7 m South, then turns right and walks 9 m, then turns left and walks 4 m, then turns left and walks 6 m. Which direction is Sita facing now?",
+  "opts": [
+   "North",
+   "South",
+   "East",
+   "West"
+  ],
+  "ans": "C",
+  "why": "Follow each turn from the first direction: the last leg is towards the East. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "direction",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What is the angle between the hands of a clock at 8:10?",
+  "opts": [
+   "175°",
+   "182.5°",
+   "170°",
+   "180°"
+  ],
+  "ans": "A",
+  "why": "Angle = |30×8 − 5.5×10| = 175°. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "clock",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If 20 July 2019 was a Saturday, what day of the week was 26 June 2020?",
+  "opts": [
+   "Friday",
+   "Monday",
+   "Tuesday",
+   "Wednesday"
+  ],
+  "ans": "A",
+  "why": "342 days later; 342 mod 7 = 6, so count 6 days on from Saturday. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "calendar",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Lata's mother is the only daughter of Geeta's father. How is Geeta related to Lata if Geeta is a man?",
+  "opts": [
+   "Grandfather",
+   "Father",
+   "Brother",
+   "Maternal uncle"
+  ],
+  "ans": "D",
+  "why": "Draw the family tree from the statements; the answer is Maternal uncle. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "blood-relation",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a group of 90 people, 52 like cricket, 30 like football and 21 like neither. How many like only cricket?",
+  "opts": [
+   "37",
+   "33",
+   "39",
+   "45"
+  ],
+  "ans": "C",
+  "why": "Both = 52 + 30 − (90 − 21) = 13; only cricket = 52 − 13 = 39. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "sets",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Statements: Some pens are books. No books are bags. Conclusions: I. No pens are bags. II. Some bags are not pens.",
+  "opts": [
+   "Both I and II follow",
+   "Neither I nor II follows",
+   "Only I follows",
+   "Only II follows"
+  ],
+  "ans": "B",
+  "why": "Checked against every possible diagram of the statements: I need not be true, II need not be true. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "syllogism",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "The present ages of Ravi and Rahul are in the ratio 6 : 5. After 8 years the ratio will be 38 : 33. What is Rahul's present age?",
+  "opts": [
+   "27",
+   "28",
+   "25",
+   "19"
+  ],
+  "ans": "C",
+  "why": "Let the ages be 6k and 5k: (6k + 8)/(5k + 8) = 38/33 gives k = 5, so Rahul is 25. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "ages",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Find the wrong number in the series: 51, 57, 69, 87, 113, 141, 177",
+  "opts": [
+   "113",
+   "87",
+   "141",
+   "57"
+  ],
+  "ans": "A",
+  "why": "In the correct series the differences increase by 6 each time, so 113 should be 111. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "wrong-number",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next in the series? 3, 7, 15, 27, 43, …",
+  "opts": [
+   "61",
+   "65",
+   "62",
+   "63"
+  ],
+  "ans": "D",
+  "why": "The differences go up by 4 each time (4, 8, 12, 16, 20). Next: 63. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "number-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If NURSING is written as OWUWNTN in a certain code, how is DOCTOR written in that code?",
+  "opts": [
+   "EPDUPS",
+   "EQFXTX",
+   "EQFXTY",
+   "TQVEQF"
+  ],
+  "ans": "B",
+  "why": "In the code the 1st letter moves 1 place, the 2nd 2 places, the 3rd 3 places, and so on: DOCTOR → EQFXTX. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "coding",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Meera walks 6 m South, then turns left and walks 2 m, then turns right and walks 8 m, then turns left and walks 9 m. Which direction is Meera facing now?",
+  "opts": [
+   "East",
+   "South",
+   "West",
+   "North"
+  ],
+  "ans": "A",
+  "why": "Follow each turn from the first direction: the last leg is towards the East. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "direction",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If 28 June 2026 was a Sunday, what day of the week was 20 February 2027?",
+  "opts": [
+   "Tuesday",
+   "Monday",
+   "Wednesday",
+   "Saturday"
+  ],
+  "ans": "D",
+  "why": "237 days later; 237 mod 7 = 6, so count 6 days on from Sunday. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "calendar",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Sita is the brother of Rekha. Kiran is the father of Sita. Kavita is the brother of Deepak. Deepak is the daughter of Rekha. Who is the uncle of Kavita?",
+  "opts": [
+   "Kiran",
+   "Rekha",
+   "Sita",
+   "Deepak"
+  ],
+  "ans": "C",
+  "why": "Draw the family tree from the statements; the answer is Sita. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "blood-relation",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a group of 80 people, 51 like cricket, 26 like football and 20 like neither. How many like only cricket?",
+  "opts": [
+   "28",
+   "34",
+   "39",
+   "30"
+  ],
+  "ans": "B",
+  "why": "Both = 51 + 26 − (80 − 20) = 17; only cricket = 51 − 17 = 34. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "sets",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Statements: All pens are books. All books are bags. Conclusions: I. Some pens are not bags. II. Some pens are bags.",
+  "opts": [
+   "Only I follows",
+   "Only II follows",
+   "Both I and II follow",
+   "Neither I nor II follows"
+  ],
+  "ans": "B",
+  "why": "Checked against every possible diagram of the statements: I need not be true, II must be true. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "syllogism",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "The present ages of Ravi and Anil are in the ratio 6 : 2. After 3 years the ratio will be 51 : 19. What is Anil's present age?",
+  "opts": [
+   "10",
+   "16",
+   "19",
+   "22"
+  ],
+  "ans": "B",
+  "why": "Let the ages be 6k and 2k: (6k + 3)/(2k + 3) = 51/19 gives k = 8, so Anil is 16. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "ages",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Find the wrong number in the series: 34, 41, 55, 76, 104, 136, 181",
+  "opts": [
+   "181",
+   "136",
+   "104",
+   "41"
+  ],
+  "ans": "B",
+  "why": "In the correct series the differences increase by 7 each time, so 136 should be 139. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "wrong-number",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In how many different ways can the letters of the word BANANA be arranged?",
+  "opts": [
+   "180",
+   "60",
+   "120",
+   "720"
+  ],
+  "ans": "B",
+  "why": "6 letters with repeats: 6! ÷ 3! ÷ 2! = 60. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "arrangement",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "What comes next in the series? 5, 2, 7, 9, 16, …",
+  "opts": [
+   "25",
+   "17",
+   "29",
+   "33"
+  ],
+  "ans": "A",
+  "why": "Each term is the sum of the two before it. Next: 25. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "number-series",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If SCHOOL is written as TEKSTR in a certain code, how is POTENCY written in that code?",
+  "opts": [
+   "QPUFODZ",
+   "QQWISIG",
+   "AEPGVQR",
+   "QQWISIF"
+  ],
+  "ans": "D",
+  "why": "In the code the 1st letter moves 1 place, the 2nd 2 places, the 3rd 3 places, and so on: POTENCY → QQWISIF. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "coding",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Suresh walks 6 m North, then turns left and walks 6 m, then turns right and walks 2 m, then turns left and walks 2 m. Which direction is Suresh facing now?",
+  "opts": [
+   "West",
+   "East",
+   "South",
+   "North"
+  ],
+  "ans": "A",
+  "why": "Follow each turn from the first direction: the last leg is towards the West. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "direction",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "If 18 June 2025 was a Wednesday, what day of the week was 12 December 2025?",
+  "opts": [
+   "Tuesday",
+   "Monday",
+   "Wednesday",
+   "Friday"
+  ],
+  "ans": "D",
+  "why": "177 days later; 177 mod 7 = 2, so count 2 days on from Wednesday. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "calendar",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Anil's mother is the only daughter of Deepak's father. How is Deepak related to Anil if Deepak is a man?",
+  "opts": [
+   "Maternal uncle",
+   "Grandfather",
+   "Brother",
+   "Father"
+  ],
+  "ans": "A",
+  "why": "Draw the family tree from the statements; the answer is Maternal uncle. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "blood-relation",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In a group of 80 people, 37 like tea, 37 like coffee and 27 like neither. How many like only tea?",
+  "opts": [
+   "19",
+   "13",
+   "22",
+   "16"
+  ],
+  "ans": "D",
+  "why": "Both = 37 + 37 − (80 − 27) = 21; only tea = 37 − 21 = 16. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "sets",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Statements: Some doctors are teachers. No teachers are singers. Conclusions: I. No singers are doctors. II. Some doctors are not singers.",
+  "opts": [
+   "Only I follows",
+   "Only II follows",
+   "Both I and II follow",
+   "Neither I nor II follows"
+  ],
+  "ans": "B",
+  "why": "Checked against every possible diagram of the statements: I need not be true, II must be true. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "syllogism",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "The present ages of Anil and Rekha are in the ratio 6 : 2. After 2 years the ratio will be 8 : 3. What is Rekha's present age?",
+  "opts": [
+   "15",
+   "12",
+   "4",
+   "10"
+  ],
+  "ans": "D",
+  "why": "Let the ages be 6k and 2k: (6k + 2)/(2k + 2) = 8/3 gives k = 5, so Rekha is 10. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "ages",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "Find the wrong number in the series: 49, 60, 82, 115, 159, 217, 280",
+  "opts": [
+   "159",
+   "60",
+   "217",
+   "280"
+  ],
+  "ans": "C",
+  "why": "In the correct series the differences increase by 11 each time, so 217 should be 214. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "wrong-number",
+  "src": "",
+  "sec": "lr"
+ },
+ {
+  "q": "In how many different ways can the letters of the word REMEDY be arranged?",
+  "opts": [
+   "360",
+   "1080",
+   "180",
+   "720"
+  ],
+  "ans": "A",
+  "why": "6 letters with repeats: 6! ÷ 2! = 360. GPSC-style practice item.",
+  "lvl": "H",
+  "type": "arrangement",
+  "src": "",
+  "sec": "lr"
+ }
+]

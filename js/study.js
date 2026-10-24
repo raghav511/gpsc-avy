@@ -1,13 +1,13 @@
 // Study: library with subject chips, notes reader with quick-check quizzes, playbooks, PDFs, Revise incorrect, past papers, search.
-import { fetchBlob } from './vault.js?v=gpscavy-969e1095da';
+import { fetchBlob } from './vault.js?v=gpscavy-e033a53e35';
 import {
   $, $$, SC, esc, day, idle, getIndex, getMeta, getKeys, getSet, getText, getSearch, setInfo, IDX, META, H, wrongList, tokens,
-  settings, saveSettings, saveCustom, toast, sheet, ICON, topbar, navHtml, lvlChip, SEC, TOPIC_NAMES, loadAttempts, NOTE_TOPICS, hasNotes, topBtns, saveBtn, savedList
-} from './core.js?v=gpscavy-969e1095da';
+  settings, saveSettings, saveCustom, toast, sheet, ICON, topbar, navHtml, lvlChip, srcTag, SEC, TOPIC_NAMES, loadAttempts, NOTE_TOPICS, hasNotes, topBtns, saveBtn, savedList
+} from './core.js?v=gpscavy-e033a53e35';
 
 const app = $('#app');
 let API = null;
-const CHIPS = [['all', 'All'], ['core', 'Core'], ['gk', 'GK'], ['gram', 'English Grammar'], ['comp', 'English Comprehension'], ['pdfs', 'PDFs'], ['wrong', 'Revise incorrect'], ['saved', 'Saved']];
+const CHIPS = [['all', 'All'], ['core', 'Core'], ['gk', 'GK'], ['gram', 'English Grammar'], ['comp', 'English Comprehension'], ['lr', 'Reasoning'], ['pdfs', 'PDFs'], ['wrong', 'Revise incorrect'], ['saved', 'Saved']];
 const WSUB = [['all', 'All'], ['core', 'Core'], ['gk', 'GK'], ['comp', 'English comprehension'], ['gram', 'English grammar'], ['pdfs', 'PDFs']];
 const TCOL = { 1: 'comp', 2: 'gram', 3: 'lr', 4: 'ind', 5: 'core', 6: 'ind', 7: 'lr', 8: 'gk', 9: 'gram', 10: 'comp' };
 
@@ -18,6 +18,7 @@ export async function route(r, me, api) {
   if (a === 'search') return searchScreen(r, me);
   if (b && /^topic(\d+)$/.test(b)) return notesScreen(+b.slice(5), r, me);
   if (b === 'playbook') return playbookScreen(c || 'gk', r, me);
+  if (b === 'cheat') return cheatScreen(c || 'grammar', me);
   if (b === 'papers') return papersScreen();
   return library(b || 'all', c || 'all', r, me);
 }
@@ -45,7 +46,8 @@ async function library(chip, sub, r, me) {
   }
   if (show('gk')) body += '<h2 class="label">General knowledge</h2><div class="list">' + row('#/study/playbook/gk', 'GK', 's-gk-b', 'GK Playbook', 'Goa and India GK: current affairs, Goa statehood, polity, days') + row('#/drills/gk', '6', 's-gk-b', 'GK drills 1–6', '25 questions each, 15 minutes') + '</div>';
   if (show('comp')) body += '<h2 class="label">English comprehension</h2><div class="list">' + row('#/study/playbook/english-comp', 'Rc', 's-comp-b', 'Reading a passage', 'English playbook: main idea, inference, tone, traps') + row('#/drills/comp', '12', 's-comp-b', 'Comprehension drills', 'Real GPSC passages: 2 drills + 10 passage drills') + '</div>';
-  if (show('gram')) body += '<h2 class="label">English grammar</h2><div class="list">' + row('#/study/playbook/english-grammar', 'Gr', 's-gram-b', 'Grammar rules', 'English playbook: structure, voice, errors, idioms') + row('#/drills/en', '2', 's-gram-b', 'Grammar drills', '2026 pattern, vocabulary and usage, 2 drills') + '</div>';
+  if (show('gram')) body += '<h2 class="label">English grammar</h2><div class="list">' + row('#/study/playbook/english-grammar', 'Gr', 's-gram-b', 'Grammar rules', 'English playbook: structure, voice, errors, idioms') + row('#/study/cheat/grammar', 'Cs', 's-gram-b', 'Grammar cheat sheet', 'Tenses, agreement, articles, voice, narration on one page') + row('#/drills/en', IDX.sets.filter(x => /^(end|grd)\d/.test(x.id)).length, 's-gram-b', 'Grammar drills', 'Easy, intermediate and hard · 10 questions each') + '</div>';
+  if (show('lr')) body += '<h2 class="label">Logical reasoning</h2><div class="list">' + row('#/study/cheat/reasoning', 'Cs', 's-lr-b', 'Reasoning cheat sheet', 'Series, coding, relations, clocks, syllogisms, shortcuts') + row('#/drills/lr', IDX.sets.filter(x => /^lrd\d/.test(x.id)).length, 's-lr-b', 'Reasoning drills', 'Easy, intermediate and hard · 10 questions each') + '</div>';
   if (chip === 'all') body += '<h2 class="label">More</h2><div class="list">' + row('#/study/playbook/english', 'En', 's-comp-b', 'English Playbook (full)', 'Comprehension and grammar, with a 13-day plan') + row('#/study/papers', 'QP', 's-lr-b', 'Past GPSC question papers', META.papers.length + ' papers on the GPSC site') + row('#/study/pdfs', 'PDF', 's-ind-b', 'Printable PDFs', META.pdfs.length + ' files to print or share on WhatsApp') + '</div>';
   if (chip === 'pdfs') body += '<h2 class="label">Printable PDFs to share on WhatsApp</h2><div class="list">' + META.pdfs.map(pdfRow).join('') + '</div>';
   if (chip === 'wrong') body += await wrongBody(wl, sub, me);
@@ -158,7 +160,7 @@ async function wrongBody(wl, sub, me) {
     const sid = w.ref.slice(0, w.ref.lastIndexOf(':')), n = +w.ref.slice(w.ref.lastIndexOf(':') + 1), s = sets[sid];
     const q = s && s.questions[n - 1]; if (!q) return '';
     const opts = q.opts.concat(['None of the above']);
-    return '<article class="rev"><div class="qh">' + (q.lvl ? lvlChip(q.lvl) : '') + '<span class="chip s-' + q.sec + '-c">' + esc(q.sec === 'core' && q.topic ? 'Topic ' + q.topic + ' · ' + TOPIC_NAMES[q.topic] : SEC[q.sec].name) + '</span><span class="sub">' + esc((setInfo(w.set) || { name: w.set.startsWith('custom-') ? 'Custom test' : w.set }).name) + ' · ' + day(w.when) + '</span>' + saveBtn(w.ref, w.sec) + '</div>' +
+    return '<article class="rev"><div class="qh">' + (q.lvl ? lvlChip(q.lvl) : '') + '<span class="chip s-' + q.sec + '-c">' + esc(q.sec === 'core' && q.topic ? 'Topic ' + q.topic + ' · ' + TOPIC_NAMES[q.topic] : SEC[q.sec].name) + '</span><span class="sub">' + esc((setInfo(w.set) || { name: w.set.startsWith('custom-') ? 'Custom test' : w.set }).name) + ' · ' + day(w.when) + '</span>' + srcTag(q) + saveBtn(w.ref, w.sec) + '</div>' +
       '<p class="qt">' + esc(q.q) + '</p><p class="yo"><span class="bad">You: ' + w.a + '. ' + esc(opts['ABCDE'.indexOf(w.a)] || '') + '</span><span class="good">Answer: ' + q.ans + '. ' + esc(opts['ABCDE'.indexOf(q.ans)]) + '</span></p>' +
       '<details class="why"><summary>Why</summary><p>' + esc(q.why) + '</p></details>' + (hasNotes(q.topic) ? '<a class="lnk" href="#/study/topic' + q.topic + '">Read Topic ' + q.topic + ' notes</a>' : '') + '</article>';
   }).join('') + '</div>';
@@ -236,7 +238,7 @@ async function notesScreen(t, r, me) {
   me.unmount = () => { scEl.removeEventListener('scroll', onScroll); clearTimeout(saveT); saveSettings(); };
   $('#nFs').onclick = () => { settings.fs = settings.fs >= 1.25 ? 1 : (settings.fs || 1) >= 1.12 ? 1.25 : 1.12; nb.style.setProperty('--fs', settings.fs); saveSettings(); };
   $('#nPdf').onclick = () => pdfSheet(t);
-  $('#nShare').onclick = () => import('./runner.js?v=gpscavy-969e1095da').then(m => m.shareLink(location.href.split('#')[0] + '#/study/topic' + t, 'Topic ' + t + ' notes: ' + n.title));
+  $('#nShare').onclick = () => import('./runner.js?v=gpscavy-e033a53e35').then(m => m.shareLink(location.href.split('#')[0] + '#/study/topic' + t, 'Topic ' + t + ' notes: ' + n.title));
   if (r.q.h) requestAnimationFrame(() => { const el = document.getElementById(r.q.h); if (el) { const s = el.closest('.ns'); if (s) s.classList.remove('closed'); SC().scrollTo(0, el.getBoundingClientRect().top + SC().scrollTop - tocH()); } });
 }
 function openZoom(img) {
@@ -293,6 +295,24 @@ async function playbookScreen(name, r, me) {
   });
   const hb = $('#hideA');
   hb.onclick = () => { const on = box.classList.toggle('hide-ans'); hb.setAttribute('aria-pressed', on); hb.textContent = on ? 'Show answers' : 'Hide answers'; if (!on) box.querySelectorAll('.show').forEach(x => x.classList.remove('show')); };
+}
+
+// ---------- cheat sheets ----------
+const CS = { grammar: { title: 'English grammar cheat sheet', sub: 'Section II · grammar and usage', cls: 'tc-gram', drills: '#/drills/en' }, reasoning: { title: 'Logical reasoning cheat sheet', sub: 'Section IV · reasoning and aptitude', cls: 'tc-lr', drills: '#/drills/lr' } };
+async function cheatScreen(name, me) {
+  const cs = CS[name]; if (!cs) throw new Error('No cheat sheet ' + name);
+  const secs = (META.cheats && META.cheats[name]) || [];
+  app.innerHTML = '<header class="nhd ' + cs.cls + '"><div class="nrow"><button type="button" class="ib glass" data-back aria-label="Back">' + ICON.back + '</button><span class="sp"></span></div>' +
+    '<p class="nk">' + esc(cs.sub) + '</p><h1>' + esc(cs.title) + '</h1></header>' +
+    '<nav class="toc" aria-label="Contents"><div class="tocs">' + secs.map(s => '<a href="#cs-' + s[0] + '" data-sec="cs-' + s[0] + '">' + esc(s[1].split(/[,:(]| and /)[0]) + '</a>').join('') + '</div></nav>' +
+    '<main class="notes cheat" id="nb" style="--fs:' + (settings.fs || 1) + '"><p class="sub pad">Loading…</p></main>' + navHtml('study');
+  let html;
+  try { html = await getText('data/cheats/' + name + '.html'); } catch (e) { if (e && e.code === 'locked') { API.go('#/pay?back=' + encodeURIComponent(location.hash), true); return; } $('#nb').innerHTML = '<div class="card"><p>The cheat sheet could not be loaded.</p></div>'; return; }
+  if (me.hash !== location.hash) return;
+  const box = $('#nb');
+  box.innerHTML = html + '<p><a class="wide pri" href="' + cs.drills + '">Practise with the drills</a></p>';
+  box.querySelectorAll('h2[id]').forEach(h => { h.id = 'cs-' + h.id; });
+  document.querySelector('.toc').addEventListener('click', e => { const a = e.target.closest('a[data-sec]'); if (!a) return; e.preventDefault(); const el = document.getElementById(a.dataset.sec); if (el) SC().scrollTo({ top: el.getBoundingClientRect().top + SC().scrollTop - 70, behavior: 'smooth' }); });
 }
 
 // ---------- past papers ----------

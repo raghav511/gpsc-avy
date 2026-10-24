@@ -4,11 +4,11 @@ import {
   H, loadAttempts, saveAttempts, findAttempt, cleanAttempt, grade, tokens, listInProgress, loadState, stateKey, remaining, stats, weakest,
   DRILL_FOR, wrongList, customs, saveCustom, deleteCustom, toast, hideToast, sheet, closeSheet, sheetOpen, ICON, navHtml, topbar, bar, lvlChip,
   SECS, SEC, LV, LVL, TOPIC_NAMES, prefetchSet, findDef, CKEY, lsDel, NOTE_TOPICS, hasNotes, topBtns, refreshTopBtns, UI, setSaved, isSaved, savedAll, mergeSaved, cleared, addCleared, delCleared, mergeCleared, removeAttempts
-} from './core.js?v=gpscavy-969e1095da';
-import { today as thoughtToday } from './thought.js?v=gpscavy-969e1095da';
-import * as G from './account.js?v=gpscavy-969e1095da';
-import { fetchBlob } from './vault.js?v=gpscavy-969e1095da';
-import * as L from './licence.js?v=gpscavy-969e1095da';
+} from './core.js?v=gpscavy-e033a53e35';
+import { today as thoughtToday } from './thought.js?v=gpscavy-e033a53e35';
+import * as G from './account.js?v=gpscavy-e033a53e35';
+import { fetchBlob } from './vault.js?v=gpscavy-e033a53e35';
+import * as L from './licence.js?v=gpscavy-e033a53e35';
 
 const app = $('#app');
 let cur = null;          // current screen {hash, unmount, onPop}
@@ -17,8 +17,8 @@ const scrolls = new Map();
 let runnerMod = null, studyMod = null;
 // A lazily loaded module can come from a newer app version than the one already running; if it does not fit, reload once.
 const safeImport = u => import(u).catch(e => { try { if (!sessionStorage.getItem('gpscavy-reimport')) { sessionStorage.setItem('gpscavy-reimport', '1'); location.reload(); } } catch (x) { } throw e; });
-const loadRunner = () => runnerMod || (runnerMod = safeImport('./runner.js?v=gpscavy-969e1095da'));
-const loadStudy = () => studyMod || (studyMod = safeImport('./study.js?v=gpscavy-969e1095da'));
+const loadRunner = () => runnerMod || (runnerMod = safeImport('./runner.js?v=gpscavy-e033a53e35'));
+const loadStudy = () => studyMod || (studyMod = safeImport('./study.js?v=gpscavy-e033a53e35'));
 
 // ---------- routing ----------
 export function parse(h) {
@@ -40,6 +40,7 @@ export function parentOf(hash) {
   if (a === 'study') {
     if (/^topic\d+$/.test(b)) return '#/study/core';
     if (b === 'playbook') return c === 'gk' ? '#/study/gk' : c === 'english-grammar' ? '#/study/gram' : c === 'english-comp' ? '#/study/comp' : '#/study';
+    if (b === 'cheat') return c === 'reasoning' ? '#/study/lr' : '#/study/gram';
     if (b === 'wrong' && c) return '#/study/wrong';
     return '#/study';
   }
@@ -169,7 +170,8 @@ document.addEventListener('pointerdown', pf, { passive: true });
 const practice = () => IDX.sets.filter(s => s.num);
 const levelSets = () => IDX.sets.filter(s => s.lvlset);
 const gkDrills = () => IDX.sets.filter(s => s.id.startsWith('gkd'));
-const enDrills = () => IDX.sets.filter(s => s.id === 'end1' || s.id === 'end2');
+const enDrills = () => IDX.sets.filter(s => s.id === 'end1' || s.id === 'end2' || /^grd\d+$/.test(s.id));
+const lrDrills = () => IDX.sets.filter(s => /^lrd\d+$/.test(s.id));
 const compDrills = () => IDX.sets.filter(s => s.id === 'end3' || s.id === 'end4' || s.id.startsWith('compd'));
 function attemptsOf(id) { return H.filter(a => a.set === id); }
 function bestOf(id) { const m = attemptsOf(id); if (!m.length) return null; return m.reduce((b, a) => (a.score > b.score ? a : b), m[0]); }
@@ -367,9 +369,9 @@ async function testsScreen(r) {
   } else if (tab === 'drills') {
     body = '<div class="list">' +
       drillCard('#/drills/gk', 'GK', 'gk', 'GK drills', gkDrills().length + ' drills · 25 questions each · 15 min') +
-      drillCard('#/drills/en', 'Gr', 'gram', 'English Grammar drills', enDrills().length + ' drills · 25 questions each · 15 min') +
+      drillCard('#/drills/en', 'Gr', 'gram', 'English Grammar drills', enDrills().length + ' drills · easy, intermediate and hard') +
       drillCard('#/drills/comp', 'Rc', 'comp', 'English Comprehension drills', compDrills().length + ' drills · real GPSC passages · 25 min') +
-      drillCard('#/custom?sec=lr', 'LR', 'lr', 'Reasoning practice', 'Build a reasoning-only test from the bank') + '</div>';
+      drillCard('#/drills/lr', 'LR', 'lr', 'Logical Reasoning drills', lrDrills().length + ' drills · easy, intermediate and hard') + '</div>';
   } else if (tab === 'mine') {
     const cs = Object.values(customs()).filter(c => c.saved).sort((a, b) => b.createdAt - a.createdAt);
     body = '<h2 class="label">Saved tests</h2><div class="list">' + (cs.length ? cs.map(c => '<div class="row"><a class="rowa" href="#/test/' + c.id + '"><span class="num s-core-b">' + c.refs.length + '</span><span class="rt"><span class="ttl">' + esc(c.name) + '</span><span class="sub">' + c.refs.length + ' Q · ' + (c.mode === 'learn' ? 'learn mode' : c.minutes + ' min') + (attemptsOf(c.id).length ? ' · best ' + bestOf(c.id).score + '/' + c.refs.length : '') + '</span></span><span class="pill pill-go">Start</span></a><button type="button" class="ib" data-delc="' + c.id + '" aria-label="Delete ' + esc(c.name) + '">' + ICON.close + '</button></div>').join('')
@@ -398,16 +400,21 @@ async function drillsScreen(r) {
   const k = r.path[1];
   let title, sub, list, tone, badge, sec, extra = '';
   if (k === 'gk') { title = 'GK drills'; sec = 'gk'; list = gkDrills(); sub = list.length + ' drills · 25 questions each · 15 minutes'; badge = s => 'G' + s.id.slice(3); }
-  else if (k === 'en') { title = 'Grammar drills'; sec = 'gram'; list = enDrills(); sub = list.length + ' drills · 25 questions each · 15 minutes'; badge = s => 'E' + s.id.slice(3); }
+  else if (k === 'en') { title = 'Grammar drills'; sec = 'gram'; list = enDrills(); sub = list.length + ' drills · 10 questions each, plus 2 longer ones'; badge = s => s.id.startsWith('grd') ? s.id.slice(3) : 'E' + s.id.slice(3); }
+  else if (k === 'lr') { title = 'Reasoning drills'; sec = 'lr'; list = lrDrills(); sub = list.length + ' drills · 10 questions each · 12 minutes'; badge = s => s.id.slice(3); }
   else if (k === 'comp') { title = 'Comprehension drills'; sec = 'comp'; list = compDrills(); sub = list.length + ' drills · 25 questions each · 25 minutes'; badge = s => s.id.startsWith('compd') ? 'P' + s.id.slice(5) : 'E' + s.id.slice(3); }
   else { go('#/tests/drills', true); return; }
   const name = s => s.id === 'end1' ? 'Grammar drill 1' : s.id === 'end2' ? 'Grammar drill 2' : s.id === 'end3' ? 'Comprehension drill 1' : s.id === 'end4' ? 'Comprehension drill 2' : s.id.startsWith('gkd') ? 'GK drill ' + s.id.slice(3) : s.name;
   const meta = (s, st, b) => (s.short || s.core || '') + ' · ' + s.n + ' Q · ' + s.min + ' min' + (st ? ' · in progress' : b ? ' · best ' + b.score + '/' + b.total : '');
+  // 25% easy, 50% intermediate, 25% hard: filter by level
+  const lvf = r.q.l || 'all', hasLv = list.some(s => /^(grd|lrd)/.test(s.id));
+  if (hasLv && lvf !== 'all') list = list.filter(s => s.level === lvf);
+  const lvchips = hasLv ? '<div class="chips" role="group" aria-label="Filter by level">' + [['all', 'All'], ['easy', 'Easy'], ['intermediate', 'Intermediate'], ['hard', 'Hard']].map(c => '<a class="lchip' + (lvf === c[0] ? ' on' : '') + '" href="#/drills/' + k + (c[0] === 'all' ? '' : '?l=' + c[0]) + '" data-replace="1" aria-pressed="' + (lvf === c[0]) + '">' + c[1] + '</a>').join('') + '</div>' : '';
   const rows = list.map(s => setRow(s, { badge, badgeCls: 's-' + sec + '-b', name, meta, tone: 'pg-' + sec }));
   let html = rows.join('');
   if (k === 'comp') html = rows.slice(0, 2).join('') + '</div><h2 class="label">Passage drills from the 25 mock sets</h2><div class="list">' + rows.slice(2).join('');
-  app.innerHTML = topbar(title, sub) + '<main class="pad stack"><div class="list">' + html + '</div>' +
-    '<a class="lnk" href="#/study/' + (k === 'en' ? 'gram' : k) + '">Read the ' + (k === 'gk' ? 'GK' : 'English') + ' playbook first</a></main>' + navHtml('tests');
+  app.innerHTML = topbar(title, sub) + '<main class="pad stack">' + lvchips + '<div class="list">' + html + '</div>' +
+    (k === 'lr' ? '<a class="lnk" href="#/study/cheat/reasoning">Read the Reasoning cheat sheet first</a>' : '<a class="lnk" href="#/study/' + (k === 'en' ? 'cheat/grammar' : k) + '">Read the ' + (k === 'gk' ? 'GK playbook' : k === 'en' ? 'Grammar cheat sheet' : 'English playbook') + ' first</a>') + '</main>' + navHtml('tests');
 }
 
 // ---------- custom builder ----------
@@ -914,8 +921,8 @@ function openSettings() {
   const sgo = el.querySelector('#stOutGo'); if (sgo) sgo.onclick = () => { G.signOut(); refreshTopBtns(); toast('Signed out. Your progress is still on this device.'); openSettings(); };
   const cp = el.querySelector('#stCopy'); if (cp) cp.onclick = () => copyText(settings.syncUrl, 'Sync link copied. Paste it in GPSCavy on your other device: Settings, Connect sync.');
   const off = el.querySelector('#stOff'); if (off) off.onclick = () => { delete settings.syncUrl; UI.syncErr = false; saveSettings(); refreshTopBtns(); toast('Sync disconnected on this device. Your progress here is kept.'); openSettings(); };
-  el.querySelector('#stKey').onclick = () => safeImport('./ai.js?v=gpscavy-969e1095da').then(m => m.keySheet(openSettings));
-  safeImport('./ai.js?v=gpscavy-969e1095da').then(m => {
+  el.querySelector('#stKey').onclick = () => safeImport('./ai.js?v=gpscavy-e033a53e35').then(m => m.keySheet(openSettings));
+  safeImport('./ai.js?v=gpscavy-e033a53e35').then(m => {
     const a = m.summary(), t = el.querySelector('#stAi'), kd = el.querySelector('#stKeyDel'); if (!t) return;
     t.textContent = a.text; el.querySelector('#stKey').textContent = a.on ? 'Change AI or model' : 'Set up AI';
     kd.hidden = !a.on; kd.onclick = () => { m.removeKey(); toast('API key removed from this device.'); openSettings(); };
@@ -979,7 +986,7 @@ function aiTab() {
   t.addEventListener('pointerdown', e => { sy = e.clientY; moved = false; startTop = t.getBoundingClientRect().top + t.offsetHeight / 2; t.setPointerCapture && t.setPointerCapture(e.pointerId); });
   t.addEventListener('pointermove', e => { if (!sy) return; const d = e.clientY - sy; if (Math.abs(d) > 8) moved = true; if (moved) place((startTop + d) / innerHeight); });
   t.addEventListener('pointerup', e => { if (moved) { settings.aiY = parseFloat(t.style.top) / innerHeight; saveSettings(); } sy = 0; });
-  t.addEventListener('click', e => { if (moved) { moved = false; e.preventDefault(); return; } safeImport('./ai.js?v=gpscavy-969e1095da').then(m => m.menu(t)); });
+  t.addEventListener('click', e => { if (moved) { moved = false; e.preventDefault(); return; } safeImport('./ai.js?v=gpscavy-e033a53e35').then(m => m.menu(t)); });
   document.body.appendChild(t);
   // Never cover content: look at what lies under the tab and slide it to the nearest clear spot in the margin.
   const FREE = 'html,body,#app,main,.pad,.notes,#nb,.ns,.nb,.stack';

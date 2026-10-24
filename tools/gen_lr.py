@@ -67,7 +67,7 @@ def series(lvl):
             s.append(s[-1] + (d1 if i % 2 == 0 else -d2))
         why = 'Alternately add %d and subtract %d.' % (d1, d2)
     elif k == 'mulsub':
-        a, m, c = R.randint(2, 6), 2, R.randint(1, 3); s = [a]
+        a, m = R.randint(3, 6), 2; c = R.randint(1, a - 2); s = [a]
         for i in range(5):
             s.append(s[-1] * m - c)
         why = 'Each term is ×%d − %d.' % (m, c)

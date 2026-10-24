@@ -13,6 +13,7 @@ export function itemForPath(path) {
   if ((m = /^data\/sets\/(.+)\.json$/.exec(path))) return 'set:' + m[1];
   if ((m = /^data\/notes\/topic(\d+)\.html$/.exec(path))) return 'notes:' + m[1];
   if ((m = /^data\/playbooks\/(gk|english)-playbook\.html$/.exec(path))) return 'playbook:' + m[1];
+  if ((m = /^data\/cheats\/(\w+)\.html$/.exec(path))) return 'cheat:' + m[1];
   if (path === 'data/search.json') return 'search';
   if (/^data\/pool\//.test(path)) return 'custom';
   if ((m = /^content\/pdfs\/Topic-(\d+)-/.exec(path))) return 'notes:' + m[1];
