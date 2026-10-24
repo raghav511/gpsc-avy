@@ -21,7 +21,7 @@ const drives = {}; const tokens = {}; const log = [];
 let deny = false, silentNeedsLogin = false;
 async function device(name) {
   const ctx = await browser.newContext(Object.assign({ serviceWorkers: 'block' }, opts));
-  await ctx.route(/\/js\/config\.js/, r => r.fulfill({ status: 200, contentType: 'text/javascript', body: "export const GOOGLE_CLIENT_ID = '" + CID + "';" }));
+  await ctx.route(/\/js\/config\.js/, r => r.fulfill({ status: 200, contentType: 'text/javascript', body: "export const GOOGLE_CLIENT_ID = '" + CID + "';\nexport const LICENCE_URL = '';" }));
   await ctx.route('https://accounts.google.com/**', async r => {
     const u = new URL(r.request().url()); const p = u.searchParams; log.push({ name, auth: Object.fromEntries(p) });
     const back = p.get('redirect_uri') + '#';

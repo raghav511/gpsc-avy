@@ -413,7 +413,7 @@ await section('6b. Sync progress: hub merge, never loses anything, auto-sync, he
   await page.fill('#syncIn', 'https://example.com/not-a-hub'); await page.click('#syncGo'); await settle();
   ok(await page.locator('#syncErr:visible').count() === 1, 'rejects a wrong link');
   await page.fill('#syncIn', HUBURL); await page.click('#syncGo');
-  await page.waitForFunction(() => /Synced/.test((document.querySelector('#syncMsg') || {}).textContent || ''), null, { timeout: 8000 });
+  await page.waitForFunction(() => /Synced/.test(((document.querySelector('#syncMsg') || {}).textContent || '') + ((document.querySelector('#toast') || {}).textContent || '')), null, { timeout: 8000 });
   const after = await page.evaluate(() => JSON.parse(localStorage.getItem('gpsc-cbrt-history-v1')));
   ok(after.length === mine + 2, 'sync adds the other devices\' attempts', after.length + ' vs ' + (mine + 2));
   ok(hub.attempts.length === mine + 2, 'hub now holds this device\'s attempts too', hub.attempts.length);
@@ -422,19 +422,19 @@ await section('6b. Sync progress: hub merge, never loses anything, auto-sync, he
   // offline: nothing is lost, sync later catches up
   down = true;
   await page.evaluate(() => { const h = JSON.parse(localStorage.getItem('gpsc-cbrt-history-v1')); h.unshift({ id: 'gkd3-1799999999999', set: 'gkd3', setName: 'GK Drill 3', score: 0, total: 25, wrong: 0, skipped: 25, usedMs: 1, auto: false, submittedAt: '2026-10-23T09:00:00.000Z', answers: {} }); localStorage.setItem('gpsc-cbrt-history-v1', JSON.stringify(h)); });
-  await open('#/'); await page.click('.hhead .syncb'); await page.waitForFunction(() => /safe on this device/.test((document.querySelector('#syncMsg') || {}).textContent || ''), null, { timeout: 8000 });
+  await open('#/'); await page.evaluate(() => { const t = document.querySelector('#toast'); if (t) t.textContent = ''; }); await page.click('.hhead .syncb'); await page.waitForFunction(() => /safe on this device/.test(((document.querySelector('#syncMsg') || {}).textContent || '') + ((document.querySelector('#toast') || {}).textContent || '')), null, { timeout: 8000 });
   ok(true, 'offline sync says progress is safe');
   for (let k = errors.length - 1; k >= 0; k--) if (/ERR_FAILED|ERR_INTERNET|Failed to fetch/.test(errors[k])) errors.splice(k, 1); // the simulated outage
   ok(await page.evaluate(() => JSON.parse(localStorage.getItem('gpsc-cbrt-history-v1')).some(a => a.id === 'gkd3-1799999999999')), 'offline attempt kept');
   await closeSh(); down = false;
-  await page.click('.hhead .syncb'); await page.waitForFunction(() => /Synced/.test((document.querySelector('#syncMsg') || {}).textContent || ''), null, { timeout: 8000 });
+  await page.evaluate(() => { const t = document.querySelector('#toast'); if (t) t.textContent = ''; }); await page.click('.hhead .syncb'); await page.waitForFunction(() => /Synced/.test(((document.querySelector('#syncMsg') || {}).textContent || '') + ((document.querySelector('#toast') || {}).textContent || '')), null, { timeout: 8000 });
   ok(hub.attempts.some(a => a.id === 'gkd3-1799999999999'), 'next sync sends the attempt made while offline');
   for (let k = errors.length - 1; k >= 0; k--) if (/ERR_FAILED|ERR_INTERNET|Failed to fetch/.test(errors[k])) errors.splice(k, 1);
   await closeSh();
   // a later submission of the same attempt id replaces the earlier one everywhere; a submitted test leaves "in progress"
   hub = hubApi.merge(hub, { format: 'gpsc-cbrt-progress', attempts: [{ id: 'set9v2-' + (hub.inProgress.find(s => s.set === 'set9v2') || {}).startedAt, set: 'set9v2', setName: 'Practice Set 9', score: 1, total: 60, wrong: 0, skipped: 59, usedMs: 5, auto: false, submittedAt: '2026-10-23T10:00:00.000Z', answers: { 1: byId.set9v2.questions[0].ans } }] });
   ok(!hub.inProgress.some(s => s.set === 'set9v2'), 'hub drops a test in progress once it is submitted');
-  await page.click('.hhead .syncb'); await page.waitForFunction(() => /Synced/.test((document.querySelector('#syncMsg') || {}).textContent || ''), null, { timeout: 8000 });
+  await page.evaluate(() => { const t = document.querySelector('#toast'); if (t) t.textContent = ''; }); await page.click('.hhead .syncb'); await page.waitForFunction(() => /Synced/.test(((document.querySelector('#syncMsg') || {}).textContent || '') + ((document.querySelector('#toast') || {}).textContent || '')), null, { timeout: 8000 });
   ok(!(await page.evaluate(() => localStorage.getItem('gpsc-cbrt-set9v2-v1'))), 'test submitted on another device leaves "in progress" here');
   await closeSh();
   // auto-sync on open
@@ -444,7 +444,7 @@ await section('6b. Sync progress: hub merge, never loses anything, auto-sync, he
   await open('#/progress'); ok(await page.locator('[data-act="sync"]').count() >= 1, 'Progress screen has Sync progress');
   // never removes: hub with fewer attempts does not shrink this device
   const n0 = await page.evaluate(() => JSON.parse(localStorage.getItem('gpsc-cbrt-history-v1')).length);
-  hub = hubApi.empty(); await open('#/'); await page.click('.hhead .syncb'); await page.waitForFunction(() => /Synced/.test((document.querySelector('#syncMsg') || {}).textContent || ''), null, { timeout: 8000 });
+  hub = hubApi.empty(); await open('#/'); await page.evaluate(() => { const t = document.querySelector('#toast'); if (t) t.textContent = ''; }); await page.click('.hhead .syncb'); await page.waitForFunction(() => /Synced/.test(((document.querySelector('#syncMsg') || {}).textContent || '') + ((document.querySelector('#toast') || {}).textContent || '')), null, { timeout: 8000 });
   ok(await page.evaluate(() => JSON.parse(localStorage.getItem('gpsc-cbrt-history-v1')).length) === n0 && hub.attempts.length === n0, 'an empty hub never removes anything; it is refilled');
   await closeSh();
   await page.evaluate(() => { const k = 'gpscavy-settings-v1'; const o = JSON.parse(localStorage.getItem(k) || '{}'); delete o.syncUrl; localStorage.setItem(k, JSON.stringify(o)); });
