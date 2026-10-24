@@ -4,7 +4,7 @@ import {
   $, SC, esc, fmt, day, idle, getIndex, getKeys, getSet, setInfo, KEYS, H, findAttempt, addAttempt, removeAttempt, grade, tokens,
   loadState, stateKey, lsSet, lsDel, remaining, toast, hideToast, sheet, closeSheet, ICON, topbar, bar, lvlChip, navHtml,
   SECS, SEC, LV, LVL, L5, TOPIC_NAMES, customs, saveCustom, findDef, NOTE_TOPICS, hasNotes, saveBtn, addCleared, delCleared
-} from './core.js?v=gpscavy-5a9ef66a5a';
+} from './core.js?v=gpscavy-969e1095da';
 
 const app = $('#app');
 let API = null;

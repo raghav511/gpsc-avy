@@ -3,13 +3,13 @@
 // it made (scope drive.appdata: Drive's hidden, per-app folder), plus the email address to show who is signed in.
 // Sign-in uses Google's redirect page (works in iPad and iPhone home-screen apps, where pop-ups do not).
 // Google gives a browser app a one-hour pass; after that, Sync signs in again in a second, without a password.
-import { lsGet, lsSet, lsDel, settings, saveSettings } from './core.js?v=gpscavy-5a9ef66a5a';
-import { GOOGLE_CLIENT_ID } from './config.js?v=gpscavy-5a9ef66a5a';
+import { lsGet, lsSet, lsDel, settings, saveSettings } from './core.js?v=gpscavy-969e1095da';
+import { GOOGLE_CLIENT_ID } from './config.js?v=gpscavy-969e1095da';
 
 const TKEY = 'gpscavy-gtoken';   // {token, exp} on this device only: never in the progress file or synced
 const PKEY = 'gpscavy-gpending'; // {state, back, then} while the student is on Google's page
 const SCOPE = 'https://www.googleapis.com/auth/drive.appdata openid email';
-const FILE = 'gpscavy-progress.json';
+const FILE = window.__gpsStaging ? 'gpscavy-progress-sandbox.json' : 'gpscavy-progress.json'; // the sandbox website keeps its own file
 const DRIVE = 'https://www.googleapis.com/drive/v3/files';
 const UPLOAD = 'https://www.googleapis.com/upload/drive/v3/files';
 

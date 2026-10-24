@@ -4,11 +4,11 @@ import {
   H, loadAttempts, saveAttempts, findAttempt, cleanAttempt, grade, tokens, listInProgress, loadState, stateKey, remaining, stats, weakest,
   DRILL_FOR, wrongList, customs, saveCustom, deleteCustom, toast, hideToast, sheet, closeSheet, sheetOpen, ICON, navHtml, topbar, bar, lvlChip,
   SECS, SEC, LV, LVL, TOPIC_NAMES, prefetchSet, findDef, CKEY, lsDel, NOTE_TOPICS, hasNotes, topBtns, refreshTopBtns, UI, setSaved, isSaved, savedAll, mergeSaved, cleared, addCleared, delCleared, mergeCleared, removeAttempts
-} from './core.js?v=gpscavy-5a9ef66a5a';
-import { today as thoughtToday } from './thought.js?v=gpscavy-5a9ef66a5a';
-import * as G from './account.js?v=gpscavy-5a9ef66a5a';
-import { fetchBlob } from './vault.js?v=gpscavy-5a9ef66a5a';
-import * as L from './licence.js?v=gpscavy-5a9ef66a5a';
+} from './core.js?v=gpscavy-969e1095da';
+import { today as thoughtToday } from './thought.js?v=gpscavy-969e1095da';
+import * as G from './account.js?v=gpscavy-969e1095da';
+import { fetchBlob } from './vault.js?v=gpscavy-969e1095da';
+import * as L from './licence.js?v=gpscavy-969e1095da';
 
 const app = $('#app');
 let cur = null;          // current screen {hash, unmount, onPop}
@@ -17,8 +17,8 @@ const scrolls = new Map();
 let runnerMod = null, studyMod = null;
 // A lazily loaded module can come from a newer app version than the one already running; if it does not fit, reload once.
 const safeImport = u => import(u).catch(e => { try { if (!sessionStorage.getItem('gpscavy-reimport')) { sessionStorage.setItem('gpscavy-reimport', '1'); location.reload(); } } catch (x) { } throw e; });
-const loadRunner = () => runnerMod || (runnerMod = safeImport('./runner.js?v=gpscavy-5a9ef66a5a'));
-const loadStudy = () => studyMod || (studyMod = safeImport('./study.js?v=gpscavy-5a9ef66a5a'));
+const loadRunner = () => runnerMod || (runnerMod = safeImport('./runner.js?v=gpscavy-969e1095da'));
+const loadStudy = () => studyMod || (studyMod = safeImport('./study.js?v=gpscavy-969e1095da'));
 
 // ---------- routing ----------
 export function parse(h) {
@@ -914,8 +914,8 @@ function openSettings() {
   const sgo = el.querySelector('#stOutGo'); if (sgo) sgo.onclick = () => { G.signOut(); refreshTopBtns(); toast('Signed out. Your progress is still on this device.'); openSettings(); };
   const cp = el.querySelector('#stCopy'); if (cp) cp.onclick = () => copyText(settings.syncUrl, 'Sync link copied. Paste it in GPSCavy on your other device: Settings, Connect sync.');
   const off = el.querySelector('#stOff'); if (off) off.onclick = () => { delete settings.syncUrl; UI.syncErr = false; saveSettings(); refreshTopBtns(); toast('Sync disconnected on this device. Your progress here is kept.'); openSettings(); };
-  el.querySelector('#stKey').onclick = () => safeImport('./ai.js?v=gpscavy-5a9ef66a5a').then(m => m.keySheet(openSettings));
-  safeImport('./ai.js?v=gpscavy-5a9ef66a5a').then(m => {
+  el.querySelector('#stKey').onclick = () => safeImport('./ai.js?v=gpscavy-969e1095da').then(m => m.keySheet(openSettings));
+  safeImport('./ai.js?v=gpscavy-969e1095da').then(m => {
     const a = m.summary(), t = el.querySelector('#stAi'), kd = el.querySelector('#stKeyDel'); if (!t) return;
     t.textContent = a.text; el.querySelector('#stKey').textContent = a.on ? 'Change AI or model' : 'Set up AI';
     kd.hidden = !a.on; kd.onclick = () => { m.removeKey(); toast('API key removed from this device.'); openSettings(); };
@@ -979,7 +979,7 @@ function aiTab() {
   t.addEventListener('pointerdown', e => { sy = e.clientY; moved = false; startTop = t.getBoundingClientRect().top + t.offsetHeight / 2; t.setPointerCapture && t.setPointerCapture(e.pointerId); });
   t.addEventListener('pointermove', e => { if (!sy) return; const d = e.clientY - sy; if (Math.abs(d) > 8) moved = true; if (moved) place((startTop + d) / innerHeight); });
   t.addEventListener('pointerup', e => { if (moved) { settings.aiY = parseFloat(t.style.top) / innerHeight; saveSettings(); } sy = 0; });
-  t.addEventListener('click', e => { if (moved) { moved = false; e.preventDefault(); return; } safeImport('./ai.js?v=gpscavy-5a9ef66a5a').then(m => m.menu(t)); });
+  t.addEventListener('click', e => { if (moved) { moved = false; e.preventDefault(); return; } safeImport('./ai.js?v=gpscavy-969e1095da').then(m => m.menu(t)); });
   document.body.appendChild(t);
   // Never cover content: look at what lies under the tab and slide it to the nearest clear spot in the margin.
   const FREE = 'html,body,#app,main,.pad,.notes,#nb,.ns,.nb,.stack';

@@ -1,7 +1,7 @@
 // Ask AI: a study assistant on every screen. Text, voice, or a photo / video, about anything or about the page you are on.
 // The student picks the AI company and model and uses their own API key. Keys stay on this device only (never in the
 // progress file, never synced); calls go straight from the device to that company.
-import { $, esc, sheet, closeSheet, sheetOpen, toast, lsGet, lsSet, lsDel } from './core.js?v=gpscavy-5a9ef66a5a';
+import { $, esc, sheet, closeSheet, sheetOpen, toast, lsGet, lsSet, lsDel } from './core.js?v=gpscavy-969e1095da';
 
 const AKEY = 'gpscavy-ai-v1';
 const GAPI = 'https://generativelanguage.googleapis.com/v1beta/models';

@@ -1,5 +1,7 @@
 // GPSCavy service worker. The version is stamped by tools/build.py from a hash of the shell and data files.
-const V = 'gpscavy-5a9ef66a5a';
+const V = 'gpscavy-969e1095da';
+// The sandbox website (…/gpsc-avy-staging/) shares the browser's cache storage with the real app: keep its files apart.
+const CV = (self.registration.scope.indexOf('-staging/') > -1 ? 'stg' : 'gps') + V.slice(3);
 const SHELL = ['./', 'index.html', 'js/app.js', 'js/core.js', 'js/runner.js', 'js/study.js', 'manifest.webmanifest',
   'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png', 'fonts/jakarta-latin.woff2', 'fonts/inter-latin.woff2', 'fonts/tiro-deva-subset.woff2', 'js/thought.js', 'js/ai.js', 'js/account.js', 'js/config.js', 'js/licence.js', 'js/vault.js',
   'data/index.json', 'data/meta.json', 'data/keys.json'];
@@ -8,13 +10,13 @@ self.addEventListener('install', e => {
   // Fetch every shell file with the version in the query, so a CDN edge still holding the previous
   // deploy cannot hand back a mix of old and new files. Modules are stored under their versioned URL
   // (the page asks for js/app.js?v=V and they import each other the same way); the rest under the plain URL.
-  e.waitUntil(caches.open(V).then(c => Promise.all(SHELL.map(u => fetch(u + (u.includes('?') ? '&' : '?') + 'v=' + V, { cache: 'reload' })
+  e.waitUntil(caches.open(CV).then(c => Promise.all(SHELL.map(u => fetch(u + (u.includes('?') ? '&' : '?') + 'v=' + V, { cache: 'reload' })
     .then(r => { if (!r.ok) throw new Error(u + ' ' + r.status); return c.put(u.endsWith('.js') ? u + '?v=' + V : u, r); })))).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', e => {
   // Take over at once (iOS often never closes the old page), then reload any open page that is not running:
   // a page stuck on a half-updated cache cannot answer the ping, so it is reloaded onto this complete cache.
-  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith('gpscavy-') && k !== V).map(k => caches.delete(k))))
+  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith(CV.slice(0, 8)) && k !== CV).map(k => caches.delete(k))))
     .then(() => self.clients.claim())
     .then(() => self.clients.matchAll({ type: 'window' }))
     .then(cs => Promise.all(cs.map(c => new Promise(done => {
@@ -49,7 +51,7 @@ self.addEventListener('fetch', e => {
     // Network first (4 s), so a launch always gets the newest page when online; the saved copy when offline.
     e.respondWith(new Promise(done => {
       let settled = false;
-      const fromCache = () => caches.open(V).then(c => c.match('index.html')).then(hit => hit || fetch(req));
+      const fromCache = () => caches.open(CV).then(c => c.match('index.html')).then(hit => hit || fetch(req));
       const t = setTimeout(() => { if (!settled) { settled = true; done(fromCache()); } }, 4000);
       fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' }).then(res => {
         if (settled) return; settled = true; clearTimeout(t);
@@ -61,13 +63,13 @@ self.addEventListener('fetch', e => {
   // Modules: exact versioned URL only, so a module from one version is never handed to another.
   if (path.startsWith('js/')) {
     e.respondWith(caches.match(req).then(hit => hit || fetch(req).then(res => {
-      if (res.ok && res.type === 'basic' && url.search.includes('v=' + V)) { const copy = res.clone(); caches.open(V).then(c => c.put(req, copy)); }
+      if (res.ok && res.type === 'basic' && url.search.includes('v=' + V)) { const copy = res.clone(); caches.open(CV).then(c => c.put(req, copy)); }
       return res;
     })));
     return;
   }
   // other shell files: cache first (versioned); data files: stale-while-revalidate
-  e.respondWith(caches.open(V).then(c => c.match(req, { ignoreSearch: true }).then(hit => {
+  e.respondWith(caches.open(CV).then(c => c.match(req, { ignoreSearch: true }).then(hit => {
     const net = fetch(new Request(req, { cache: 'no-cache' })).then(res => { if (res.ok && res.type === 'basic') c.put(req, res.clone()); return res; });
     if (hit) { if (path.startsWith('data/')) net.catch(() => { }); return hit; }
     return net;
