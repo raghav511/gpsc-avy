@@ -41,9 +41,13 @@ function parse(t) {
 }
 function merge(a, b) {
   var out = empty(), byId = {}, order = [];
+  // things a student cleared on purpose (a reset test, a removed attempt): kept, with the time, and never brought back
+  var gone = {};
+  [a.cleared || {}, b.cleared || {}].forEach(function (c) { Object.keys(c).forEach(function (k) { if (typeof c[k] === 'string' && (!gone[k] || gone[k] < c[k])) gone[k] = c[k]; }); });
+  out.cleared = gone;
   [a.attempts || [], b.attempts || []].forEach(function (list) {
     list.forEach(function (x) {
-      if (!x || !x.id || !x.set || !x.answers) return;
+      if (!x || !x.id || !x.set || !x.answers || gone['att:' + x.id]) return;
       var k = String(x.id), cur = byId[k];
       if (!cur) { byId[k] = x; order.push(k); }
       else if (String(x.submittedAt || '') > String(cur.submittedAt || '')) byId[k] = x;
@@ -56,6 +60,7 @@ function merge(a, b) {
     list.forEach(function (st) {
       if (!st || !st.set || st.phase !== 'exam') return;
       if (byId[st.set + '-' + st.startedAt]) return;            // already submitted
+      if (gone['prog:' + st.set + ':' + st.startedAt]) return;   // reset on purpose
       var t = Number(st.savedAt || st.startedAt || 0), cur = prog[st.set];
       if (!cur || t > Number(cur.savedAt || cur.startedAt || 0)) prog[st.set] = st;
     });
@@ -64,6 +69,9 @@ function merge(a, b) {
   var cts = {};
   [a.customTests || [], b.customTests || []].forEach(function (list) { list.forEach(function (c) { if (c && c.id && !cts[c.id]) cts[c.id] = c; }); });
   out.customTests = Object.keys(cts).map(function (k) { return cts[k]; });
+  var sv = {};
+  [a.saved || {}, b.saved || {}].forEach(function (m) { Object.keys(m).forEach(function (k) { var v = m[k]; if (v && v.at && (!sv[k] || sv[k].at < v.at)) sv[k] = v; }); });
+  out.saved = sv;
   out.summary = { attempts: out.attempts.length };
   return out;
 }

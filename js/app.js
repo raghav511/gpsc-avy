@@ -3,11 +3,11 @@ import {
   $, $$, SC, esc, fmt, day, daysLeft, idle, lsGet, lsSet, settings, saveSettings, getIndex, getMeta, getKeys, getPool, setInfo, IDX, KEYS,
   H, loadAttempts, saveAttempts, findAttempt, cleanAttempt, grade, tokens, listInProgress, loadState, stateKey, remaining, stats, weakest,
   DRILL_FOR, wrongList, customs, saveCustom, deleteCustom, toast, hideToast, sheet, closeSheet, sheetOpen, ICON, navHtml, topbar, bar, lvlChip,
-  SECS, SEC, LV, LVL, TOPIC_NAMES, prefetchSet, findDef, CKEY, lsDel, NOTE_TOPICS, hasNotes, topBtns, refreshTopBtns, UI, setSaved, isSaved, savedAll, mergeSaved
-} from './core.js?v=gpscavy-c9216f32da';
-import { today as thoughtToday } from './thought.js?v=gpscavy-c9216f32da';
-import * as G from './account.js?v=gpscavy-c9216f32da';
-import * as L from './licence.js?v=gpscavy-c9216f32da';
+  SECS, SEC, LV, LVL, TOPIC_NAMES, prefetchSet, findDef, CKEY, lsDel, NOTE_TOPICS, hasNotes, topBtns, refreshTopBtns, UI, setSaved, isSaved, savedAll, mergeSaved, cleared, addCleared, delCleared, mergeCleared, removeAttempts
+} from './core.js?v=gpscavy-a4ac0a318f';
+import { today as thoughtToday } from './thought.js?v=gpscavy-a4ac0a318f';
+import * as G from './account.js?v=gpscavy-a4ac0a318f';
+import * as L from './licence.js?v=gpscavy-a4ac0a318f';
 
 const app = $('#app');
 let cur = null;          // current screen {hash, unmount, onPop}
@@ -16,8 +16,8 @@ const scrolls = new Map();
 let runnerMod = null, studyMod = null;
 // A lazily loaded module can come from a newer app version than the one already running; if it does not fit, reload once.
 const safeImport = u => import(u).catch(e => { try { if (!sessionStorage.getItem('gpscavy-reimport')) { sessionStorage.setItem('gpscavy-reimport', '1'); location.reload(); } } catch (x) { } throw e; });
-const loadRunner = () => runnerMod || (runnerMod = safeImport('./runner.js?v=gpscavy-c9216f32da'));
-const loadStudy = () => studyMod || (studyMod = safeImport('./study.js?v=gpscavy-c9216f32da'));
+const loadRunner = () => runnerMod || (runnerMod = safeImport('./runner.js?v=gpscavy-a4ac0a318f'));
+const loadStudy = () => studyMod || (studyMod = safeImport('./study.js?v=gpscavy-a4ac0a318f'));
 
 // ---------- routing ----------
 export function parse(h) {
@@ -157,6 +157,34 @@ const enDrills = () => IDX.sets.filter(s => s.id === 'end1' || s.id === 'end2');
 const compDrills = () => IDX.sets.filter(s => s.id === 'end3' || s.id === 'end4' || s.id.startsWith('compd'));
 function attemptsOf(id) { return H.filter(a => a.set === id); }
 function bestOf(id) { const m = attemptsOf(id); if (!m.length) return null; return m.reduce((b, a) => (a.score > b.score ? a : b), m[0]); }
+const RESET_ICON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>';
+const resetBtn = (id, name) => '<button type="button" class="rstb" data-reset="' + esc(id) + '" aria-label="Reset ' + esc(name) + '">' + RESET_ICON + '</button>';
+// Reset a test from the list: clear the unfinished attempt, the scored attempts, or both. Undo for 10 seconds.
+function openReset(id) {
+  const info = setInfo(id) || { name: (findDef(id) || {}).name || id }, st = liveState(id), mine = H.filter(a => a.set === id);
+  const n = Object.keys((st && st.answers) || {}).length;
+  const el = sheet('<div class="shh"><h2>Reset ' + esc(info.name) + '?</h2><button type="button" class="ib" data-close aria-label="Close">' + ICON.close + '</button></div>' +
+    (st ? '<label class="chk"><input type="checkbox" id="rsProg" checked><span>Clear the unfinished attempt (' + n + (n === 1 ? ' answer' : ' answers') + ' so far)</span></label>' : '') +
+    (mine.length ? '<label class="chk"><input type="checkbox" id="rsAtt"' + (st ? '' : ' checked') + '><span>Remove ' + (mine.length === 1 ? 'your scored attempt (' + mine[0].score + '/' + mine[0].total + ')' : 'all ' + mine.length + ' scored attempts (best ' + Math.max.apply(null, mine.map(a => a.score)) + '/' + mine[0].total + ')') + ' from your progress</span></label>' : '') +
+    '<p class="sub">The test goes back to the start, ready to take fresh. This also applies on your other devices when they sync. You can undo for 10 seconds.</p>' +
+    '<button type="button" class="wide rst" id="rsGo">Reset</button><button type="button" class="wide sec" data-close>Cancel</button>', { label: 'Reset test' });
+  el.querySelector('#rsGo').onclick = () => {
+    const doProg = st && el.querySelector('#rsProg').checked, doAtt = mine.length && el.querySelector('#rsAtt') && el.querySelector('#rsAtt').checked;
+    if (!doProg && !doAtt) { closeSheet(); return; }
+    const keys = [];
+    if (doProg) { keys.push('prog:' + id + ':' + st.startedAt); lsDel(stateKey(id)); }
+    if (doAtt) { mine.forEach(a => keys.push('att:' + a.id)); removeAttempts(mine.map(a => a.id)); }
+    addCleared(keys);
+    closeSheet(true); cur = null; render(true);
+    window.dispatchEvent(new Event('gpsc-saved'));
+    toast(info.name + ' reset.', { label: 'Undo', fn: () => {
+      delCleared(keys);
+      if (doProg) lsSet(stateKey(id), st);
+      if (doAtt) { mine.forEach(a => { if (!H.some(x => x.id === a.id)) H.push(a); }); saveAttempts(); }
+      cur = null; render(true); window.dispatchEvent(new Event('gpsc-saved'));
+    } }, 10000);
+  };
+}
 function liveState(id) { const st = loadState(id); return st && st.phase === 'exam' ? st : null; }
 export function nextMock() {
   const ps = practice();
@@ -186,7 +214,8 @@ function setRow(s, opts) {
   if (opts.meta) meta = opts.meta(s, st, b) || meta;
   const badge = opts.badge ? opts.badge(s) : String(s.num || '');
   const badgeCls = opts.badgeCls || ('lvb-' + (s.level ? { easy: 'E', intermediate: 'I', hard: 'H' }[s.level] : 'I'));
-  return '<a class="row' + cls + '" href="#/test/' + s.id + '" data-pf="' + s.id + '"><span class="num ' + badgeCls + '">' + esc(badge) + '</span><span class="rt"><span class="ttl">' + esc(opts.name ? opts.name(s) : s.name) + '</span><span class="sub">' + esc(meta) + '</span></span>' + pill + '</a>';
+  const a = '<a class="row' + cls + '" href="#/test/' + s.id + '" data-pf="' + s.id + '"><span class="num ' + badgeCls + '">' + esc(badge) + '</span><span class="rt"><span class="ttl">' + esc(opts.name ? opts.name(s) : s.name) + '</span><span class="sub">' + esc(meta) + '</span></span>' + pill + '</a>';
+  return st || b ? '<div class="rwrap">' + a + resetBtn(s.id, s.name) + '</div>' : a;
 }
 
 // ---------- Home ----------
@@ -199,7 +228,7 @@ function homeScreen() {
     const total = info.n || (st.def ? st.def.refs.length : 0) || 60;
     const done = Object.keys(st.answers || {}).length;
     const left = st.mode === 'learn' ? 'learn mode' : fmt(remaining(st)) + ' left';
-    resume = '<a class="card resume" href="#/test/' + esc(st.set) + '" data-pf="' + esc(st.set) + '"><span class="ic ic-amb">' + ICON.play + '</span><span class="rt"><span class="ttl">Resume ' + esc(info.name) + '</span><span class="sub">' + done + ' of ' + total + ' answered · at question ' + ((st.cur || 0) + 1) + ' · ' + left + '</span>' + bar(done / total * 100, 'amb') + '</span></a>';
+    resume = '<div class="rwrap home-rw"><a class="card resume" href="#/test/' + esc(st.set) + '" data-pf="' + esc(st.set) + '"><span class="ic ic-amb">' + ICON.play + '</span><span class="rt"><span class="ttl">Resume ' + esc(info.name) + '</span><span class="sub">' + done + ' of ' + total + ' answered · at question ' + ((st.cur || 0) + 1) + ' · ' + left + '</span>' + bar(done / total * 100, 'amb') + '</span></a>' + resetBtn(st.set, info.name) + '</div>';
   }
   const tday = NOTE_TOPICS[Math.floor((Date.now() + 19800000) / 86400000) % NOTE_TOPICS.length];
   const tnames = { 1: 'Organon & Philosophy', 2: 'Materia Medica', 3: 'Pharmacy', 4: 'Repertory', 5: 'Anatomy & Physiology', 6: 'Pathology', 7: 'Practice of Medicine', 8: 'Obs, Gynae & Paeds', 9: 'Surgery', 10: 'Community & Forensic' };
@@ -261,6 +290,7 @@ function syncCard() {
     '<button type="button" class="wide grn" data-act="sync">' + ICON.sync + '<span>Sync progress</span></button></section>';
 }
 document.addEventListener('click', e => {
+  const rs = e.target.closest('[data-reset]'); if (rs) { e.preventDefault(); openReset(rs.dataset.reset); return; }
   const sv = e.target.closest('[data-save]');
   if (sv) {
     const ref = sv.dataset.save, on = !isSaved(ref);
@@ -275,6 +305,7 @@ document.addEventListener('click', e => {
   else if (act === 'up') openUpload();
   else if (act === 'sync') { if (settings.syncUrl || G.signedIn()) syncNow(false); else openSignIn(); }
   else if (act === 'signin') openSignIn();
+  else if (act === 'reset') openReset(b.dataset.id);
   else if (act === 'update') updateApp(b);
   else if (act === 'settings') openSettings();
   else if (act === 'meaning') { const m = $('#tmean'), on = m.hidden; m.hidden = !on; b.setAttribute('aria-expanded', on); b.textContent = on ? 'Hide meaning' : 'Meaning'; }
@@ -556,7 +587,7 @@ export function progressFile() {
     summary: { attempts: H.length, best },
     attempts: H.map(a => { const o = { id: a.id, set: a.set, setName: a.setName, score: a.score, total: a.total, wrong: a.wrong, skipped: a.skipped, usedMs: a.usedMs, auto: a.auto, submittedAt: a.submittedAt, answers: a.answers };
       if (a.flags) o.flags = a.flags; if (a.mode) o.mode = a.mode; if (a.set.startsWith('custom-')) o.def = a.def || findDef(a.set); return o; }),
-    inProgress, customTests: cs, saved: savedAll()
+    inProgress, customTests: cs, saved: savedAll(), cleared: cleared()
   };
 }
 const fname = () => 'GPSC-progress-' + new Date().toISOString().slice(0, 10) + '.json';
@@ -621,8 +652,10 @@ export function openUpload(given) {
   if (given) read(given); else pick();
 }
 export function planMerge(o) {
-  const plan = { add: [], replace: [], had: 0, unknown: 0, prog: [], customs: [], done: [] };
+  const plan = { add: [], replace: [], had: 0, unknown: 0, prog: [], customs: [], done: [], gone: [] };
   const ids = new Set(H.map(a => a.id));
+  const gone = Object.assign({}, cleared()); for (const [k, v] of Object.entries((o && o.cleared) || {})) if (typeof v === 'string' && (!gone[k] || gone[k] < v)) gone[k] = v;
+  plan.cleared = (o && o.cleared) || null;
   (Array.isArray(o.customTests) ? o.customTests : []).forEach(c => { if (c && c.id && Array.isArray(c.refs)) plan.customs.push(c); });
   // custom defs travel with attempts and in-progress states; make them resolvable before grading
   const tmp = customs(); let added = false;
@@ -630,6 +663,7 @@ export function planMerge(o) {
   plan.customs.forEach(addDef); o.attempts.forEach(a => a && addDef(a.def)); (o.inProgress || []).forEach(s => s && addDef(s.def));
   if (added) lsSet(CKEY, tmp);
   o.attempts.forEach(a => {
+    if (a && gone['att:' + a.id]) return; // removed on purpose here or on another device
     if (a && ids.has(String(a.id))) {
       const mine = H.find(x => x.id === String(a.id));
       if (mine && String(a.submittedAt || '') > String(mine.submittedAt || '')) { const c = cleanAttempt(a); if (c) { if (c.set.startsWith('custom-')) c.def = findDef(c.set); plan.replace.push(c); return; } }
@@ -642,14 +676,19 @@ export function planMerge(o) {
   (Array.isArray(o.inProgress) ? o.inProgress : []).forEach(st => {
     if (!st || st.phase !== 'exam' || !st.set || !(setInfo(st.set) || findDef(st.set))) return;
     if (ids.has(st.set + '-' + st.startedAt)) return; // already submitted somewhere
+    if (gone['prog:' + st.set + ':' + st.startedAt]) return; // reset on purpose
     const local = loadState(st.set);
     if (!local || local.phase !== 'exam' || (local.startedAt || 0) < (st.startedAt || 0)) plan.prog.push(st);
   });
   // a test in progress here that another device has since submitted
-  listInProgress().forEach(st => { if (ids.has(st.set + '-' + st.startedAt)) plan.done.push(st.set); });
+  listInProgress().forEach(st => { if (ids.has(st.set + '-' + st.startedAt) || gone['prog:' + st.set + ':' + st.startedAt]) plan.done.push(st.set); });
+  // attempts here that were removed on another device
+  H.forEach(a => { if (gone['att:' + a.id]) plan.gone.push(a.id); });
   return plan;
 }
 export function applyMerge(plan, what) {
+  if (plan.cleared) mergeCleared(plan.cleared);
+  if (plan.gone && plan.gone.length) removeAttempts(plan.gone);
   plan.add.forEach(a => H.push(a));
   (plan.replace || []).forEach(a => { const i = H.findIndex(x => x.id === a.id); if (i >= 0) H[i] = a; else H.push(a); });
   (plan.done || []).forEach(id => lsDel(stateKey(id)));
@@ -683,7 +722,7 @@ async function hubRound() {
   applyMerge(plan, 'sync');
   mergeSaved(o.progress.saved);
   settings.hubCount = (o.progress.attempts || []).length;
-  return { added: plan.add.length, fresh: plan.add.length + plan.replace.length + plan.prog.length + plan.done.length };
+  return { added: plan.add.length, fresh: plan.add.length + plan.replace.length + plan.prog.length + plan.done.length + (plan.gone || []).length };
 }
 // One sync round with the student's own Google Drive: read, merge in (nothing is ever removed), write back the union.
 async function driveRound() {
@@ -694,7 +733,7 @@ async function driveRound() {
     const plan = planMerge(data);
     applyMerge(plan, 'sync');
     mergeSaved(data.saved);
-    added = plan.add.length; fresh = plan.add.length + plan.replace.length + plan.prog.length + plan.done.length;
+    added = plan.add.length; fresh = plan.add.length + plan.replace.length + plan.prog.length + plan.done.length + (plan.gone || []).length;
   }
   await G.writeDrive(id, progressFile());
   return { added, fresh };
@@ -859,8 +898,8 @@ function openSettings() {
   const sgo = el.querySelector('#stOutGo'); if (sgo) sgo.onclick = () => { G.signOut(); refreshTopBtns(); toast('Signed out. Your progress is still on this device.'); openSettings(); };
   const cp = el.querySelector('#stCopy'); if (cp) cp.onclick = () => copyText(settings.syncUrl, 'Sync link copied. Paste it in GPSCavy on your other device: Settings, Connect sync.');
   const off = el.querySelector('#stOff'); if (off) off.onclick = () => { delete settings.syncUrl; UI.syncErr = false; saveSettings(); refreshTopBtns(); toast('Sync disconnected on this device. Your progress here is kept.'); openSettings(); };
-  el.querySelector('#stKey').onclick = () => safeImport('./ai.js?v=gpscavy-c9216f32da').then(m => m.keySheet(openSettings));
-  safeImport('./ai.js?v=gpscavy-c9216f32da').then(m => {
+  el.querySelector('#stKey').onclick = () => safeImport('./ai.js?v=gpscavy-a4ac0a318f').then(m => m.keySheet(openSettings));
+  safeImport('./ai.js?v=gpscavy-a4ac0a318f').then(m => {
     const a = m.summary(), t = el.querySelector('#stAi'), kd = el.querySelector('#stKeyDel'); if (!t) return;
     t.textContent = a.text; el.querySelector('#stKey').textContent = a.on ? 'Change AI or model' : 'Set up AI';
     kd.hidden = !a.on; kd.onclick = () => { m.removeKey(); toast('API key removed from this device.'); openSettings(); };
@@ -924,7 +963,7 @@ function aiTab() {
   t.addEventListener('pointerdown', e => { sy = e.clientY; moved = false; startTop = t.getBoundingClientRect().top + t.offsetHeight / 2; t.setPointerCapture && t.setPointerCapture(e.pointerId); });
   t.addEventListener('pointermove', e => { if (!sy) return; const d = e.clientY - sy; if (Math.abs(d) > 8) moved = true; if (moved) place((startTop + d) / innerHeight); });
   t.addEventListener('pointerup', e => { if (moved) { settings.aiY = parseFloat(t.style.top) / innerHeight; saveSettings(); } sy = 0; });
-  t.addEventListener('click', e => { if (moved) { moved = false; e.preventDefault(); return; } safeImport('./ai.js?v=gpscavy-c9216f32da').then(m => m.menu(t)); });
+  t.addEventListener('click', e => { if (moved) { moved = false; e.preventDefault(); return; } safeImport('./ai.js?v=gpscavy-a4ac0a318f').then(m => m.menu(t)); });
   document.body.appendChild(t);
   // Never cover content: look at what lies under the tab and slide it to the nearest clear spot in the margin.
   const FREE = 'html,body,#app,main,.pad,.notes,#nb,.ns,.nb,.stack';

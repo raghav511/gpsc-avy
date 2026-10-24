@@ -108,6 +108,14 @@ export function saveAttempts() { sortH(); lsSet(HKEY, H); }
 export const findAttempt = id => H.find(a => a.id === id) || null;
 export function addAttempt(a) { if (!findAttempt(a.id)) { H.push(a); saveAttempts(); } }
 export function removeAttempt(id) { H = H.filter(a => a.id !== id); saveAttempts(); }
+// Things the student cleared on purpose (a reset test in progress 'prog:<set>:<startedAt>', a removed attempt 'att:<id>'),
+// with the time, so a sync from another device or the sync folder does not bring them back.
+export const CLEARK = 'gpscavy-cleared-v1';
+export const cleared = () => lsGet(CLEARK, {}) || {};
+export function addCleared(keys) { const m = cleared(), t = new Date().toISOString(); keys.forEach(k => (m[k] = t)); lsSet(CLEARK, m); }
+export function delCleared(keys) { const m = cleared(); keys.forEach(k => delete m[k]); lsSet(CLEARK, m); }
+export function mergeCleared(o) { if (!o || typeof o !== 'object') return cleared(); const m = cleared(); for (const [k, v] of Object.entries(o)) if (typeof v === 'string' && (!m[k] || m[k] < v)) m[k] = v; lsSet(CLEARK, m); return m; }
+export function removeAttempts(ids) { const s = new Set(ids); H = H.filter(a => !s.has(a.id)); saveAttempts(); }
 
 // Per-question key tokens for a set: [{sec, ans, lvl, topic, cid, ref}]. Custom tests resolve through their source refs.
 export function tokens(setId) {

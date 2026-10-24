@@ -3,8 +3,8 @@
 import {
   $, SC, esc, fmt, day, idle, getIndex, getKeys, getSet, setInfo, KEYS, H, findAttempt, addAttempt, removeAttempt, grade, tokens,
   loadState, stateKey, lsSet, lsDel, remaining, toast, hideToast, sheet, closeSheet, ICON, topbar, bar, lvlChip, navHtml,
-  SECS, SEC, LV, LVL, L5, TOPIC_NAMES, customs, saveCustom, findDef, NOTE_TOPICS, hasNotes, saveBtn
-} from './core.js?v=gpscavy-c9216f32da';
+  SECS, SEC, LV, LVL, L5, TOPIC_NAMES, customs, saveCustom, findDef, NOTE_TOPICS, hasNotes, saveBtn, addCleared, delCleared
+} from './core.js?v=gpscavy-a4ac0a318f';
 
 const app = $('#app');
 let API = null;
@@ -270,11 +270,12 @@ function runner(set, S, me) {
       if (exam) snap.remainMs = Math.max(0, S.endAt - Date.now()); else snap.spentMs = spent();
       done = true; clearInterval(tick); clearTimeout(saveT); palClose(); closeSheet(true);
       lsDel(stateKey(S.set));
+      addCleared(['prog:' + S.set + ':' + S.startedAt]); // so a sync does not bring it back
       window.dispatchEvent(new Event('gpsc-saved'));
       allowLeave = true;
       let shown = false;
       const tell = () => { if (shown) return; shown = true; window.removeEventListener('hashchange', later);
-        toast('Test reset. This attempt was not saved.', { label: 'Undo', fn: () => { lsSet(stateKey(snap.set), snap); API.go('#/test/' + snap.set, true); toast('Back in the test, at question ' + (snap.cur + 1)); } }, 10000); };
+        toast('Test reset. This attempt was not saved.', { label: 'Undo', fn: () => { delCleared(['prog:' + snap.set + ':' + snap.startedAt]); lsSet(stateKey(snap.set), snap); API.go('#/test/' + snap.set, true); toast('Back in the test, at question ' + (snap.cur + 1)); } }, 10000); };
       const later = () => setTimeout(tell, 60);
       window.addEventListener('hashchange', later);
       setTimeout(tell, 700);
