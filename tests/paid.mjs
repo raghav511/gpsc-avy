@@ -18,7 +18,7 @@ const browser = await PW[engine].launch(engine === 'chromium' && fs.existsSync('
 const CID = '1234567890-testclient.apps.googleusercontent.com', LURL = 'https://script.google.com/macros/s/LICENCE-TEST/exec';
 const OWNER = 'owner@gmail.com';
 const tokens = {};
-const LIC = licenceSim({ owner: OWNER, clientId: CID, tokens });
+const LIC = licenceSim({ owner: OWNER, clientId: CID, tokens, contentKey: process.env.CONTENT_KEY || '' });
 const H = { 'access-control-allow-origin': '*' };
 
 async function device(name) {

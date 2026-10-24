@@ -1,9 +1,10 @@
 // Paid access. The owner's script (tools/licence/Code.gs, in the owner's Google Sheet) is the only judge of who has
 // paid, which plans exist and what is free; the app keeps the last answer so it also works offline.
 // Off (everything free, no pay screen) until LICENCE_URL and Google sign-in are both set up.
-import { $, esc, day, lsGet, lsSet, lsDel, toast, sheet, closeSheet, ICON, topbar, navHtml, IDX, META, getIndex, getMeta } from './core.js?v=gpscavy-450e075df7';
-import { LICENCE_URL } from './config.js?v=gpscavy-450e075df7';
-import * as G from './account.js?v=gpscavy-450e075df7';
+import { $, esc, day, lsGet, lsSet, lsDel, toast, sheet, closeSheet, ICON, topbar, navHtml, IDX, META, getIndex, getMeta } from './core.js?v=gpscavy-5a9ef66a5a';
+import { LICENCE_URL } from './config.js?v=gpscavy-5a9ef66a5a';
+import * as G from './account.js?v=gpscavy-5a9ef66a5a';
+import { forgetKeys } from './vault.js?v=gpscavy-5a9ef66a5a';
 
 const LKEY = 'gpscavy-licence';
 export const enabled = () => !!LICENCE_URL && G.configured() && !window.__gpscTest; // the test suites check screens, not payment
@@ -40,7 +41,7 @@ async function call(body, anon) {
   if (!o.ok) { const e = new Error(o.error || 'error'); e.code = o.error; throw e; }
   return o;
 }
-function keep(o) { const l = { email: o.email, status: o.status, owner: !!o.owner, plan: o.plan || '', expires: o.expires || '', requested: o.requested || '', plans: o.plans || [], free: o.free || [], upi: o.upi || '', upiName: o.upiName || '', checkedAt: Date.now() }; lsSet(LKEY, l); return l; }
+function keep(o) { forgetKeys(); const l = { keys: o.keys || {}, email: o.email, status: o.status, owner: !!o.owner, plan: o.plan || '', expires: o.expires || '', requested: o.requested || '', plans: o.plans || [], free: o.free || [], upi: o.upi || '', upiName: o.upiName || '', checkedAt: Date.now() }; lsSet(LKEY, l); return l; }
 // ask the owner's script for the latest (quietly; the last answer stays when offline or signed out of Google)
 export async function refresh() {
   if (!enabled()) return lic();
@@ -93,7 +94,7 @@ export async function payScreen(app, opts) {
     const chk = $('#pyChk'); if (chk) chk.onclick = async () => { chk.disabled = true; chk.textContent = 'Checking…'; await refresh(); if (hasPaid()) { toast('Approved. Welcome to GPSCavy.'); location.hash = back; } else draw(lic()); };
     if (!l || !$('#pySend') && !$('#pyRedeem')) return;
     let plan = (l.plans || [])[0];
-    const qr = () => { const box = $('#pyQr'); if (!box || !plan) return; const link = upiLink(l, plan); $('#pyApp').href = link; import('./qr.js?v=gpscavy-450e075df7').then(m => { const q = m.default(0, 'M'); q.addData(link); q.make(); box.innerHTML = q.createSvgTag({ cellSize: 4, margin: 2, scalable: true }); }).catch(() => { box.textContent = ''; }); };
+    const qr = () => { const box = $('#pyQr'); if (!box || !plan) return; const link = upiLink(l, plan); $('#pyApp').href = link; import('./qr.js?v=gpscavy-5a9ef66a5a').then(m => { const q = m.default(0, 'M'); q.addData(link); q.make(); box.innerHTML = q.createSvgTag({ cellSize: 4, margin: 2, scalable: true }); }).catch(() => { box.textContent = ''; }); };
     document.querySelectorAll('.plan').forEach(b => b.onclick = () => { document.querySelectorAll('.plan').forEach(x => { x.classList.toggle('on', x === b); x.setAttribute('aria-checked', x === b); }); plan = l.plans[+b.dataset.i]; qr(); });
     qr();
     const cp = $('#pyCopy'); if (cp) cp.onclick = () => { try { navigator.clipboard.writeText(l.upi).then(() => toast('UPI ID copied')); } catch (e) { } };

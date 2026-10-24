@@ -2,6 +2,7 @@
 // same logic the owner deploys. tokens: { token: email } stands in for Google's tokeninfo.
 import fs from 'node:fs';
 import vm from 'node:vm';
+import crypto from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 const ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
@@ -27,12 +28,19 @@ export function licenceSim(conf) {
     SpreadsheetApp: { getActiveSpreadsheet: () => ss },
     LockService: { getScriptLock: () => ({ waitLock() { }, releaseLock() { } }) },
     UrlFetchApp: { fetch: u => { const t = decodeURIComponent(u.split('access_token=')[1]); const e = tokens[t]; return { getResponseCode: () => e ? 200 : 400, getContentText: () => JSON.stringify(e ? { aud: conf.clientId, email: e, email_verified: 'true' } : { error: 'invalid' }) }; } },
+    Utilities: {
+      base64Decode: s => Array.from(Buffer.from(s, 'base64')).map(b => b > 127 ? b - 256 : b),
+      base64Encode: b => Buffer.from(b.map(x => x & 255)).toString('base64'),
+      newBlob: s => ({ getBytes: () => Array.from(Buffer.from(s, 'utf8')) }),
+      computeHmacSha256Signature: (v, k) => Array.from(crypto.createHmac('sha256', Buffer.from(k.map(x => x & 255))).update(Buffer.from(v.map(x => x & 255))).digest()).map(b => b > 127 ? b - 256 : b)
+    },
     ContentService: { createTextOutput: t => ({ setMimeType() { return t; } }), MimeType: { JSON: 1 } },
     Date, Math, JSON, String
   };
   let src = fs.readFileSync(path.join(ROOT, 'tools/licence/Code.gs'), 'utf8')
     .replace("var OWNER_EMAIL = 'PASTE_YOUR_GMAIL';", "var OWNER_EMAIL = " + JSON.stringify(conf.owner) + ";")
     .replace(/var CLIENT_ID = '[^']*';/, "var CLIENT_ID = " + JSON.stringify(conf.clientId) + ";")
+    .replace("var CONTENT_KEY = 'PASTE_CONTENT_KEY';", "var CONTENT_KEY = " + JSON.stringify(conf.contentKey || '') + ";")
     .replace("var UPI_ID = 'PASTE_YOUR_UPI_ID';", "var UPI_ID = 'owner@okbank';").replace("var UPI_NAME = 'PASTE_NAME_SHOWN_IN_UPI';", "var UPI_NAME = 'GPSCavy Owner';");
   vm.createContext(ctx); vm.runInContext(src, ctx);
   ctx.setup();

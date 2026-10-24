@@ -1,6 +1,8 @@
 // GPSCavy core: storage, data loading, grading, router helpers, small UI primitives.
 // Storage keys are shared with the GPSC CBRT mock-exam page (gpsc-cbrt-*), so a progress file moves between them.
 
+import { fetchText } from './vault.js?v=gpscavy-5a9ef66a5a';
+
 export const HKEY = 'gpsc-cbrt-history-v1';
 export const CKEY = 'gpscavy-custom-v1';
 export const SKEY = 'gpscavy-settings-v1';
@@ -45,7 +47,7 @@ export function saveSettings() { lsSet(SKEY, settings); }
 const cache = new Map();
 function getJSON(url) {
   if (!cache.has(url)) {
-    const p = fetch(url).then(r => { if (!r.ok) throw new Error(url + ' ' + r.status); return r.json(); });
+    const p = fetchText(url).then(t => JSON.parse(t));
     p.catch(() => cache.delete(url));
     cache.set(url, p);
   }
@@ -61,7 +63,7 @@ export const getMeta = () => getJSON('data/meta.json').then(d => (META = d));
 export const getKeys = () => getJSON('data/keys.json').then(d => (KEYS = d));
 export const getPool = sec => getJSON('data/pool/' + sec + '.json');
 export const getSearch = () => getJSON('data/search.json');
-export const getText = url => { if (!cache.has(url)) { const p = fetch(url).then(r => { if (!r.ok) throw new Error(url); return r.text(); }); p.catch(() => cache.delete(url)); cache.set(url, p); } return cache.get(url); };
+export const getText = url => { if (!cache.has(url)) { const p = fetchText(url); p.catch(() => cache.delete(url)); cache.set(url, p); } return cache.get(url); };
 export const setInfo = id => byId.get(id) || null;
 
 // A set by id: a file in data/sets, or a custom test rebuilt from the pools.

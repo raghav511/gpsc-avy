@@ -1,8 +1,9 @@
 // Study: library with subject chips, notes reader with quick-check quizzes, playbooks, PDFs, Revise incorrect, past papers, search.
+import { fetchBlob } from './vault.js?v=gpscavy-5a9ef66a5a';
 import {
   $, $$, SC, esc, day, idle, getIndex, getMeta, getKeys, getSet, getText, getSearch, setInfo, IDX, META, H, wrongList, tokens,
   settings, saveSettings, saveCustom, toast, sheet, ICON, topbar, navHtml, lvlChip, SEC, TOPIC_NAMES, loadAttempts, NOTE_TOPICS, hasNotes, topBtns, saveBtn, savedList
-} from './core.js?v=gpscavy-450e075df7';
+} from './core.js?v=gpscavy-5a9ef66a5a';
 
 const app = $('#app');
 let API = null;
@@ -98,7 +99,7 @@ export async function sharePdf(f) {
   try {
     if (navigator.canShare) {
       toast('Preparing the PDF…');
-      const blob = await (await fetch(url)).blob();
+      const blob = await fetchBlob(url, 'application/pdf');
       const file = new File([blob], f, { type: 'application/pdf' });
       if (navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: f.replace(/\.pdf$/, '').replace(/-/g, ' ') }); return; }
     }
@@ -185,7 +186,7 @@ async function notesScreen(t, r, me) {
     '<main class="notes" id="nb" style="--fs:' + fs + '"><p class="sub pad">Loading notes…</p></main>' +
     '<footer class="nfoot"><button type="button" class="btn sec" id="nNext">Next section</button><a class="btn vio" href="#/test/quiz-topic' + t + '">Quiz me on Topic ' + t + '</a></footer>';
   let html;
-  try { html = await getText('data/notes/topic' + t + '.html'); } catch (e) { $('#nb').innerHTML = '<div class="card"><p>These notes could not be loaded. Check your connection and try again.</p></div>'; return; }
+  try { html = await getText('data/notes/topic' + t + '.html'); } catch (e) { if (e && e.code === 'locked') { API.go('#/pay?back=' + encodeURIComponent(location.hash), true); return; } $('#nb').innerHTML = '<div class="card"><p>These notes could not be loaded. Check your connection and try again.</p></div>'; return; }
   if (me.hash !== location.hash) return;
   const nb = $('#nb');
   nb.innerHTML = html;
@@ -235,7 +236,7 @@ async function notesScreen(t, r, me) {
   me.unmount = () => { scEl.removeEventListener('scroll', onScroll); clearTimeout(saveT); saveSettings(); };
   $('#nFs').onclick = () => { settings.fs = settings.fs >= 1.25 ? 1 : (settings.fs || 1) >= 1.12 ? 1.25 : 1.12; nb.style.setProperty('--fs', settings.fs); saveSettings(); };
   $('#nPdf').onclick = () => pdfSheet(t);
-  $('#nShare').onclick = () => import('./runner.js?v=gpscavy-450e075df7').then(m => m.shareLink(location.href.split('#')[0] + '#/study/topic' + t, 'Topic ' + t + ' notes: ' + n.title));
+  $('#nShare').onclick = () => import('./runner.js?v=gpscavy-5a9ef66a5a').then(m => m.shareLink(location.href.split('#')[0] + '#/study/topic' + t, 'Topic ' + t + ' notes: ' + n.title));
   if (r.q.h) requestAnimationFrame(() => { const el = document.getElementById(r.q.h); if (el) { const s = el.closest('.ns'); if (s) s.classList.remove('closed'); SC().scrollTo(0, el.getBoundingClientRect().top + SC().scrollTop - tocH()); } });
 }
 function openZoom(img) {
@@ -270,7 +271,7 @@ async function playbookScreen(name, r, me) {
     '<nav class="toc" aria-label="Contents"><div class="tocs">' + secs.map(s => '<a href="#pb-' + s[0] + '" data-sec="pb-' + s[0] + '">' + esc(s[1].split(/[,:]/)[0]) + '</a>').join('') + (pb.secs ? '<a href="#/study/playbook/english" class="full">Full playbook</a>' : '') + '</div></nav>' +
     '<main class="pb" id="pb"><p class="sub pad">Loading…</p></main>' + navHtml('study');
   let html;
-  try { html = await getText('data/playbooks/' + pb.file + '.html'); } catch (e) { $('#pb').innerHTML = '<div class="card"><p>The playbook could not be loaded.</p></div>'; return; }
+  try { html = await getText('data/playbooks/' + pb.file + '.html'); } catch (e) { if (e && e.code === 'locked') { API.go('#/pay?back=' + encodeURIComponent(location.hash), true); return; } $('#pb').innerHTML = '<div class="card"><p>The playbook could not be loaded.</p></div>'; return; }
   if (me.hash !== location.hash) return;
   const box = $('#pb');
   box.innerHTML = html;

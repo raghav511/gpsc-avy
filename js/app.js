@@ -4,10 +4,11 @@ import {
   H, loadAttempts, saveAttempts, findAttempt, cleanAttempt, grade, tokens, listInProgress, loadState, stateKey, remaining, stats, weakest,
   DRILL_FOR, wrongList, customs, saveCustom, deleteCustom, toast, hideToast, sheet, closeSheet, sheetOpen, ICON, navHtml, topbar, bar, lvlChip,
   SECS, SEC, LV, LVL, TOPIC_NAMES, prefetchSet, findDef, CKEY, lsDel, NOTE_TOPICS, hasNotes, topBtns, refreshTopBtns, UI, setSaved, isSaved, savedAll, mergeSaved, cleared, addCleared, delCleared, mergeCleared, removeAttempts
-} from './core.js?v=gpscavy-450e075df7';
-import { today as thoughtToday } from './thought.js?v=gpscavy-450e075df7';
-import * as G from './account.js?v=gpscavy-450e075df7';
-import * as L from './licence.js?v=gpscavy-450e075df7';
+} from './core.js?v=gpscavy-5a9ef66a5a';
+import { today as thoughtToday } from './thought.js?v=gpscavy-5a9ef66a5a';
+import * as G from './account.js?v=gpscavy-5a9ef66a5a';
+import { fetchBlob } from './vault.js?v=gpscavy-5a9ef66a5a';
+import * as L from './licence.js?v=gpscavy-5a9ef66a5a';
 
 const app = $('#app');
 let cur = null;          // current screen {hash, unmount, onPop}
@@ -16,8 +17,8 @@ const scrolls = new Map();
 let runnerMod = null, studyMod = null;
 // A lazily loaded module can come from a newer app version than the one already running; if it does not fit, reload once.
 const safeImport = u => import(u).catch(e => { try { if (!sessionStorage.getItem('gpscavy-reimport')) { sessionStorage.setItem('gpscavy-reimport', '1'); location.reload(); } } catch (x) { } throw e; });
-const loadRunner = () => runnerMod || (runnerMod = safeImport('./runner.js?v=gpscavy-450e075df7'));
-const loadStudy = () => studyMod || (studyMod = safeImport('./study.js?v=gpscavy-450e075df7'));
+const loadRunner = () => runnerMod || (runnerMod = safeImport('./runner.js?v=gpscavy-5a9ef66a5a'));
+const loadStudy = () => studyMod || (studyMod = safeImport('./study.js?v=gpscavy-5a9ef66a5a'));
 
 // ---------- routing ----------
 export function parse(h) {
@@ -108,6 +109,7 @@ async function render(restore) {
     else homeScreen(r);
   } catch (e) {
     console.warn(e);
+    if (e && e.code === 'locked') { await L.payScreen(app, { locked: true, back: r.hash, title: 'Unlock this' }); return; }
     app.innerHTML = topbar('Not found', '') + '<main class="pad"><div class="card"><p>This page could not be opened. ' + esc(e.message || '') + '</p><p><a class="btn pri" href="#/">Go home</a></p></div></main>' + navHtml('');
   }
   if (me !== cur) return;
@@ -128,6 +130,20 @@ document.addEventListener('click', e => {
   const m = /Topic-(\d+)-/.exec(f), item = m ? 'notes:' + m[1] : 'pdfs';
   if (!L.canOpen(item)) { e.preventDefault(); e.stopPropagation(); closeSheet(true); go('#/pay?back=' + encodeURIComponent(location.hash)); }
 }, true);
+// PDFs are stored scrambled on the website: fetch, unscramble, then open or save the real file
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[href*="content/pdfs/"]'); if (!a || e.defaultPrevented) return;
+  e.preventDefault();
+  const url = a.getAttribute('href'), name = decodeURIComponent(url.split('/').pop()), save = a.hasAttribute('download');
+  const win = save ? null : window.open('', '_blank'); // opened now, while the tap still counts, so it is not blocked
+  toast('Preparing the PDF…', null, 8000);
+  fetchBlob(url, 'application/pdf').then(b => {
+    const u = URL.createObjectURL(b);
+    if (save) { const x = document.createElement('a'); x.href = u; x.download = name; document.body.appendChild(x); x.click(); x.remove(); }
+    else if (win) win.location.href = u; else location.href = u;
+    hideToast(); setTimeout(() => URL.revokeObjectURL(u), 120000);
+  }).catch(err => { if (win) win.close(); if (err && err.code === 'locked') go('#/pay?back=' + encodeURIComponent(location.hash)); else toast('Could not open the PDF. Check your connection and try again.', null, 5000); });
+});
 export const api = { go, back, parse, parentOf, testParent, render, openDownload, openUpload, loadRunner, loadStudy };
 
 // Links: same-document hash links navigate through the router so every screen gets a history entry.
@@ -898,8 +914,8 @@ function openSettings() {
   const sgo = el.querySelector('#stOutGo'); if (sgo) sgo.onclick = () => { G.signOut(); refreshTopBtns(); toast('Signed out. Your progress is still on this device.'); openSettings(); };
   const cp = el.querySelector('#stCopy'); if (cp) cp.onclick = () => copyText(settings.syncUrl, 'Sync link copied. Paste it in GPSCavy on your other device: Settings, Connect sync.');
   const off = el.querySelector('#stOff'); if (off) off.onclick = () => { delete settings.syncUrl; UI.syncErr = false; saveSettings(); refreshTopBtns(); toast('Sync disconnected on this device. Your progress here is kept.'); openSettings(); };
-  el.querySelector('#stKey').onclick = () => safeImport('./ai.js?v=gpscavy-450e075df7').then(m => m.keySheet(openSettings));
-  safeImport('./ai.js?v=gpscavy-450e075df7').then(m => {
+  el.querySelector('#stKey').onclick = () => safeImport('./ai.js?v=gpscavy-5a9ef66a5a').then(m => m.keySheet(openSettings));
+  safeImport('./ai.js?v=gpscavy-5a9ef66a5a').then(m => {
     const a = m.summary(), t = el.querySelector('#stAi'), kd = el.querySelector('#stKeyDel'); if (!t) return;
     t.textContent = a.text; el.querySelector('#stKey').textContent = a.on ? 'Change AI or model' : 'Set up AI';
     kd.hidden = !a.on; kd.onclick = () => { m.removeKey(); toast('API key removed from this device.'); openSettings(); };
@@ -963,7 +979,7 @@ function aiTab() {
   t.addEventListener('pointerdown', e => { sy = e.clientY; moved = false; startTop = t.getBoundingClientRect().top + t.offsetHeight / 2; t.setPointerCapture && t.setPointerCapture(e.pointerId); });
   t.addEventListener('pointermove', e => { if (!sy) return; const d = e.clientY - sy; if (Math.abs(d) > 8) moved = true; if (moved) place((startTop + d) / innerHeight); });
   t.addEventListener('pointerup', e => { if (moved) { settings.aiY = parseFloat(t.style.top) / innerHeight; saveSettings(); } sy = 0; });
-  t.addEventListener('click', e => { if (moved) { moved = false; e.preventDefault(); return; } safeImport('./ai.js?v=gpscavy-450e075df7').then(m => m.menu(t)); });
+  t.addEventListener('click', e => { if (moved) { moved = false; e.preventDefault(); return; } safeImport('./ai.js?v=gpscavy-5a9ef66a5a').then(m => m.menu(t)); });
   document.body.appendChild(t);
   // Never cover content: look at what lies under the tab and slide it to the nearest clear spot in the margin.
   const FREE = 'html,body,#app,main,.pad,.notes,#nb,.ns,.nb,.stack';

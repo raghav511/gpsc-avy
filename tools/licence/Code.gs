@@ -12,6 +12,7 @@ var OWNER_EMAIL = 'PASTE_YOUR_GMAIL';                          // you: always ha
 var CLIENT_ID = '338210814289-e4hu00vli2fiov21nb0t5ikqs2li7iiv.apps.googleusercontent.com';                    // the app's Google sign-in client ID (…apps.googleusercontent.com)
 var UPI_ID = 'PASTE_YOUR_UPI_ID';                               // for example yourname@okhdfcbank
 var UPI_NAME = 'PASTE_NAME_SHOWN_IN_UPI';                       // the payee name people see in their UPI app
+var CONTENT_KEY = 'PASTE_CONTENT_KEY';                          // the master key that unlocks the questions and notes (Claude sends it to you; keep it secret)
 
 var T = { users: 'Users', vouchers: 'Vouchers', plans: 'Plans', settings: 'Settings' };
 var COLS = {
@@ -54,7 +55,7 @@ function whoIs(token) {
 }
 
 function handle(b, email) {
-  if (!email && b.action === 'status') return { ok: true, email: '', status: 'none', owner: false, plans: plans(), free: free(), upi: UPI_ID, upiName: UPI_NAME }; // what anyone may see before signing in
+  if (!email && b.action === 'status') return { ok: true, email: '', status: 'none', owner: false, plans: plans(), free: free(), keys: keysFor(false), upi: UPI_ID, upiName: UPI_NAME }; // what anyone may see before signing in
   if (!email) return { ok: false, error: 'signin' };
   var owner = email === OWNER_EMAIL.toLowerCase();
   var a = b.action;
@@ -86,6 +87,15 @@ function plans() { return rows(T.plans).filter(function (x) { return String(x.r[
 function setting(k) { var s = rows(T.settings); for (var i = 0; i < s.length; i++) if (s[i].r[0] === k) return s[i]; return null; }
 function free() { var s = setting('free'); try { var v = JSON.parse(s ? s.r[1] : '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
 
+// Keys for the scrambled content: everything for someone with access, only the free picks for everyone else.
+// Each item's key is HMAC-SHA256(master key, item name), so the master key itself only goes to people with access.
+function keysFor(all) {
+  if (!CONTENT_KEY || CONTENT_KEY.indexOf('PASTE') === 0) return {};
+  if (all) return { '*': CONTENT_KEY };
+  var k = Utilities.base64Decode(CONTENT_KEY), out = {};
+  free().forEach(function (item) { out[item] = Utilities.base64Encode(Utilities.computeHmacSha256Signature(Utilities.newBlob(item).getBytes(), k)); });
+  return out;
+}
 function state(u) {
   if (!u) return { status: 'none' };
   var st = String(u.r[U.status] || 'pending').toLowerCase(), exp = u.r[U.expires];
@@ -96,6 +106,7 @@ function state(u) {
 function status(email, owner) {
   var s = owner ? { status: 'paid', how: 'owner', plan: '', expires: '' } : state(findUser(email));
   s.ok = true; s.email = email; s.owner = owner; s.plans = plans(); s.free = free(); s.upi = UPI_ID; s.upiName = UPI_NAME;
+  s.keys = keysFor(s.status === 'paid');
   return s;
 }
 function request(email, b) {
