@@ -270,14 +270,15 @@ def source_of(q):
 # 50 drills of 10 questions per subject: 13 easy, 25 intermediate, 12 hard (about 25/50/25), each drawing first on
 # questions of its own level. The bank (content/data/bank/<sec>.json) holds questions written for the drills; the
 # questions already in the practice sets are used as well (never changed), so the drills cover the whole bank.
-BANK_DRILLS = {'gram': ('grd', 'Grammar drill', 'English Grammar', 'Grammar'), 'lr': ('lrd', 'Reasoning drill', 'Logical Reasoning', 'Reasoning')}
+BANK_DRILLS = {'gram': ('grd', 'Grammar drill', 'English Grammar', 'Grammar', 12), 'lr': ('lrd', 'Reasoning drill', 'Logical Reasoning', 'Reasoning', 12),
+               'gk': ('gkq', 'GK drill', 'General Knowledge', 'GK', 8)}
 DRILL_PLAN = ['E'] * 13 + ['I'] * 25 + ['H'] * 12
 LVNAME = {'E': 'easy', 'I': 'intermediate', 'H': 'hard'}
 
 
 def bank_drills(sets):
     out = []
-    for sec, (prefix, title, long_, short) in BANK_DRILLS.items():
+    for sec, (prefix, title, long_, short, mins) in BANK_DRILLS.items():
         seen, cands = set(), []
         f = os.path.join(C, 'data', 'bank', sec + '.json')
         bank = json.load(open(f, encoding='utf-8')) if os.path.exists(f) else []
@@ -308,9 +309,57 @@ def bank_drills(sets):
                 nq['sec'] = sec
                 nq.setdefault('lvl', 'I')
                 qs.append(nq)
-            out.append({'id': '%s%d' % (prefix, i), 'set': '%s %d' % (title, i), 'short': LVNAME[lv].capitalize(), 'minutes': 12,
+            out.append({'id': '%s%d' % (prefix, i), 'set': '%s %d' % (title, i), 'short': LVNAME[lv].capitalize(), 'minutes': mins,
                         'drill': True, 'group': sec, 'dlevel': LVNAME[lv],
                         'sections': [{'id': sec, 'name': long_, 'short': short, 'marks': len(qs)}], 'passages': {}, 'questions': qs})
+    return out + comp_drills(sets)
+
+
+# comprehension drills: two passages of 5 questions each; a drill's level is its passages' level
+def comp_drills(sets):
+    LV = {'E': 0, 'I': 1, 'H': 2}
+    seen, cands = set(), []
+    f = os.path.join(C, 'data', 'bank', 'comp.json')
+    for p in (json.load(open(f, encoding='utf-8')) if os.path.exists(f) else []):
+        cands.append((p['paras'], p['questions']))
+    for s in sets:
+        if s.get('hidden') or s.get('derived'):
+            continue
+        for k, p in s['passages'].items():
+            qs = [q for q in s['questions'] if q.get('passage') == k]
+            if len(qs) >= 4:
+                cands.append((p['paras'], qs))
+    byl = {'E': [], 'I': [], 'H': []}
+    for paras, qs in cands:
+        key = norm(' '.join(paras))[:200]
+        if key in seen:
+            continue
+        seen.add(key)
+        qs = qs[:5]
+        avg = sum(LV.get(q.get('lvl') or 'I', 1) for q in qs) / len(qs)
+        byl['E' if avg < 0.75 else 'H' if avg > 1.25 else 'I'].append((paras, qs))
+    rnd = random.Random('gpscavy-comp')
+    for v in byl.values():
+        rnd.shuffle(v)
+    out = []
+    for i, lv in enumerate(DRILL_PLAN, 1):
+        pick = []
+        for l2 in {'E': 'EIH', 'I': 'IEH', 'H': 'HIE'}[lv]:
+            while len(pick) < 2 and byl[l2]:
+                pick.append(byl[l2].pop())
+        if len(pick) < 2:
+            break
+        qs, passages = [], {}
+        for pi, (paras, pq) in enumerate(pick, 1):
+            passages['p%d' % pi] = {'title': 'Passage %d' % pi, 'paras': paras}
+            for q in pq:
+                nq = {k: v for k, v in q.items() if k in ('q', 'opts', 'ans', 'why', 'lvl', 'src')}
+                nq.update({'n': len(qs) + 1, 'sec': 'comp', 'passage': 'p%d' % pi})
+                nq.setdefault('lvl', 'I')
+                qs.append(nq)
+        out.append({'id': 'cpd%d' % i, 'set': 'Comprehension drill %d' % i, 'short': LVNAME[lv].capitalize(), 'minutes': 12,
+                    'drill': True, 'group': 'comp', 'dlevel': LVNAME[lv],
+                    'sections': [{'id': 'comp', 'name': 'English Comprehension', 'short': 'Comprehension', 'marks': len(qs)}], 'passages': passages, 'questions': qs})
     return out
 
 

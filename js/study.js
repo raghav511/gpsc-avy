@@ -1,14 +1,14 @@
 // Study: library with subject chips, notes reader with quick-check quizzes, playbooks, PDFs, Revise incorrect, past papers, search.
-import { fetchBlob } from './vault.js?v=gpscavy-9efef9e283';
+import { fetchBlob } from './vault.js?v=gpscavy-20d1f73cfa';
 import {
   $, $$, SC, esc, day, idle, getIndex, getMeta, getKeys, getSet, getText, getSearch, setInfo, IDX, META, H, wrongList, tokens,
   settings, saveSettings, saveCustom, toast, sheet, ICON, topbar, navHtml, lvlChip, srcTag, SEC, TOPIC_NAMES, loadAttempts, NOTE_TOPICS, hasNotes, topBtns, saveBtn, savedList
-} from './core.js?v=gpscavy-9efef9e283';
+} from './core.js?v=gpscavy-20d1f73cfa';
 
 const app = $('#app');
 let API = null;
 const CHIPS = [['all', 'All'], ['core', 'Core'], ['gk', 'GK'], ['gram', 'English Grammar'], ['comp', 'English Comprehension'], ['lr', 'Reasoning'], ['pdfs', 'PDFs'], ['wrong', 'Revise incorrect'], ['saved', 'Saved']];
-const WSUB = [['all', 'All'], ['core', 'Core'], ['gk', 'GK'], ['comp', 'English comprehension'], ['gram', 'English grammar'], ['pdfs', 'PDFs']];
+const WSUB = [['all', 'All'], ['core', 'Core'], ['gk', 'GK'], ['comp', 'English comprehension'], ['gram', 'English grammar'], ['lr', 'Reasoning'], ['pdfs', 'PDFs']];
 const TCOL = { 1: 'comp', 2: 'gram', 3: 'lr', 4: 'ind', 5: 'core', 6: 'ind', 7: 'lr', 8: 'gk', 9: 'gram', 10: 'comp' };
 
 export async function route(r, me, api) {
@@ -44,8 +44,8 @@ async function library(chip, sub, r, me) {
     if (chip === 'core') body += '<h2 class="label">Quick-check quizzes</h2><div class="list">' + META.notes.map(n => row('#/test/quiz-topic' + n.t, 'Q' + n.t, 's-core-b', 'Topic ' + n.t + ' quiz', n.quiz + ' questions from the notes · learn mode')).join('') + '</div>'  +
       '<p class="sub">Every core topic is also mixed into the 25 mock sets. <a class="lnk" href="#/custom?sec=core&amp;topics=1,2,3,4">Practise topics 1–4</a></p>';
   }
-  if (show('gk')) body += '<h2 class="label">General knowledge</h2><div class="list">' + row('#/study/playbook/gk', 'GK', 's-gk-b', 'GK Playbook', 'Goa and India GK: current affairs, Goa statehood, polity, days') + row('#/drills/gk', '6', 's-gk-b', 'GK drills 1–6', '25 questions each, 15 minutes') + '</div>';
-  if (show('comp')) body += '<h2 class="label">English comprehension</h2><div class="list">' + row('#/study/playbook/english-comp', 'Rc', 's-comp-b', 'Reading a passage', 'English playbook: main idea, inference, tone, traps') + row('#/drills/comp', '12', 's-comp-b', 'Comprehension drills', 'Real GPSC passages: 2 drills + 10 passage drills') + '</div>';
+  if (show('gk')) body += '<h2 class="label">General knowledge</h2><div class="list">' + row('#/study/playbook/gk', 'GK', 's-gk-b', 'GK Playbook', 'Goa and India GK: current affairs, Goa statehood, polity, days') + row('#/drills/gk', IDX.sets.filter(x => /^(gkd|gkq)\d/.test(x.id)).length, 's-gk-b', 'GK drills', 'Easy, intermediate and hard · 10 questions each') + '</div>';
+  if (show('comp')) body += '<h2 class="label">English comprehension</h2><div class="list">' + row('#/study/playbook/english-comp', 'Rc', 's-comp-b', 'Reading a passage', 'English playbook: main idea, inference, tone, traps') + row('#/drills/comp', IDX.sets.filter(x => /^(end[34]|compd\d|cpd\d)/.test(x.id)).length, 's-comp-b', 'Comprehension drills', 'Two passages each · easy, intermediate and hard') + '</div>';
   if (show('gram')) body += '<h2 class="label">English grammar</h2><div class="list">' + row('#/study/playbook/english-grammar', 'Gr', 's-gram-b', 'Grammar rules', 'English playbook: structure, voice, errors, idioms') + row('#/study/cheat/grammar', 'Cs', 's-gram-b', 'Grammar cheat sheet', 'Tenses, agreement, articles, voice, narration on one page') + row('#/drills/en', IDX.sets.filter(x => /^(end|grd)\d/.test(x.id)).length, 's-gram-b', 'Grammar drills', 'Easy, intermediate and hard · 10 questions each') + '</div>';
   if (show('lr')) body += '<h2 class="label">Logical reasoning</h2><div class="list">' + row('#/study/cheat/reasoning', 'Cs', 's-lr-b', 'Reasoning cheat sheet', 'Series, coding, relations, clocks, syllogisms, shortcuts') + row('#/drills/lr', IDX.sets.filter(x => /^lrd\d/.test(x.id)).length, 's-lr-b', 'Reasoning drills', 'Easy, intermediate and hard · 10 questions each') + '</div>';
   if (chip === 'all') body += '<h2 class="label">More</h2><div class="list">' + row('#/study/playbook/english', 'En', 's-comp-b', 'English Playbook (full)', 'Comprehension and grammar, with a 13-day plan') + row('#/study/papers', 'QP', 's-lr-b', 'Past GPSC question papers', META.papers.length + ' papers on the GPSC site') + row('#/study/pdfs', 'PDF', 's-ind-b', 'Printable PDFs', META.pdfs.length + ' files to print or share on WhatsApp') + '</div>';
@@ -58,7 +58,9 @@ async function library(chip, sub, r, me) {
   bindPdf(app);
   const onc = app.querySelector('.ptabs .fchip.on'); if (onc && onc.scrollIntoView) onc.scrollIntoView({ block: 'nearest', inline: 'center' });
   $('#sf').onsubmit = e => { e.preventDefault(); const q = e.target.q.value.trim(); if (q) API.go('#/search?q=' + encodeURIComponent(q)); };
-  const wa = $('#wtest'); if (wa) wa.onclick = () => practiseWrong(wa.dataset.sub);
+  // same screen as the Home card: pick core topics, how many, learn or timed
+  const wa = $('#wtest'); if (wa) wa.onclick = () => API.openMistakes(['all', 'pdfs'].includes(wa.dataset.sub) ? 'all' : wa.dataset.sub);
+  app.querySelectorAll('[data-wt]').forEach(b => b.onclick = () => API.openMistakes('core', +b.dataset.wt));
   const sa = $('#stest'); if (sa) sa.onclick = () => practiseRefs(savedList().slice(0, 60).map(x => [x.ref, x.sec]), 'Saved questions');
 }
 // ---------- Saved questions ----------
@@ -155,7 +157,7 @@ async function wrongBody(wl, sub, me) {
     return h + (ps.length ? '<div class="list">' + ps.map(p => pdfRow(Object.assign({}, p, { name: p.name + ' · ' + per.get(p.f) + ' wrong' }))).join('') + '</div>' : '<p class="empty">These wrong answers came from tests that have no PDF.</p>');
   }
   if (!list.length) return h + '<p class="empty">No incorrect answers in this group.</p>';
-  h += '<button type="button" class="wide pri" id="wtest" data-sub="' + sub + '">' + (list.length === 1 ? 'Practise it as a test' : 'Practise these ' + Math.min(list.length, 60) + ' as a test') + '</button><div class="rlist">';
+  h += '<button type="button" class="wide pri" id="wtest" data-sub="' + sub + '">' + (list.length === 1 ? 'Practise it' : 'Practise these ' + list.length) + '</button>' + coreTopicsLine(list) + '<div class="rlist">';
   h += list.map(w => {
     const sid = w.ref.slice(0, w.ref.lastIndexOf(':')), n = +w.ref.slice(w.ref.lastIndexOf(':') + 1), s = sets[sid];
     const q = s && s.questions[n - 1]; if (!q) return '';
@@ -166,14 +168,12 @@ async function wrongBody(wl, sub, me) {
   }).join('') + '</div>';
   return h;
 }
-function practiseWrong(sub) {
-  const list = wrongList().filter(w => wMatch(w, sub)).slice(0, 60);
-  if (!list.length) return;
-  const id = 'custom-' + Date.now().toString(36);
-  const order = ['comp', 'gram', 'gk', 'lr', 'core'];
-  const refs = list.map(w => [w.ref, w.sec]).sort((a, b) => order.indexOf(a[1]) - order.indexOf(b[1]));
-  saveCustom({ id, name: 'Revise incorrect' + (sub !== 'all' ? ' · ' + WSUB.find(x => x[0] === sub)[1] : ''), minutes: Math.max(3, Math.round(refs.length * 1.25)), mode: 'learn', refs, saved: false, createdAt: Date.now() });
-  API.go('#/test/' + id + '?go=1');
+// under the core filter: how the wrong answers split by topic, each a tap away from its own practice
+function coreTopicsLine(list) {
+  const tp = {}; list.forEach(w => { if (w.sec === 'core' && w.topic) tp[w.topic] = (tp[w.topic] || 0) + 1; });
+  const ts = Object.keys(tp).map(Number).sort((a, b) => tp[b] - tp[a] || a - b);
+  if (!ts.length || list.some(w => w.sec !== 'core')) return '';
+  return '<div class="mfcs">' + ts.map(t => '<button type="button" class="schip2" style="background:var(--c-core-s);color:var(--c-core-i);border-color:transparent" data-wt="' + t + '">Topic ' + t + ' · ' + TOPIC_NAMES[t] + ' · ' + tp[t] + '</button>').join('') + '</div>';
 }
 
 // ---------- notes reader ----------
@@ -238,7 +238,7 @@ async function notesScreen(t, r, me) {
   me.unmount = () => { scEl.removeEventListener('scroll', onScroll); clearTimeout(saveT); saveSettings(); };
   $('#nFs').onclick = () => { settings.fs = settings.fs >= 1.25 ? 1 : (settings.fs || 1) >= 1.12 ? 1.25 : 1.12; nb.style.setProperty('--fs', settings.fs); saveSettings(); };
   $('#nPdf').onclick = () => pdfSheet(t);
-  $('#nShare').onclick = () => import('./runner.js?v=gpscavy-9efef9e283').then(m => m.shareLink(location.href.split('#')[0] + '#/study/topic' + t, 'Topic ' + t + ' notes: ' + n.title));
+  $('#nShare').onclick = () => import('./runner.js?v=gpscavy-20d1f73cfa').then(m => m.shareLink(location.href.split('#')[0] + '#/study/topic' + t, 'Topic ' + t + ' notes: ' + n.title));
   if (r.q.h) requestAnimationFrame(() => { const el = document.getElementById(r.q.h); if (el) { const s = el.closest('.ns'); if (s) s.classList.remove('closed'); SC().scrollTo(0, el.getBoundingClientRect().top + SC().scrollTop - tocH()); } });
 }
 function openZoom(img) {

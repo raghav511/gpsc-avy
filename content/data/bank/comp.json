@@ -1,0 +1,2722 @@
+[
+ {
+  "paras": [
+   "On a summer afternoon, the centre of a large city can be several degrees warmer than the farmland a few kilometres beyond its edge. This phenomenon, known as the urban heat island, arises because concrete, asphalt and brick absorb sunlight during the day and release it slowly through the night, while the trees and open soil that would have cooled the air through evaporation have been paved over. Waste heat from vehicles, air conditioners and industry adds to the burden. The consequences are not merely a matter of discomfort. Nights that fail to cool deprive the body of its chance to recover, and heat-related illness falls most heavily on the elderly, outdoor labourers and residents of crowded settlements with tin roofs and little ventilation.",
+   "Paradoxically, the most common private response deepens the problem. Every air conditioner that cools a room expels heat into the street outside, so that relief purchased by those who can afford it is partly paid for by those who cannot. Lasting remedies are therefore collective rather than individual: reflective roofs, shaded pedestrian streets, protected water bodies and a deliberate expansion of tree cover. Such measures are modest in cost compared with the hospital admissions and lost working days that a hotter city quietly accumulates each year. A city that plans for shade, in short, plans for the health of its poorest citizens."
+  ],
+  "questions": [
+   {
+    "q": "Which of the following is the most suitable title for the passage?",
+    "opts": [
+     "Concrete: The Ideal Material for Hot Climates",
+     "Heat in the City: A Shared Problem Needing Shared Remedies",
+     "The Rising Price of Air Conditioners",
+     "Why Farmland Is Warmer Than Cities at Night"
+    ],
+    "ans": "B",
+    "why": "Main idea: the passage explains the urban heat island and concludes that 'lasting remedies are therefore collective rather than individual'.",
+    "lvl": "I"
+   },
+   {
+    "q": "According to the passage, why do nights in the city centre fail to cool?",
+    "opts": [
+     "Winds from the farmland are blocked by tall buildings.",
+     "Evaporation from trees warms the air after sunset.",
+     "Built surfaces release the heat absorbed during the day slowly through the night.",
+     "Vehicles and industry produce more heat at night than by day."
+    ],
+    "ans": "C",
+    "why": "Detail: 'concrete, asphalt and brick absorb sunlight during the day and release it slowly through the night'.",
+    "lvl": "E"
+   },
+   {
+    "q": "It can be inferred that the author regards private air-conditioning as a response that:",
+    "opts": [
+     "is the main reason farmland is cooler than cities.",
+     "shifts part of the heat burden onto people who cannot afford relief.",
+     "has no effect on temperatures outside the home.",
+     "is the most effective long-term remedy for urban heat."
+    ],
+    "ans": "B",
+    "why": "Inference: 'relief purchased by those who can afford it is partly paid for by those who cannot', because each unit 'expels heat into the street outside'.",
+    "lvl": "H"
+   },
+   {
+    "q": "The author's attitude towards measures such as tree cover and shaded streets is best described as:",
+    "opts": [
+     "approving, seeing them as cost-effective investments in public health.",
+     "dismissive, treating them as merely cosmetic.",
+     "sceptical, doubting that their cost can be justified.",
+     "neutral, offering no view on their worth."
+    ],
+    "ans": "A",
+    "why": "Tone: such measures are 'modest in cost compared with the hospital admissions and lost working days', and 'a city that plans for shade... plans for the health of its poorest citizens'.",
+    "lvl": "I"
+   },
+   {
+    "q": "As used in the passage, the word 'Paradoxically' means:",
+    "opts": [
+     "gradually and over a long period",
+     "in a way that seems contrary to what one would expect",
+     "in a way that is fortunate for everyone",
+     "in a way that is easy to predict"
+    ],
+    "ans": "B",
+    "why": "Vocabulary: a cooling device that 'deepens the problem' of heat is a seemingly contradictory outcome.",
+    "lvl": "E"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "In an age when almost any fact can be summoned on a telephone screen, the public library is often described as a relic, a building kept open out of sentiment rather than need. This view mistakes what libraries have always done. Their value never lay solely in the books on their shelves; it lay in offering a quiet and free space where anyone, regardless of income, could sit and think without being asked to buy anything. For a student whose home has one room and five occupants, the reading hall may be the only place where sustained concentration is possible. For an elderly pensioner, it may be the only public room in which he is welcome to linger.",
+   "The arrival of digital information has, if anything, enlarged this role. A screen offers abundance but not guidance, and the skill of judging which sources deserve trust is not acquired automatically. A trained librarian who can steer a reader from rumour towards reliable evidence performs a service that no search engine has replaced. When municipal budgets tighten, libraries are frequently the first institutions to lose staff and hours, precisely because their benefits are diffuse and difficult to count. Yet a society that closes them saves very little money and loses one of the few spaces in which citizenship, rather than purchasing power, is the only qualification for entry."
+  ],
+  "questions": [
+   {
+    "q": "The central argument of the passage is that public libraries:",
+    "opts": [
+     "are valuable chiefly because of the rare books they preserve.",
+     "should be replaced by digital services to save public money.",
+     "have lost their purpose now that facts are available on phones.",
+     "remain valuable as free public spaces and sources of guidance despite digital information."
+    ],
+    "ans": "D",
+    "why": "Main idea: the author rejects the 'relic' view and says digital information 'has, if anything, enlarged this role'.",
+    "lvl": "I"
+   },
+   {
+    "q": "According to the passage, why are libraries often the first to lose staff and hours when budgets tighten?",
+    "opts": [
+     "Librarians lack the skills needed for digital information.",
+     "Their buildings are too costly to maintain.",
+     "Readers have largely stopped visiting them.",
+     "Their benefits are diffuse and difficult to count."
+    ],
+    "ans": "D",
+    "why": "Detail: 'precisely because their benefits are diffuse and difficult to count'.",
+    "lvl": "E"
+   },
+   {
+    "q": "With which of the following statements would the author most likely agree?",
+    "opts": [
+     "Libraries should charge entry fees in order to survive.",
+     "Easy access to information does not by itself give people the ability to judge it.",
+     "Students from crowded homes prefer to study at home.",
+     "Search engines have made trained librarians unnecessary."
+    ],
+    "ans": "B",
+    "why": "Inference: 'A screen offers abundance but not guidance, and the skill of judging which sources deserve trust is not acquired automatically.'",
+    "lvl": "H"
+   },
+   {
+    "q": "The author's attitude towards those who call the library a relic is best described as:",
+    "opts": [
+     "fully in agreement with their view.",
+     "indifferent to their opinion.",
+     "corrective, holding that they misunderstand what libraries do.",
+     "sympathetic, accepting that libraries are kept open out of sentiment."
+    ],
+    "ans": "C",
+    "why": "Tone: 'This view mistakes what libraries have always done.'",
+    "lvl": "I"
+   },
+   {
+    "q": "As used in the passage, the word 'diffuse' means:",
+    "opts": [
+     "spread thinly over many people rather than concentrated",
+     "temporary and short-lived",
+     "harmful and difficult to control",
+     "kept secret from the public"
+    ],
+    "ans": "A",
+    "why": "Vocabulary: the benefits are 'diffuse and difficult to count' because they are spread across many users in small ways.",
+    "lvl": "E"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "Each monsoon, cities that once absorbed heavy rain without much complaint now find their streets turned into rivers within an hour of a downpour. It is tempting to blame the rain itself, and in some years rainfall has indeed been unusually intense. But the deeper cause lies on the ground. Low-lying marshes, village ponds and the natural floodplains of streams once acted as sponges, holding water during a storm and releasing it slowly afterwards. As cities have grown, these areas have been filled in and built upon, often because they were the cheapest land available. Storm drains designed decades ago for a smaller, greener town are now asked to carry the run-off from vast surfaces of concrete, and they are frequently choked with plastic and construction debris.",
+   "Engineering can help, but bigger drains alone merely move water faster towards the next low point, which is usually a poorer neighbourhood downstream. A more durable approach treats water as something to be accommodated rather than expelled. This means mapping and protecting the remaining wetlands, restoring channels that have been encroached upon, and requiring new developments to retain a share of the rain that falls on them. Such measures demand patience and political resolve, since the land involved is valuable and its occupants are often influential. The alternative, however, is an annual cycle of damage, relief and forgetting."
+  ],
+  "questions": [
+   {
+    "q": "The passage is mainly concerned with:",
+    "opts": [
+     "proving that heavier monsoon rain is the main cause of urban flooding.",
+     "arguing that wider storm drains will end urban flooding.",
+     "explaining how plastic waste is produced in cities.",
+     "the loss of natural water-absorbing land as the root of urban flooding, and the remedies this calls for."
+    ],
+    "ans": "D",
+    "why": "Main idea: 'the deeper cause lies on the ground', and 'a more durable approach treats water as something to be accommodated rather than expelled'.",
+    "lvl": "I"
+   },
+   {
+    "q": "According to the passage, what role did marshes, ponds and floodplains once play?",
+    "opts": [
+     "They supplied drinking water to the growing city.",
+     "They carried storm water quickly out to the sea.",
+     "They served as the cheapest sites for storm drains.",
+     "They held water during a storm and released it slowly afterwards."
+    ],
+    "ans": "D",
+    "why": "Detail: they 'acted as sponges, holding water during a storm and releasing it slowly afterwards'.",
+    "lvl": "E"
+   },
+   {
+    "q": "By saying that bigger drains 'merely move water faster towards the next low point', the author implies that:",
+    "opts": [
+     "poorer neighbourhoods have the best drainage in the city.",
+     "engineering has no part to play in flood control.",
+     "widening drains alone may shift flooding to vulnerable areas rather than solve it.",
+     "drains should be abolished altogether."
+    ],
+    "ans": "C",
+    "why": "Inference: the next low point 'is usually a poorer neighbourhood downstream', so the flood is relocated, not removed; the author also says 'Engineering can help', ruling out the last option.",
+    "lvl": "H"
+   },
+   {
+    "q": "The phrase 'an annual cycle of damage, relief and forgetting' expresses the author's:",
+    "opts": [
+     "criticism of a short-sighted pattern of response to floods.",
+     "confidence that floods are becoming less frequent.",
+     "indifference to the suffering caused by floods.",
+     "admiration for the efficiency of relief work."
+    ],
+    "ans": "A",
+    "why": "Tone: the phrase describes the 'alternative' to patient, long-term measures, criticising a repeated failure to learn.",
+    "lvl": "I"
+   },
+   {
+    "q": "As used in the passage, 'encroached upon' most nearly means:",
+    "opts": [
+     "widened by engineers",
+     "cleaned and deepened",
+     "permanently flooded",
+     "gradually occupied beyond proper limits"
+    ],
+    "ans": "D",
+    "why": "Vocabulary: channels that have been built over need 'restoring', i.e. they have been intruded upon.",
+    "lvl": "E"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "Vaccines are among the most successful tools public health has ever possessed, yet their success contains a peculiar weakness. When a disease such as measles becomes rare, parents no longer see its effects with their own eyes, and the small, visible risks of an injection begin to loom larger than the invisible danger it prevents. Hesitancy, in this sense, is partly a product of achievement. It is rarely the result of simple ignorance. Many hesitant parents have read a great deal; what they lack is not information but confidence in those who provide it.",
+   "For this reason, campaigns that merely repeat statistics often fail, and campaigns that ridicule doubters do worse, hardening suspicion into identity. Studies of successful immunisation drives point instead to the quiet authority of familiar figures: the local health worker who has visited a household for years, the doctor who takes time to answer a question rather than dismiss it, the community leader who is seen to vaccinate his own children. Trust of this kind is slow to build and quick to destroy, and a single poorly handled adverse event, concealed rather than explained, can undo the work of a decade. Honesty about rare side effects, far from undermining confidence, is often what sustains it."
+  ],
+  "questions": [
+   {
+    "q": "Which of the following best expresses the main idea of the passage?",
+    "opts": [
+     "Repeating statistics is the most effective way to raise immunisation rates.",
+     "Vaccine hesitancy is largely a problem of trust, best addressed by honest and familiar messengers.",
+     "Vaccine hesitancy is caused mainly by parents' lack of education.",
+     "Side effects of vaccines should be kept from the public to protect confidence."
+    ],
+    "ans": "B",
+    "why": "Main idea: what parents lack 'is not information but confidence in those who provide it'; successful drives rely on 'familiar figures' and honesty.",
+    "lvl": "I"
+   },
+   {
+    "q": "According to the passage, campaigns that ridicule doubters:",
+    "opts": [
+     "are recommended by studies of successful drives.",
+     "harden suspicion into a sense of identity.",
+     "succeed better than those that repeat statistics.",
+     "persuade most parents within a decade."
+    ],
+    "ans": "B",
+    "why": "Detail: 'campaigns that ridicule doubters do worse, hardening suspicion into identity'.",
+    "lvl": "E"
+   },
+   {
+    "q": "By calling hesitancy 'partly a product of achievement', the author suggests that:",
+    "opts": [
+     "better-educated parents are always more hesitant.",
+     "public health has achieved little against measles.",
+     "vaccines have become less effective over time.",
+     "the rarity of diseases brought about by vaccination makes their danger seem remote."
+    ],
+    "ans": "D",
+    "why": "Inference: 'When a disease such as measles becomes rare, parents no longer see its effects', so the vaccine's own success hides the danger.",
+    "lvl": "H"
+   },
+   {
+    "q": "The author's attitude towards hesitant parents is best described as:",
+    "opts": [
+     "indifferent to their concerns.",
+     "contemptuous, regarding them as ignorant.",
+     "approving, endorsing their refusal of vaccines.",
+     "understanding, treating their doubts as a matter of trust rather than foolishness."
+    ],
+    "ans": "D",
+    "why": "Tone: hesitancy 'is rarely the result of simple ignorance. Many hesitant parents have read a great deal.'",
+    "lvl": "I"
+   },
+   {
+    "q": "As used in the passage, 'loom larger' means:",
+    "opts": [
+     "become less expensive",
+     "appear more significant or threatening",
+     "become physically bigger",
+     "fade from memory"
+    ],
+    "ans": "B",
+    "why": "Vocabulary: the visible risks of an injection seem more important 'than the invisible danger it prevents'.",
+    "lvl": "E"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "Modern life treats sleep as a negotiable expense, the first item to be trimmed when work, study or entertainment demands more hours. Students boast of all-night revision and professionals of surviving on five hours, as though wakefulness were a form of virtue. The science of sleep tells a less flattering story. During sleep the brain consolidates the day's learning, clearing away metabolic waste and strengthening the connections that turn experience into memory. Hormones that regulate appetite and blood sugar are recalibrated, and the immune system performs much of its repair work. A person who is chronically short of sleep does not simply feel tired; he thinks more slowly, judges risks less accurately and becomes more vulnerable to infection, obesity and disorders of mood.",
+   "What makes the problem difficult is that its victims are poor judges of their own condition. After several nights of restricted sleep, people's performance on tests of attention continues to decline even as their sense of how impaired they are levels off. They adapt to feeling tired, and mistake the adaptation for recovery. Screens glowing late into the night, long commutes and shift work all conspire against rest. Treating sleep as a pillar of health, alongside diet and exercise, would require not only personal discipline but schools, employers and cities willing to respect the hours that the body requires."
+  ],
+  "questions": [
+   {
+    "q": "Which of the following best states the theme of the passage?",
+    "opts": [
+     "Sleep is an essential biological need that modern habits wrongly treat as dispensable.",
+     "All-night study is an efficient way to prepare for examinations.",
+     "Diet and exercise matter more to health than sleep.",
+     "Screens are the sole cause of sleep loss in modern society."
+    ],
+    "ans": "A",
+    "why": "Main idea: modern life treats sleep 'as a negotiable expense', while science shows its many vital functions.",
+    "lvl": "I"
+   },
+   {
+    "q": "According to the passage, during sleep the brain:",
+    "opts": [
+     "consolidates the day's learning and clears away metabolic waste.",
+     "shuts down completely to save energy.",
+     "forgets most of what was learned that day.",
+     "raises appetite to prepare for the next day."
+    ],
+    "ans": "A",
+    "why": "Detail: 'the brain consolidates the day's learning, clearing away metabolic waste'.",
+    "lvl": "E"
+   },
+   {
+    "q": "It can be inferred that a student who feels fine after a week of five-hour nights:",
+    "opts": [
+     "will perform better than students who sleep longer.",
+     "has shown that boasts about little sleep are justified.",
+     "has fully adapted and no longer needs more sleep.",
+     "may still be significantly impaired without realising it."
+    ],
+    "ans": "D",
+    "why": "Inference: performance 'continues to decline even as their sense of how impaired they are levels off'; people 'mistake the adaptation for recovery'.",
+    "lvl": "H"
+   },
+   {
+    "q": "The author's attitude towards people who boast of surviving on little sleep is:",
+    "opts": [
+     "sceptical, regarding their pride as misplaced.",
+     "admiring of their discipline.",
+     "neutral and uncritical.",
+     "envious of their productivity."
+    ],
+    "ans": "A",
+    "why": "Tone: they act 'as though wakefulness were a form of virtue', and 'the science of sleep tells a less flattering story'.",
+    "lvl": "I"
+   },
+   {
+    "q": "As used in the passage, 'conspire against' means:",
+    "opts": [
+     "secretly plan a crime against",
+     "combine to produce an unfavourable effect on",
+     "postpone until later",
+     "give support and help to"
+    ],
+    "ans": "B",
+    "why": "Vocabulary: screens, commutes and shift work together work against rest; no actual plotting is meant.",
+    "lvl": "E"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "The migrant who arrives in a city with a bundle of belongings and the address of a relative is often treated in official discourse as a problem to be managed. Yet the city could scarcely function without him. He builds its towers, cooks in its kitchens, drives its delivery vehicles and cleans its offices before the offices open. What the city is reluctant to provide is a place for him to live. Formal housing is priced far beyond his wages, and so he settles where land is unclaimed or uncertain: beside railway lines, along drains, on slopes too steep for developers. These settlements are routinely described as encroachments, a word that places the fault entirely on those who occupy them.",
+   "A more honest account would acknowledge that informal housing is the market's answer to a demand that planning has refused to anticipate. Periodic demolitions do not remove the need; they merely displace it to the next vacant patch, destroying savings and schooling along the way. Cities that have managed migration better have done so by securing tenure for existing residents, extending water and sanitation to settlements before regularising them, and setting aside land for low-cost rental housing near places of work. None of this is charity. It is the ordinary infrastructure of a city that wishes to keep the workers on whom it depends."
+  ],
+  "questions": [
+   {
+    "q": "Which of the following best captures the main argument of the passage?",
+    "opts": [
+     "Informal settlements should be cleared to make way for formal housing.",
+     "Migrants are a burden that cities must manage through stricter controls.",
+     "Cities depend on migrant workers but fail to house them, and should plan for their housing rather than demolish settlements.",
+     "Migrants should return to villages where housing is cheaper."
+    ],
+    "ans": "C",
+    "why": "Main idea: 'the city could scarcely function without him', yet it is 'reluctant to provide... a place for him to live'; the author proposes tenure, services and rental housing.",
+    "lvl": "I"
+   },
+   {
+    "q": "According to the passage, where do migrants usually settle?",
+    "opts": [
+     "On unclaimed or uncertain land such as beside railway lines and along drains.",
+     "In rental flats near the city centre.",
+     "In formal housing provided by their employers.",
+     "In villages on the outskirts, commuting daily."
+    ],
+    "ans": "A",
+    "why": "Detail: 'he settles where land is unclaimed or uncertain: beside railway lines, along drains, on slopes too steep for developers'.",
+    "lvl": "E"
+   },
+   {
+    "q": "The author's remark about the word 'encroachments' suggests that the term:",
+    "opts": [
+     "is the word migrants themselves prefer.",
+     "is legally precise and therefore fair.",
+     "unfairly blames residents while ignoring the failure of planning.",
+     "justifies the periodic demolition of settlements."
+    ],
+    "ans": "C",
+    "why": "Inference: the word 'places the fault entirely on those who occupy them', whereas the author says planning 'refused to anticipate' the demand.",
+    "lvl": "H"
+   },
+   {
+    "q": "The author's purpose in stating 'None of this is charity' is to:",
+    "opts": [
+     "present housing for migrants as practical self-interest of the city rather than benevolence.",
+     "reject all public spending on housing.",
+     "argue that migrants should pay the full cost of services.",
+     "criticise charitable organisations working in settlements."
+    ],
+    "ans": "A",
+    "why": "Purpose: the next sentence calls these measures 'the ordinary infrastructure of a city that wishes to keep the workers on whom it depends'.",
+    "lvl": "H"
+   },
+   {
+    "q": "As used in the passage, 'tenure' means:",
+    "opts": [
+     "a fixed monthly salary",
+     "the legal right to occupy land or housing",
+     "a period of holding an official post",
+     "a fee charged for rented housing"
+    ],
+    "ans": "B",
+    "why": "Vocabulary: 'securing tenure for existing residents' means guaranteeing their right to stay where they live.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "Corruption is usually imagined as a dramatic act: an envelope of cash passed beneath a table, a contract awarded in exchange for a bribe. Far more common, and in some ways more corrosive, is the quiet conflict of interest. An official who decides on a road alignment that happens to raise the value of his brother's land, or a doctor who prescribes a costly test at a laboratory in which she holds shares, may never accept a rupee from anyone. They may even believe sincerely that their decision was correct on its merits. The difficulty is that no one, including the decision-maker, can be sure. Self-interest rarely announces itself; it works by tilting judgement a few degrees in a convenient direction.",
+   "For this reason, the ethics of public life cannot rest on good intentions alone. A sound system does not ask whether a particular official is honest; it arranges matters so that honesty does not have to be taken on trust. Interests are declared in advance, those with a stake step aside from decisions that touch it, and records are kept open to scrutiny. Such rules can seem fussy or even insulting to people of integrity. But they protect the honest as much as they restrain the dishonest, for an official who has stepped aside cannot later be suspected of bias."
+  ],
+  "questions": [
+   {
+    "q": "The passage is primarily about:",
+    "opts": [
+     "how conflicts of interest distort judgement even without bribery, and why safeguards must not rely on trust.",
+     "the low salaries that drive officials to corruption.",
+     "the need to punish doctors who order medical tests.",
+     "the methods used to detect cash bribes in government."
+    ],
+    "ans": "A",
+    "why": "Main idea: the 'quiet conflict of interest' is 'more corrosive', so 'the ethics of public life cannot rest on good intentions alone'.",
+    "lvl": "I"
+   },
+   {
+    "q": "Which example does the author use to illustrate a conflict of interest?",
+    "opts": [
+     "A judge accepting gifts from a litigant.",
+     "An official refusing to declare his salary.",
+     "A doctor prescribing a costly test at a laboratory in which she holds shares.",
+     "A contractor bribing an official with cash."
+    ],
+    "ans": "C",
+    "why": "Detail: 'a doctor who prescribes a costly test at a laboratory in which she holds shares'.",
+    "lvl": "E"
+   },
+   {
+    "q": "The statement that 'no one, including the decision-maker, can be sure' implies that:",
+    "opts": [
+     "public decisions are usually made at random.",
+     "officials who face conflicts always lie about their motives.",
+     "self-interest can influence a decision without the person being aware of it.",
+     "evidence of conflicts is routinely destroyed."
+    ],
+    "ans": "C",
+    "why": "Inference: self-interest 'rarely announces itself; it works by tilting judgement a few degrees', so even a sincere person cannot rule it out.",
+    "lvl": "H"
+   },
+   {
+    "q": "The author's attitude towards rules on declaring interests and stepping aside is:",
+    "opts": [
+     "opposed, because they insult people of integrity.",
+     "dismissive, regarding them as fussy and unnecessary.",
+     "naively confident that they will end all corruption.",
+     "firmly supportive, while admitting they may seem tiresome to honest people."
+    ],
+    "ans": "D",
+    "why": "Tone: the rules 'can seem fussy or even insulting', 'But they protect the honest as much as they restrain the dishonest'.",
+    "lvl": "H"
+   },
+   {
+    "q": "As used in the passage, 'corrosive' most nearly means:",
+    "opts": [
+     "openly violent",
+     "financially rewarding",
+     "easily detected",
+     "gradually damaging or destructive"
+    ],
+    "ans": "D",
+    "why": "Vocabulary: the quiet conflict of interest slowly erodes fairness, unlike the 'dramatic act' of bribery.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "For generations the mangrove forests that fringe tropical coasts were regarded as wasteland: muddy, mosquito-ridden and of no obvious use except as a source of firewood. Their clearance for ports, prawn farms and seaside construction was seen as improvement. Only in recent decades has a fuller accounting begun to emerge. The tangled roots of mangroves trap sediment and slow the force of waves, so that villages behind a healthy belt of mangroves suffer markedly less damage from cyclones and storm surges than those whose shoreline has been cleared. The same roots shelter the young of many fish and crabs, sustaining fisheries far beyond the forest's edge. Mangrove soils, moreover, lock away carbon at rates that exceed those of many inland forests.",
+   "Restoration has become fashionable, and planting campaigns now produce impressive photographs of volunteers pressing seedlings into the mud. Results have been mixed. Seedlings planted on mudflats where mangroves never naturally grew, or of a single species chosen for convenience, frequently die within a year. Successful projects tend to be less photogenic: they restore the tidal flow that was blocked by embankments, allow nature to reseed the area, and involve the fishing communities who have the strongest reason to protect the forest once it returns."
+  ],
+  "questions": [
+   {
+    "q": "Which title best suits the passage?",
+    "opts": [
+     "How to Photograph Coastal Forests",
+     "Why Inland Forests Store More Carbon",
+     "Mangroves: From Wasteland to Coastal Guardian",
+     "The Profits of Prawn Farming"
+    ],
+    "ans": "C",
+    "why": "Main idea: mangroves 'were regarded as wasteland', but a 'fuller accounting' shows they protect coasts, fisheries and carbon.",
+    "lvl": "I"
+   },
+   {
+    "q": "Which benefit of mangroves is mentioned in the passage?",
+    "opts": [
+     "They provide fertile soil for growing rice.",
+     "They raise water temperature to help prawn farms.",
+     "They eliminate mosquitoes from coastal areas.",
+     "They reduce the damage that storm surges cause to villages behind them."
+    ],
+    "ans": "D",
+    "why": "Detail: villages behind mangroves 'suffer markedly less damage from cyclones and storm surges'.",
+    "lvl": "E"
+   },
+   {
+    "q": "The reference to 'impressive photographs of volunteers' suggests that the author believes:",
+    "opts": [
+     "planting campaigns always succeed within a year.",
+     "some restoration efforts value appearance over ecological success.",
+     "volunteers should not take part in restoration.",
+     "photographs are the best measure of a project's success."
+    ],
+    "ans": "B",
+    "why": "Inference: 'Results have been mixed', and 'successful projects tend to be less photogenic', implying visible campaigns are not necessarily effective.",
+    "lvl": "H"
+   },
+   {
+    "q": "The author's attitude towards mangrove restoration is best described as:",
+    "opts": [
+     "indifferent to whether restoration succeeds.",
+     "uncritically enthusiastic about all planting drives.",
+     "wholly opposed to restoration efforts.",
+     "supportive of restoration but critical of poorly designed campaigns."
+    ],
+    "ans": "D",
+    "why": "Tone: the author praises projects that restore tidal flow and involve fishing communities, while noting that convenient single-species planting 'frequently die within a year'.",
+    "lvl": "H"
+   },
+   {
+    "q": "As used in the passage, 'photogenic' means:",
+    "opts": [
+     "attractive or striking when photographed",
+     "costly to carry out",
+     "sensitive to light",
+     "proven by scientific study"
+    ],
+    "ans": "A",
+    "why": "Vocabulary: successful projects are 'less photogenic' than campaigns that 'produce impressive photographs'.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "When self-help groups first spread through rural India, they were celebrated as a means of bringing credit to women whom banks had never considered worth the paperwork. A dozen women would meet weekly, pool small savings and lend to one another, and once the group had proven its discipline, a bank would extend a larger loan to it collectively. Repayment rates were remarkably high, for each member's reputation among her neighbours stood behind the debt. Many women used their first loans to buy a goat, a sewing machine or stock for a small shop, and some gained for the first time a measure of say in household decisions.",
+   "Success, however, attracted imitators less interested in empowerment than in profit. In several regions, commercial lenders competed to sign up borrowers, extending multiple loans to the same household at high rates of interest and enforcing repayment through public shaming. Debt that had once been a ladder became, for some, a trap. The lesson is not that small loans are harmful but that credit is a tool, not a cure. Without savings, training, access to markets and some protection against illness or crop failure, a loan merely transfers risk to those least able to bear it. The original groups worked because they were built on mutual trust; the mere imitation of their form could not reproduce it."
+  ],
+  "questions": [
+   {
+    "q": "Which of the following best summarises the passage?",
+    "opts": [
+     "Commercial lenders improved on the self-help group model.",
+     "Banks should stop lending to self-help groups.",
+     "Small loans are always harmful to poor households.",
+     "Group credit empowered rural women when built on trust and support, but profit-driven imitation made it harmful for some."
+    ],
+    "ans": "D",
+    "why": "Main idea: the original groups 'worked because they were built on mutual trust', while imitators 'less interested in empowerment than in profit' turned debt into 'a trap'.",
+    "lvl": "I"
+   },
+   {
+    "q": "According to the passage, why were repayment rates in the early groups high?",
+    "opts": [
+     "The government guaranteed every loan.",
+     "Banks charged very high rates of interest.",
+     "Lenders used public shaming to enforce repayment.",
+     "Each member's reputation among her neighbours stood behind the debt."
+    ],
+    "ans": "D",
+    "why": "Detail: 'for each member's reputation among her neighbours stood behind the debt'.",
+    "lvl": "E"
+   },
+   {
+    "q": "The statement 'Debt that had once been a ladder became, for some, a trap' suggests that:",
+    "opts": [
+     "credit that once helped women advance came to confine some borrowers in hardship.",
+     "borrowers used loans to buy ladders and tools.",
+     "all borrowers were eventually trapped by debt.",
+     "debt has never helped anyone improve their position."
+    ],
+    "ans": "A",
+    "why": "Inference: a ladder enables climbing; a trap holds one fast. The words 'for some' rule out 'all borrowers'.",
+    "lvl": "H"
+   },
+   {
+    "q": "The author's stance on small loans is best described as:",
+    "opts": [
+     "entirely hostile to all forms of small loans.",
+     "balanced, valuing the original model while criticising its profit-driven imitation.",
+     "indifferent to the outcome for borrowers.",
+     "uncritically supportive of commercial lenders."
+    ],
+    "ans": "B",
+    "why": "Tone: 'The lesson is not that small loans are harmful but that credit is a tool, not a cure.'",
+    "lvl": "H"
+   },
+   {
+    "q": "As used in the passage, 'a measure of say' means:",
+    "opts": [
+     "a legal right to vote",
+     "a precise quantity of speech",
+     "some degree of influence",
+     "an official position in the village"
+    ],
+    "ans": "C",
+    "why": "Vocabulary: some women gained 'a measure of say in household decisions', i.e. a share of influence over them.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "In controlled trials, patients who receive an inert tablet in place of a real drug frequently report genuine improvement. This placebo response was long treated by researchers as a nuisance, a source of noise to be subtracted before the true effect of a medicine could be measured. More recent work has made it an object of study in its own right. It appears that expectation, attention and the ritual of treatment can measurably alter the experience of pain, nausea and fatigue, though they rarely shrink a tumour or clear an infection. The effect is strongest for symptoms that the brain itself helps to construct, and it is shaped by details as small as the colour of a pill or the warmth of a doctor's manner.",
+   "These findings carry an uncomfortable implication for practitioners of every system of medicine. A consultation that is hurried, impersonal or dismissive may make an effective drug less effective, while time spent listening carefully to a patient is not a courtesy but part of the treatment. At the same time, the placebo response cannot justify offering a remedy whose specific benefit has never been shown, for deception corrodes the trust on which the response itself depends. The honest lesson is that how a doctor treats a patient matters, in addition to, and never instead of, what the doctor prescribes."
+  ],
+  "questions": [
+   {
+    "q": "The main point of the passage is that:",
+    "opts": [
+     "the placebo response shows that the doctor-patient relationship affects outcomes, but it must supplement, not replace, effective treatment.",
+     "placebos are as effective as real drugs for all illnesses.",
+     "researchers should ignore the placebo response as mere noise.",
+     "the colour of a pill is the most important factor in treatment."
+    ],
+    "ans": "A",
+    "why": "Main idea: 'how a doctor treats a patient matters, in addition to, and never instead of, what the doctor prescribes'.",
+    "lvl": "I"
+   },
+   {
+    "q": "According to the passage, the placebo effect is strongest for:",
+    "opts": [
+     "the growth of tumours.",
+     "symptoms the brain itself helps to construct, such as pain and nausea.",
+     "infections caused by bacteria.",
+     "injuries such as broken bones."
+    ],
+    "ans": "B",
+    "why": "Detail: 'The effect is strongest for symptoms that the brain itself helps to construct'; it 'rarely' shrinks tumours or clears infections.",
+    "lvl": "E"
+   },
+   {
+    "q": "The author would most likely disapprove of a practitioner who:",
+    "opts": [
+     "prescribes an unproven remedy on the ground that the patient may feel better anyway.",
+     "studies the placebo response in controlled trials.",
+     "spends extra time listening to a patient's complaints.",
+     "explains a medicine's purpose warmly and clearly."
+    ],
+    "ans": "A",
+    "why": "Inference: 'the placebo response cannot justify offering a remedy whose specific benefit has never been shown'.",
+    "lvl": "H"
+   },
+   {
+    "q": "In referring to 'practitioners of every system of medicine', the author intends to:",
+    "opts": [
+     "claim that all drugs are no better than placebos.",
+     "attack one particular system of medicine.",
+     "indicate that the lesson applies to all practitioners, not to any one tradition.",
+     "argue that consultations should be made shorter."
+    ],
+    "ans": "C",
+    "why": "Purpose: the implication is 'uncomfortable' for everyone, since any 'hurried, impersonal or dismissive' consultation can weaken an effective drug.",
+    "lvl": "H"
+   },
+   {
+    "q": "As used in the passage, 'inert' means:",
+    "opts": [
+     "slow and lacking energy",
+     "costly to manufacture",
+     "having no active medicinal effect",
+     "poisonous if swallowed"
+    ],
+    "ans": "C",
+    "why": "Vocabulary: an 'inert tablet' is given 'in place of a real drug', i.e. it contains no active ingredient.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "Within living memory, a villager on a clear night could see the pale band of the Milky Way stretching from horizon to horizon. For most city-dwellers today it is invisible, washed out by the glow of streetlights, advertising hoardings and illuminated buildings. Light pollution is easily dismissed as an aesthetic loss of concern only to astronomers, but its effects reach further. Many creatures navigate, feed and breed by the cycle of light and darkness. Hatchling sea turtles, which crawl towards the brightest horizon, are lured inland by beachfront lights instead of towards the sea; migrating birds collide with lit towers; nocturnal insects circle lamps until they are exhausted, depriving the animals that feed on them. Human beings are not exempt, for exposure to bright light at night disturbs the hormonal rhythms that govern sleep.",
+   "Unlike many environmental problems, this one is unusually easy to reverse. Darkness returns the moment a lamp is switched off or shielded. Fixtures that direct light downwards onto the road rather than sideways into the sky, warmer and dimmer bulbs, and timers that switch off decorative lighting after midnight can greatly reduce the glow without compromising safety. Such measures also save electricity. What is lacking is not technology but recognition that the night, too, is a resource worth conserving."
+  ],
+  "questions": [
+   {
+    "q": "Which of the following best expresses the central idea of the passage?",
+    "opts": [
+     "New technology must be invented before light pollution can be reduced.",
+     "Light pollution matters only to astronomers.",
+     "Cities need brighter lighting to ensure public safety.",
+     "Light pollution harms wildlife and people, and can be easily remedied once darkness is valued."
+    ],
+    "ans": "D",
+    "why": "Main idea: its 'effects reach further' than astronomy, and 'What is lacking is not technology but recognition that the night, too, is a resource'.",
+    "lvl": "I"
+   },
+   {
+    "q": "According to the passage, what happens to hatchling sea turtles near lit beaches?",
+    "opts": [
+     "They collide with lit towers.",
+     "They are lured inland instead of moving towards the sea.",
+     "They hatch earlier than usual.",
+     "They circle lamps until exhausted."
+    ],
+    "ans": "B",
+    "why": "Detail: they 'are lured inland by beachfront lights instead of towards the sea'.",
+    "lvl": "E"
+   },
+   {
+    "q": "The author calls light pollution 'unusually easy to reverse' chiefly because:",
+    "opts": [
+     "unlike many pollutants, artificial light leaves no lasting residue once it is removed.",
+     "new bulbs are cheaper than old ones.",
+     "most cities have already banned decorative lighting.",
+     "animals quickly adapt to bright light."
+    ],
+    "ans": "A",
+    "why": "Inference: 'Darkness returns the moment a lamp is switched off or shielded', in contrast to 'many environmental problems' whose effects persist.",
+    "lvl": "H"
+   },
+   {
+    "q": "The tone of the final sentence of the passage is:",
+    "opts": [
+     "sarcastic towards astronomers.",
+     "purely technical and detached.",
+     "despairing about the future of the night sky.",
+     "persuasive, urging a change in how the night is regarded."
+    ],
+    "ans": "D",
+    "why": "Tone: the author urges 'recognition that the night, too, is a resource worth conserving'.",
+    "lvl": "I"
+   },
+   {
+    "q": "As used in the passage, 'exempt' means:",
+    "opts": [
+     "barred from a group",
+     "free from an effect that applies to others",
+     "protected by vaccination",
+     "excused from paying a tax"
+    ],
+    "ans": "B",
+    "why": "Vocabulary: 'Human beings are not exempt' means they too suffer the effects that harm turtles, birds and insects.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "A museum is often imagined as a neutral storehouse, a place where objects from the past are simply kept safe and placed on display. Yet every museum is the result of choices. Someone decided which objects were worth collecting and which were left to decay; someone wrote the labels that tell visitors what an object means. A bronze image displayed under glass as an example of a dynastic style may once have been carried in procession by worshippers to whom it was not art at all, but a living presence. A farming implement may be shown as a curiosity, with no mention of the hands that shaped it or the skill required to use it. Such choices are rarely malicious, but they quietly shape what a society remembers and what it forgets.",
+   "In recent years, many museums have begun to share this authority. They invite communities to help interpret collections drawn from their own traditions, record the oral histories that accompany objects, and acknowledge openly when an item was acquired in circumstances that would not be accepted today. Critics complain that this turns the museum into a forum for argument rather than a place of quiet contemplation. But argument may be a sign of health. A museum that presents a single, settled story invites admiration; one that admits the past is contested invites understanding."
+  ],
+  "questions": [
+   {
+    "q": "The passage mainly argues that museums:",
+    "opts": [
+     "are neutral storehouses that simply preserve objects.",
+     "shape collective memory through their choices and gain by sharing interpretive authority.",
+     "should display only objects of artistic value.",
+     "ought to avoid any form of public debate."
+    ],
+    "ans": "B",
+    "why": "Main idea: 'every museum is the result of choices' that 'shape what a society remembers', and sharing authority leads to 'understanding'.",
+    "lvl": "I"
+   },
+   {
+    "q": "According to the passage, what have many museums begun to do in recent years?",
+    "opts": [
+     "Invite communities to help interpret collections and record oral histories.",
+     "Display only farming implements.",
+     "Remove labels from their exhibits.",
+     "Return all their objects to the original owners."
+    ],
+    "ans": "A",
+    "why": "Detail: 'They invite communities to help interpret collections... record the oral histories that accompany objects'.",
+    "lvl": "E"
+   },
+   {
+    "q": "The example of the bronze image suggests that:",
+    "opts": [
+     "museums should not display religious objects at all.",
+     "worshippers regarded the image mainly as an example of style.",
+     "displaying an object as art may strip it of the meaning it held for those who used it.",
+     "bronze images were never used in religious processions."
+    ],
+    "ans": "C",
+    "why": "Inference: to its worshippers it 'was not art at all, but a living presence', a meaning the museum label may omit.",
+    "lvl": "H"
+   },
+   {
+    "q": "How does the author respond to the critics mentioned in the passage?",
+    "opts": [
+     "With angry dismissal of their concerns.",
+     "With respectful disagreement, suggesting that debate may be healthy.",
+     "By ignoring their objection altogether.",
+     "With complete agreement that museums should avoid argument."
+    ],
+    "ans": "B",
+    "why": "Tone: 'But argument may be a sign of health.'",
+    "lvl": "I"
+   },
+   {
+    "q": "As used in the passage, 'contested' means:",
+    "opts": [
+     "won in a competition",
+     "subject to dispute and differing interpretations",
+     "officially approved",
+     "forgotten by later generations"
+    ],
+    "ans": "B",
+    "why": "Vocabulary: a past that is 'contested' is contrasted with 'a single, settled story'.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "In many towns, the most prominent buildings near the railway station are not temples or offices but coaching institutes, their hoardings displaying the photographs of students who secured top ranks in competitive examinations. Lakhs of adolescents leave home each year to spend two or three years preparing for a single entrance test, often at considerable cost to families who borrow to pay the fees. The examinations themselves are designed to rank vast numbers of candidates for a small number of seats, and they reward speed, pattern recognition and relentless practice. Coaching institutes have become extraordinarily efficient at supplying exactly these qualities.",
+   "The cost of this efficiency is borne in ways that rank lists do not record. Schooling in the final years becomes a formality, attended for the certificate while real study happens elsewhere. Curiosity that does not serve the syllabus is treated as a distraction. For the many who do not succeed, the experience can leave a lasting sense of failure at the age of seventeen, sometimes with tragic consequences. It would be unfair to blame students or even the institutes, which respond rationally to the incentives before them. The root lies in a scarcity of good institutions of higher learning and in an examination system that asks one test to bear the weight of a young person's future. Until those change, the coaching industry will continue to flourish."
+  ],
+  "questions": [
+   {
+    "q": "Which of the following best states the main idea of the passage?",
+    "opts": [
+     "Entrance examinations accurately measure a student's curiosity.",
+     "Students who fail entrance tests lack effort.",
+     "The coaching boom is a rational response to scarce seats and high-stakes tests, but it carries serious hidden costs.",
+     "Coaching institutes are the root cause of problems in education."
+    ],
+    "ans": "C",
+    "why": "Main idea: institutes 'respond rationally to the incentives', but there is a 'cost of this efficiency', and 'The root lies in a scarcity of good institutions'.",
+    "lvl": "I"
+   },
+   {
+    "q": "According to the passage, entrance examinations reward:",
+    "opts": [
+     "creative writing and debate.",
+     "regular attendance at school.",
+     "speed, pattern recognition and relentless practice.",
+     "curiosity beyond the syllabus."
+    ],
+    "ans": "C",
+    "why": "Detail: 'they reward speed, pattern recognition and relentless practice'.",
+    "lvl": "E"
+   },
+   {
+    "q": "Which reform would the author most likely support?",
+    "opts": [
+     "Banning coaching institutes by law.",
+     "Basing admission on several assessments rather than a single test.",
+     "Making entrance examinations more difficult.",
+     "Reducing the number of seats in colleges."
+    ],
+    "ans": "B",
+    "why": "Inference: the author blames 'an examination system that asks one test to bear the weight of a young person's future' and says it is unfair to blame the institutes.",
+    "lvl": "H"
+   },
+   {
+    "q": "The author's attitude towards coaching institutes is that they:",
+    "opts": [
+     "are wholly responsible for students' distress.",
+     "should not be blamed, since they respond rationally to existing incentives.",
+     "are of no importance to the discussion.",
+     "provide the ideal model of education."
+    ],
+    "ans": "B",
+    "why": "Tone: 'It would be unfair to blame students or even the institutes, which respond rationally to the incentives before them.'",
+    "lvl": "I"
+   },
+   {
+    "q": "As used in the passage, 'relentless' means:",
+    "opts": [
+     "pleasant and relaxed",
+     "careless and hurried",
+     "occasional and irregular",
+     "constant and unceasing"
+    ],
+    "ans": "D",
+    "why": "Vocabulary: 'relentless practice' is practice that never lets up.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "Inflation is often described as a tax that no legislature votes for, and like many taxes it does not fall evenly. A salaried professional whose income is linked to an index, or a household with savings in property and shares, may find that rising prices are largely offset by rising wages or asset values. A daily-wage labourer enjoys no such protection. His earnings are fixed by bargaining that lags behind the market, and a far larger share of what he spends goes on food and fuel, the very items whose prices are most volatile. When the cost of pulses or cooking oil rises sharply, a wealthier family economises on luxuries; a poor family cuts the protein from its children's meals.",
+   "For this reason, central banks that hold inflation low and stable are performing a service to the poor, even when their decisions are criticised for slowing growth. Yet monetary policy has limits. A spike in food prices caused by a failed monsoon or a disruption of supply cannot be cured by raising interest rates, which act slowly and mostly on demand. Such shocks call for different instruments: well-managed buffer stocks, efficient public distribution and investment in storage and transport that reduce waste between farm and market. Price stability, in short, is a shared responsibility of the bank and the government."
+  ],
+  "questions": [
+   {
+    "q": "The passage is mainly concerned with:",
+    "opts": [
+     "the advantages of investing in property and shares.",
+     "the reasons legislatures vote for new taxes.",
+     "how rising interest rates cure every kind of price rise.",
+     "the uneven burden of inflation on the poor and the combined measures needed to control it."
+    ],
+    "ans": "D",
+    "why": "Main idea: inflation 'does not fall evenly', and 'Price stability... is a shared responsibility of the bank and the government'.",
+    "lvl": "I"
+   },
+   {
+    "q": "Why, according to the passage, does inflation hurt daily-wage labourers more?",
+    "opts": [
+     "Their wages are linked to a price index.",
+     "They hold most of their savings in shares.",
+     "They spend a larger share of income on food and fuel, whose prices are most volatile.",
+     "They pay higher income tax than professionals."
+    ],
+    "ans": "C",
+    "why": "Detail: 'a far larger share of what he spends goes on food and fuel, the very items whose prices are most volatile'.",
+    "lvl": "E"
+   },
+   {
+    "q": "A sharp rise in vegetable prices after widespread floods would most likely be seen by the author as:",
+    "opts": [
+     "an event that affects rich and poor households equally.",
+     "a problem best solved by cutting public distribution.",
+     "a supply shock that interest rate increases alone are poorly suited to cure.",
+     "proof that the central bank has failed in its duty."
+    ],
+    "ans": "C",
+    "why": "Inference: a spike 'caused by a failed monsoon or a disruption of supply cannot be cured by raising interest rates'; it calls for buffer stocks and better distribution.",
+    "lvl": "H"
+   },
+   {
+    "q": "The author's attitude towards central banks is best described as:",
+    "opts": [
+     "appreciative of their role, while recognising its limits.",
+     "hostile, blaming them for slowing growth.",
+     "uncritically confident that they can solve every price problem.",
+     "indifferent to what they do."
+    ],
+    "ans": "A",
+    "why": "Tone: they 'are performing a service to the poor', 'Yet monetary policy has limits'.",
+    "lvl": "I"
+   },
+   {
+    "q": "As used in the passage, 'volatile' means:",
+    "opts": [
+     "liable to change rapidly and unpredictably",
+     "fixed by the government",
+     "likely to explode or catch fire",
+     "rising steadily every year"
+    ],
+    "ans": "A",
+    "why": "Vocabulary: food and fuel prices are 'most volatile', i.e. they rise sharply and unpredictably.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "Discussions of urban transport tend to revolve around metro rail lines and flyovers, projects that are visible, expensive and politically rewarding to inaugurate. The humble bus receives far less attention, although in most Indian cities it carries more passengers than any other form of public transport. A bus route requires no tunnelling and can be redrawn within weeks as a city grows. A single bus occupies the road space of two or three cars while carrying many times as many people. Its weakness is not the vehicle but the conditions in which it must operate: buses stuck in the same traffic as private cars lose their advantage of speed, and passengers who wait forty minutes at an unsheltered stop soon conclude that a two-wheeler is the only sensible choice.",
+   "The remedies are well known and modest in cost. Dedicated lanes at congested junctions, frequent and reliable services, shelters with accurate arrival information and fares integrated with other modes would transform the bus from a last resort into a first choice. That such measures are so rarely implemented says less about their merit than about who uses buses. Their passengers are disproportionately students, women, the elderly and workers on low wages, groups whose daily inconvenience seldom reaches the desks where budgets are decided."
+  ],
+  "questions": [
+   {
+    "q": "Which title best suits the passage?",
+    "opts": [
+     "Why Metro Rail Is the Only Solution",
+     "The Neglected Bus: An Efficient Answer Overlooked",
+     "Building Flyovers for Faster Cities",
+     "The Rise of the Two-Wheeler"
+    ],
+    "ans": "B",
+    "why": "Main idea: the bus 'receives far less attention' though it carries the most passengers and could become 'a first choice' with modest measures.",
+    "lvl": "I"
+   },
+   {
+    "q": "According to the passage, one advantage of a bus route is that it:",
+    "opts": [
+     "requires extensive tunnelling.",
+     "is never affected by traffic congestion.",
+     "is more rewarding for politicians to inaugurate.",
+     "can be redrawn within weeks as a city grows."
+    ],
+    "ans": "D",
+    "why": "Detail: 'A bus route requires no tunnelling and can be redrawn within weeks as a city grows.'",
+    "lvl": "E"
+   },
+   {
+    "q": "The final sentence of the passage implies that improvements to buses are neglected partly because:",
+    "opts": [
+     "bus passengers do not want better services.",
+     "their users have little influence over budget decisions.",
+     "the improvements are too expensive.",
+     "no one knows what measures would help."
+    ],
+    "ans": "B",
+    "why": "Inference: users' 'daily inconvenience seldom reaches the desks where budgets are decided'; the author says the remedies 'are well known and modest in cost'.",
+    "lvl": "H"
+   },
+   {
+    "q": "The author's attitude towards metro lines and flyovers is:",
+    "opts": [
+     "wholeheartedly enthusiastic about them.",
+     "entirely neutral, expressing no view.",
+     "mildly critical of the attention they receive at the expense of buses.",
+     "strongly opposed to their construction in any city."
+    ],
+    "ans": "C",
+    "why": "Tone: they are described as 'politically rewarding to inaugurate' while the bus 'receives far less attention'; the author does not call for stopping them.",
+    "lvl": "I"
+   },
+   {
+    "q": "As used in the passage, 'humble' most nearly means:",
+    "opts": [
+     "out of date and obsolete",
+     "very small in size",
+     "ordinary and modest, attracting little notice",
+     "meek and apologetic in manner"
+    ],
+    "ans": "C",
+    "why": "Vocabulary: the 'humble bus' is contrasted with 'visible, expensive' metro and flyover projects.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "Few things are as intimate as the food we eat, and few betrayals as hard to detect as its adulteration. Milk diluted with water and thickened with starch, chilli powder coloured with industrial dye, spices bulked out with sawdust or brick powder: the list of adulterants found in routine surveys is long and depressing. Some merely cheat the buyer of value. Others introduce substances that damage the liver, kidneys or nervous system over years of quiet exposure, so that the harm can rarely be traced to any single purchase. The consumer, standing at a counter, has almost no means of telling a pure product from a falsified one, and this is precisely what makes the trade profitable.",
+   "Laws against adulteration are not lacking; what is often lacking is the capacity to enforce them. Food safety officers are few, laboratories are overloaded, and cases move so slowly through the courts that the penalty, when it finally comes, deters no one. Some states have improved matters with mobile testing vans that visit markets and simple kits that let households check common items at home. Such initiatives matter not only because they catch offenders but because they change the calculation of the trader, who must now reckon with a real chance of being found out. Vigilance by consumers helps, but it cannot substitute for an inspector who actually inspects."
+  ],
+  "questions": [
+   {
+    "q": "Which of the following best expresses the main idea of the passage?",
+    "opts": [
+     "New laws are urgently needed because none exist against adulteration.",
+     "Adulteration only cheats buyers of value and causes no harm to health.",
+     "Consumers alone can end adulteration through careful shopping.",
+     "Food adulteration thrives because it is hard to detect and laws are weakly enforced, so effective enforcement is the remedy."
+    ],
+    "ans": "D",
+    "why": "Main idea: 'Laws against adulteration are not lacking; what is often lacking is the capacity to enforce them.'",
+    "lvl": "I"
+   },
+   {
+    "q": "Which initiative have some states used, according to the passage?",
+    "opts": [
+     "Mobile testing vans and simple home testing kits.",
+     "Banning the sale of loose spices.",
+     "Closing overloaded laboratories.",
+     "Doubling the number of food courts."
+    ],
+    "ans": "A",
+    "why": "Detail: 'mobile testing vans that visit markets and simple kits that let households check common items at home'.",
+    "lvl": "E"
+   },
+   {
+    "q": "The phrase 'an inspector who actually inspects' implies that:",
+    "opts": [
+     "inspections are unnecessary where testing kits are available.",
+     "inspection often exists on paper but is not carried out effectively.",
+     "inspectors are more numerous than they need to be.",
+     "consumers are better at detecting adulteration than inspectors."
+    ],
+    "ans": "B",
+    "why": "Inference: the word 'actually' contrasts real inspection with the existing situation in which 'Food safety officers are few' and penalties deter 'no one'.",
+    "lvl": "H"
+   },
+   {
+    "q": "The author's tone in describing the list of adulterants is:",
+    "opts": [
+     "amused and light-hearted",
+     "detached and approving",
+     "admiring of the traders' ingenuity",
+     "disapproving and dismayed"
+    ],
+    "ans": "D",
+    "why": "Tone: the list is called 'long and depressing', and adulteration a 'betrayal'.",
+    "lvl": "I"
+   },
+   {
+    "q": "As used in the passage, 'deters' means:",
+    "opts": [
+     "encourages to continue",
+     "delays the progress of",
+     "discourages someone from acting",
+     "punishes severely"
+    ],
+    "ans": "C",
+    "why": "Vocabulary: a penalty that comes too late 'deters no one', i.e. stops no one from adulterating.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "Science is often presented to the public as a collection of established facts, but its real strength lies in a process: the willingness to test claims, expose them to criticism and discard them when they fail. A single striking study, however elegant, is a beginning rather than a conclusion. Its findings acquire authority only when other researchers, working independently, obtain the same result. In recent years, attempts to repeat well-known experiments in psychology, medicine and other fields have produced unsettling results. A significant proportion of published findings could not be reproduced, or appeared much weaker the second time.",
+   "Part of the explanation lies in the incentives under which scientists work. Journals prefer novel and positive results, careers are built on publications, and a study that merely confirms an earlier one rarely attracts attention. Under such pressure, researchers may, often without any intent to deceive, analyse their data in many ways until something appears significant. The remedies now being adopted are instructive: registering a study's methods before data are collected, publishing negative results, and sharing raw data so that others can check the analysis. It would be wrong to conclude from this episode that science is unreliable. The discovery that many findings did not hold up was itself made by scientists, using the methods of science. The crisis is, in this sense, evidence of a system correcting itself."
+  ],
+  "questions": [
+   {
+    "q": "The passage chiefly argues that:",
+    "opts": [
+     "science is fundamentally unreliable and should not be trusted.",
+     "a single elegant study is enough to establish a scientific fact.",
+     "the failure to reproduce many findings exposes flawed incentives, yet its discovery shows science correcting itself.",
+     "journals should publish only novel and positive results."
+    ],
+    "ans": "C",
+    "why": "Main idea: incentives explain the problem, but 'The crisis is, in this sense, evidence of a system correcting itself.'",
+    "lvl": "I"
+   },
+   {
+    "q": "Which of the following is mentioned as a remedy now being adopted?",
+    "opts": [
+     "Publishing only positive results.",
+     "Keeping raw data confidential.",
+     "Rewarding scientists for the number of novel findings.",
+     "Registering a study's methods before data are collected."
+    ],
+    "ans": "D",
+    "why": "Detail: 'registering a study's methods before data are collected, publishing negative results, and sharing raw data'.",
+    "lvl": "E"
+   },
+   {
+    "q": "The author implies that researchers who analyse their data in many ways until something appears significant:",
+    "opts": [
+     "may produce misleading results even without dishonest intent.",
+     "are rarely influenced by career pressures.",
+     "produce the most reliable findings.",
+     "are always guilty of deliberate fraud."
+    ],
+    "ans": "A",
+    "why": "Inference: they do so 'often without any intent to deceive', yet such findings later fail to 'hold up'.",
+    "lvl": "H"
+   },
+   {
+    "q": "The author's attitude towards science in the light of these problems is:",
+    "opts": [
+     "dismissive of the problem as trivial.",
+     "hostile to the scientists involved.",
+     "disillusioned and pessimistic about its future.",
+     "confident in its self-correcting process, while acknowledging its flaws."
+    ],
+    "ans": "D",
+    "why": "Tone: 'It would be wrong to conclude from this episode that science is unreliable', though the results were 'unsettling'.",
+    "lvl": "I"
+   },
+   {
+    "q": "As used in the passage, 'instructive' means:",
+    "opts": [
+     "confusing and unclear",
+     "offering useful lessons",
+     "giving orders to others",
+     "made compulsory by law"
+    ],
+    "ans": "B",
+    "why": "Vocabulary: the remedies are 'instructive' because they show what went wrong and how to fix it.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "Every year thousands of patients die while waiting for a kidney, liver or heart, although the organs that could have saved them were buried or cremated with donors who had never been asked. The shortage is not, at root, medical. Transplant surgery is well established, and a single deceased donor can save or transform several lives. The obstacles lie in hesitation, misunderstanding and the circumstances in which the question must be asked. Brain death is an unfamiliar concept to many families, who see a loved one's chest still rising on a ventilator and cannot accept that death has occurred. The request for donation comes at a moment of acute grief, often from hospital staff who have had no training in how to make it.",
+   "Some countries have responded by presuming consent unless a person has registered an objection. Such laws can raise donation rates, but they are no substitute for public trust; where families feel pressured or suspicious, they may refuse regardless of what the law presumes. The deeper safeguard is transparency. When the allocation of organs follows clear and public rules, when the declaration of death is kept entirely separate from the transplant team, and when grieving families are treated with patience rather than urgency, more of them say yes. A system that is trusted will rarely lack donors; a system that is suspected will always lack them."
+  ],
+  "questions": [
+   {
+    "q": "Which of the following best summarises the passage?",
+    "opts": [
+     "The organ shortage stems from mistrust and misunderstanding, and is best addressed by transparent, humane systems.",
+     "Families should be pressed for a quick decision on donation.",
+     "The organ shortage exists because transplant surgery is still experimental.",
+     "Presumed-consent laws alone can solve the organ shortage."
+    ],
+    "ans": "A",
+    "why": "Main idea: 'The shortage is not, at root, medical', and 'The deeper safeguard is transparency'.",
+    "lvl": "I"
+   },
+   {
+    "q": "According to the passage, why do many families find it hard to accept brain death?",
+    "opts": [
+     "They see the patient's chest still rising on a ventilator.",
+     "The law does not recognise brain death.",
+     "Doctors refuse to explain the diagnosis.",
+     "The patient is usually conscious."
+    ],
+    "ans": "A",
+    "why": "Detail: families 'see a loved one's chest still rising on a ventilator and cannot accept that death has occurred'.",
+    "lvl": "E"
+   },
+   {
+    "q": "Keeping the declaration of death separate from the transplant team is most likely intended to:",
+    "opts": [
+     "prevent families from registering objections.",
+     "reassure families that death is not declared hastily in order to obtain organs.",
+     "allow transplant surgeons to work more quickly.",
+     "reduce the cost of transplant surgery."
+    ],
+    "ans": "B",
+    "why": "Inference: the measure is listed under transparency that builds trust; families who are 'suspicious' may refuse.",
+    "lvl": "H"
+   },
+   {
+    "q": "The author's attitude towards presumed-consent laws is:",
+    "opts": [
+     "wholly opposed to them as immoral.",
+     "unreservedly enthusiastic.",
+     "cautious, granting that they may help but insisting they cannot replace trust.",
+     "indifferent to their effects."
+    ],
+    "ans": "C",
+    "why": "Tone: 'Such laws can raise donation rates, but they are no substitute for public trust'.",
+    "lvl": "I"
+   },
+   {
+    "q": "As used in the passage, 'acute' means:",
+    "opts": [
+     "intense and severe",
+     "clever and perceptive",
+     "long-lasting but mild",
+     "sharply pointed"
+    ],
+    "ans": "A",
+    "why": "Vocabulary: 'a moment of acute grief' is a moment of overwhelming sorrow.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "A reader in one Indian language often knows more about the novels of distant continents than about those written a few hundred kilometres away in a neighbouring tongue. The reason is not a lack of literary wealth. Every major language of the country possesses a tradition of fiction, poetry and drama that would repay attention anywhere in the world. The barrier is translation, and in particular the habit of translating almost everything through English. A Konkani short story reaches a Bengali reader, if it reaches him at all, only after passing through an English version, losing at each stage some of the idiom, humour and texture that made it distinctive.",
+   "Translators themselves are among the least rewarded workers in the literary world. Their names appear in small print, their fees are modest, and reviewers who praise a translated novel's style seldom pause to recognise that the style on the page is largely the translator's achievement. Yet a good translation is a creative act, demanding not only command of two languages but a feel for two cultures. Programmes that train translators to work directly between Indian languages, and publishers willing to commission such work, could do more for national integration than many grander schemes. To read a neighbour's stories in something close to their original voice is to recognise him not as a stranger but as a fellow citizen with a different accent."
+  ],
+  "questions": [
+   {
+    "q": "The passage mainly argues that:",
+    "opts": [
+     "translators are paid too much for their work.",
+     "all Indian literature should be read only in English.",
+     "direct translation between Indian languages, with due credit to translators, can bring regional literatures and citizens closer.",
+     "Indian languages lack a rich literary tradition."
+    ],
+    "ans": "C",
+    "why": "Main idea: the barrier is translating 'through English', and direct translation 'could do more for national integration than many grander schemes'.",
+    "lvl": "I"
+   },
+   {
+    "q": "What does the passage identify as the main barrier to reading literature from neighbouring languages?",
+    "opts": [
+     "Readers' lack of interest in fiction.",
+     "The high price of books.",
+     "Translation, especially the habit of translating through English.",
+     "A lack of literary wealth in Indian languages."
+    ],
+    "ans": "C",
+    "why": "Detail: 'The barrier is translation, and in particular the habit of translating almost everything through English.'",
+    "lvl": "E"
+   },
+   {
+    "q": "The author implies that reviewers who praise a translated novel's style:",
+    "opts": [
+     "always acknowledge the translator's contribution.",
+     "often give the original author credit for what is largely the translator's work.",
+     "prefer translations made through English.",
+     "do not read translated novels at all."
+    ],
+    "ans": "B",
+    "why": "Inference: they 'seldom pause to recognise that the style on the page is largely the translator's achievement'.",
+    "lvl": "H"
+   },
+   {
+    "q": "The author's attitude towards translators is:",
+    "opts": [
+     "indifferent to their contribution.",
+     "dismissive, regarding their work as mechanical.",
+     "critical of their lack of accuracy.",
+     "appreciative, regarding their work as creative and undervalued."
+    ],
+    "ans": "D",
+    "why": "Tone: 'a good translation is a creative act', yet translators are 'among the least rewarded workers'.",
+    "lvl": "I"
+   },
+   {
+    "q": "As used in the passage, 'repay attention' means:",
+    "opts": [
+     "demand payment from readers",
+     "need to be printed again",
+     "reward the effort of reading it",
+     "return money that was borrowed"
+    ],
+    "ans": "C",
+    "why": "Vocabulary: literature that 'would repay attention anywhere in the world' is worth the reader's time.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "For decades, sanitation programmes measured success by the number of toilets constructed. Contractors were paid per unit, officials reported the totals and villages were declared covered. Surveys conducted a few years later often found a different picture: many toilets used as storerooms for grain or firewood, others abandoned because the pit had filled and no one knew how to empty it, and family members, particularly men, continuing to defecate in the open out of long habit. The structures existed; the change in behaviour they were meant to represent did not.",
+   "The lesson, learned at considerable expense, is that sanitation is a social practice rather than a piece of hardware. Habits formed over a lifetime are not altered by the appearance of a concrete cubicle in the backyard. Programmes that succeeded tended to begin with conversation rather than construction, helping a community see for itself how faecal contamination travelled from open fields to drinking water and food, and to children's stomachs. Once a village resolved collectively to end open defecation, households often built toilets with little subsidy and, crucially, used them. Maintenance, too, required planning: arrangements for emptying pits, water within reach and designs suited to local soil. None of this diminishes the importance of building toilets. It simply insists that a toilet counted is not the same as a toilet used."
+  ],
+  "questions": [
+   {
+    "q": "Which title best suits the passage?",
+    "opts": [
+     "The Rising Cost of Construction Contracts",
+     "Storing Grain in Rural Homes",
+     "Beyond Bricks: Sanitation as a Change in Behaviour",
+     "How to Build a Cheap Toilet"
+    ],
+    "ans": "C",
+    "why": "Main idea: 'sanitation is a social practice rather than a piece of hardware'; 'a toilet counted is not the same as a toilet used'.",
+    "lvl": "I"
+   },
+   {
+    "q": "According to later surveys, many toilets built under earlier programmes were:",
+    "opts": [
+     "used as storerooms for grain or firewood.",
+     "used mostly by men.",
+     "demolished by local officials.",
+     "shared by several villages."
+    ],
+    "ans": "A",
+    "why": "Detail: 'many toilets used as storerooms for grain or firewood'; men in fact continued to defecate in the open.",
+    "lvl": "E"
+   },
+   {
+    "q": "The author implies that paying contractors per toilet:",
+    "opts": [
+     "encouraged a focus on construction numbers rather than actual use.",
+     "was the main reason later programmes succeeded.",
+     "made toilets too expensive for households.",
+     "ensured that every toilet was properly used."
+    ],
+    "ans": "A",
+    "why": "Inference: payment 'per unit' fitted a system that 'measured success by the number of toilets constructed', while 'the change in behaviour... did not' occur.",
+    "lvl": "H"
+   },
+   {
+    "q": "The sentence 'None of this diminishes the importance of building toilets' serves to:",
+    "opts": [
+     "argue that toilet construction should be stopped.",
+     "cast doubt on the findings of the surveys.",
+     "praise contractors for their efficiency.",
+     "clarify that the author objects not to construction but to treating it as sufficient."
+    ],
+    "ans": "D",
+    "why": "Purpose: the next sentence explains the real point: 'a toilet counted is not the same as a toilet used'.",
+    "lvl": "I"
+   },
+   {
+    "q": "As used in the passage, 'crucially' means:",
+    "opts": [
+     "in a way that is decisively important",
+     "in a surprising way",
+     "in a harsh and cruel way",
+     "slowly and gradually"
+    ],
+    "ans": "A",
+    "why": "Vocabulary: that households 'crucially, used them' marks use as the essential outcome.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "For a long time, history was written as if only kings, generals and ministers had lived. The chronicles that survived were commissioned by courts, and they recorded victories, treaties and the succession of rulers with great care, while the peasant who paid the tax and the soldier who died in the battle appeared, if at all, as numbers. This was less a conspiracy than a consequence of the sources: those who could write, or could pay others to write, left records, and those who could not left almost nothing that archives thought worth keeping.",
+   "In the last century historians began to read these same documents against their grain. A land-revenue register, compiled to tell a ruler how much he could collect, also reveals which crops were grown, how families divided their fields and when a village fell into debt. Court cases about petty theft preserve, in the words of witnesses, the rhythms of a bazaar. Oral testimony, songs and temple inscriptions have been added to the historian's materials. The result is not a history without rulers but a fuller one, in which the powerful are seen alongside the people whose labour made their power possible. Such history is slower to write and harder to summarise, yet it comes closer to the truth that every age was lived by the many, not merely governed by the few."
+  ],
+  "questions": [
+   {
+    "q": "Which of the following is the most suitable title for the passage?",
+    "opts": [
+     "The Errors of Land-Revenue Registers",
+     "The Decline of Oral Tradition",
+     "History from Below: Reading Old Records Anew",
+     "Why Kings Commissioned Chronicles"
+    ],
+    "ans": "C",
+    "why": "Main idea: the passage traces how historians began recovering ordinary lives by reading 'these same documents against their grain'.",
+    "lvl": "I"
+   },
+   {
+    "q": "According to the passage, a land-revenue register can reveal:",
+    "opts": [
+     "The songs sung at temple festivals.",
+     "Which crops were grown and when a village fell into debt.",
+     "The terms of treaties signed between rulers.",
+     "The names of soldiers who died in battle."
+    ],
+    "ans": "B",
+    "why": "Detail: it 'also reveals which crops were grown, how families divided their fields and when a village fell into debt'.",
+    "lvl": "E"
+   },
+   {
+    "q": "The passage suggests that older histories neglected ordinary people mainly because:",
+    "opts": [
+     "Historians deliberately conspired to hide the lives of peasants.",
+     "Rulers ordered every record of peasants to be destroyed.",
+     "Ordinary people refused to allow their lives to be recorded.",
+     "The surviving records were produced by and for those who could write or pay writers."
+    ],
+    "ans": "D",
+    "why": "Inference: 'This was less a conspiracy than a consequence of the sources: those who could write... left records'.",
+    "lvl": "H"
+   },
+   {
+    "q": "The author's attitude towards the newer kind of history is best described as:",
+    "opts": [
+     "Neutral and largely uninterested.",
+     "Appreciative, while admitting that it is more demanding to produce.",
+     "Nostalgic for the older court chronicles.",
+     "Dismissive, regarding it as unscientific."
+    ],
+    "ans": "B",
+    "why": "Tone: it 'comes closer to the truth', though it 'is slower to write and harder to summarise'.",
+    "lvl": "I"
+   },
+   {
+    "q": "The phrase \"read these same documents against their grain\" most nearly means to:",
+    "opts": [
+     "Reject them as forgeries made by courts.",
+     "Draw from them information their compilers never intended to give.",
+     "Translate them into modern languages.",
+     "Read them in reverse order, from the last page to the first."
+    ],
+    "ans": "B",
+    "why": "Vocabulary in context: the register 'compiled to tell a ruler how much he could collect, also reveals' quite different facts.",
+    "lvl": "H"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "When an old building begins to crumble, its custodians face a choice that is more philosophical than technical. One school holds that a monument should be restored to the condition it was in when it was new: missing carvings are recarved, faded paint is renewed, and later additions are stripped away so that the original design can be seen again. The opposing school argues that such restoration is a polite form of forgery. A building, in this view, is a document of all the centuries it has survived, and the cracks, repairs and alterations made by later generations belong to its history as surely as the first foundation stone. Its guardians should therefore repair only what is needed to keep it standing, and should make every new intervention distinguishable from the old.",
+   "Modern conservation practice leans towards the second position, though not without compromise. A temple still in worship cannot be treated as a museum object; the community that uses it may reasonably want a roof that does not leak and an image that is not disfigured. The wisest conservators therefore begin not with a rule but with a question: what is this building for, and for whom is it being kept? The answer may differ between a ruined fort and a living shrine, and good practice allows for that difference."
+  ],
+  "questions": [
+   {
+    "q": "The passage is chiefly concerned with:",
+    "opts": [
+     "Technical methods of recarving damaged stone.",
+     "The history of temple architecture in India.",
+     "Competing views on how far old buildings should be restored.",
+     "Why ruined forts attract more visitors than shrines."
+    ],
+    "ans": "C",
+    "why": "Main idea: the 'choice that is more philosophical than technical' between two schools of restoration.",
+    "lvl": "I"
+   },
+   {
+    "q": "According to the opposing school, a building should be regarded as:",
+    "opts": [
+     "A design that must be returned to its first state.",
+     "A document of all the centuries it has survived.",
+     "A museum object separate from those who use it.",
+     "A source of income for its custodians."
+    ],
+    "ans": "B",
+    "why": "Detail: 'A building, in this view, is a document of all the centuries it has survived'.",
+    "lvl": "E"
+   },
+   {
+    "q": "The author would most likely agree that:",
+    "opts": [
+     "All later additions to a monument must be removed.",
+     "Communities that use a building should have no say in its conservation.",
+     "A temple in active worship may justifiably receive repairs that a ruined fort would not.",
+     "One fixed rule should govern the treatment of every monument."
+    ],
+    "ans": "C",
+    "why": "Inference: 'The answer may differ between a ruined fort and a living shrine, and good practice allows for that difference'.",
+    "lvl": "I"
+   },
+   {
+    "q": "The author mentions \"a temple still in worship\" in order to:",
+    "opts": [
+     "Argue that temples should be converted into museums.",
+     "Prove that the first school of restoration is entirely right.",
+     "Criticise religious communities for neglecting monuments.",
+     "Show why a strict conservation principle may need to be softened in practice."
+    ],
+    "ans": "D",
+    "why": "Purpose: it follows 'though not without compromise' and shows a living shrine 'cannot be treated as a museum object'.",
+    "lvl": "H"
+   },
+   {
+    "q": "The word \"custodians\" in the first sentence most nearly means:",
+    "opts": [
+     "Critics",
+     "Visitors",
+     "Caretakers",
+     "Architects"
+    ],
+    "ans": "C",
+    "why": "Vocabulary: custodians are those responsible for the building, later called its 'guardians'.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "It is often said that poetry is what gets lost in translation, and anyone who has compared a poem with its rendering in another language knows the force of the remark. Words carry not only meanings but sounds, rhythms and associations that belong to a single tongue. A word for rain in Konkani may summon the smell of wet laterite and the start of the fishing ban; its nearest English equivalent summons umbrellas and grey streets. The translator who keeps the meaning may lose the music, and the one who keeps the music may have to bend the meaning.",
+   "Yet the complaint can be pressed too far. Most readers meet the greater part of world literature in translation, and without translators the epics, novels and plays of other peoples would remain closed to them altogether. A good translation is not a copy of the original but a new work that answers to it, as a reply answers a letter. It may lose some things and gain others, and occasionally it becomes a classic in its own right. The fair question to ask of a translation is therefore not whether it is identical to the original, which no translation can be, but whether it gives its reader a living sense of why the original mattered."
+  ],
+  "questions": [
+   {
+    "q": "Which title best suits the passage?",
+    "opts": [
+     "The Konkani Language and Its Rains",
+     "Lost and Found in Translation",
+     "How to Become a Professional Translator",
+     "Why Poetry Can Never Be Translated"
+    ],
+    "ans": "B",
+    "why": "Main idea: translation loses some things but gains others and opens world literature to readers.",
+    "lvl": "E"
+   },
+   {
+    "q": "The example of the Konkani word for rain is used to illustrate that:",
+    "opts": [
+     "English poetry lacks images drawn from nature.",
+     "Translators prefer prose to poetry.",
+     "Words carry associations that belong to one particular language.",
+     "Konkani has more words for rain than English does."
+    ],
+    "ans": "C",
+    "why": "Detail/illustration: words carry 'associations that belong to a single tongue'; the English equivalent 'summons umbrellas and grey streets'.",
+    "lvl": "H"
+   },
+   {
+    "q": "It can be inferred that a reader who refuses to read anything in translation would:",
+    "opts": [
+     "Become a better translator.",
+     "Understand the originals more deeply.",
+     "Lose nothing of real importance.",
+     "Be shut out of much of the world's literature."
+    ],
+    "ans": "D",
+    "why": "Inference: 'without translators the epics, novels and plays of other peoples would remain closed to them altogether'.",
+    "lvl": "I"
+   },
+   {
+    "q": "Which statement best describes the author's position?",
+    "opts": [
+     "Translation inevitably loses something, but a good one is a valuable work in its own right.",
+     "A translation should aim above all to be identical to its original.",
+     "Poetry should not be translated, since its meaning is always lost.",
+     "Translations matter only when they become classics."
+    ],
+    "ans": "A",
+    "why": "Attitude: 'the complaint can be pressed too far'; identity is something 'no translation can be'; the test is a 'living sense of why the original mattered'.",
+    "lvl": "H"
+   },
+   {
+    "q": "In the phrase \"a new work that answers to it\", \"answers to\" most nearly means:",
+    "opts": [
+     "Responds to",
+     "Is punished by",
+     "Obeys the orders of",
+     "Replaces entirely"
+    ],
+    "ans": "A",
+    "why": "Vocabulary: explained by the simile 'as a reply answers a letter'.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "We usually think of reading as a journey with a destination: we begin a book in order to finish it, and once the last page is turned, the book is done with. Rereading upsets this idea. A novel read at eighteen and again at forty is, in an important sense, two different books, because the reader who returns to it has changed. Passages once skimmed as dull may now seem the heart of the story; a character once admired may now appear foolish or cruel. The words on the page have not altered, but the experience that the reader brings to them has.",
+   "For this reason, rereading is not the idle habit of those who have run out of new books. It is one of the few ways in which we can measure our own growth, for the familiar text becomes a fixed point against which our shifting judgements are revealed. It also rewards attention in a way that a first reading rarely can. Freed from the anxiety of discovering what happens next, the rereader notices how the effect was achieved: the hint planted early, the sentence that does more work than it seemed to. In an age that measures reading by the number of titles completed, the quiet return to an old book may be the more demanding and the more rewarding discipline."
+  ],
+  "questions": [
+   {
+    "q": "The central claim of the passage is that:",
+    "opts": [
+     "Young readers usually misunderstand the novels they read.",
+     "Rereading is valuable because it reveals both the craft of a book and the growth of its reader.",
+     "A first reading of a book is of little worth.",
+     "People should stop reading new books altogether."
+    ],
+    "ans": "B",
+    "why": "Main idea: rereading lets us 'measure our own growth' and notice 'how the effect was achieved'.",
+    "lvl": "I"
+   },
+   {
+    "q": "According to the passage, the rereader notices how effects were achieved because he or she is:",
+    "opts": [
+     "Freed from the anxiety of discovering what happens next.",
+     "Guided by the comments of literary critics.",
+     "Reading a revised edition of the text.",
+     "Reading more slowly with advancing age."
+    ],
+    "ans": "A",
+    "why": "Detail: 'Freed from the anxiety of discovering what happens next, the rereader notices how the effect was achieved'.",
+    "lvl": "E"
+   },
+   {
+    "q": "The author would most likely disagree with which statement?",
+    "opts": [
+     "The best measure of a reader is the number of books he or she has completed.",
+     "Rereading can reveal changes in one's own judgement.",
+     "A familiar text can serve as a fixed point of comparison.",
+     "A first reading is often driven by curiosity about the plot."
+    ],
+    "ans": "A",
+    "why": "Inference: the author contrasts 'an age that measures reading by the number of titles completed' with the 'more rewarding discipline' of rereading.",
+    "lvl": "I"
+   },
+   {
+    "q": "The final sentence of the passage serves mainly to:",
+    "opts": [
+     "Contrast a quantity-based view of reading with the value of returning to old books.",
+     "Criticise the authors of old books.",
+     "Urge readers to complete more titles each year.",
+     "Announce that reading is in decline."
+    ],
+    "ans": "A",
+    "why": "Purpose: it sets 'the number of titles completed' against 'the quiet return to an old book'.",
+    "lvl": "H"
+   },
+   {
+    "q": "The word \"idle\" in \"the idle habit\" most nearly means:",
+    "opts": [
+     "Broken",
+     "Purposeless",
+     "Unemployed",
+     "Silent"
+    ],
+    "ans": "B",
+    "why": "Vocabulary: the author denies that rereading is a pointless pastime of those with nothing better to read; 'unemployed' is a different sense of idle.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "Much of what we do each day is not decided at all. We take the same route to work, reach for the same seat at the table and accept the settings that came with a new phone, not because we have weighed the alternatives but because the choice was made once and has since been running on its own. Psychologists describe such behaviour as habitual, and they have found that it is triggered less by intention than by context: the place, the time and the preceding action cue the response before any deliberate thought occurs.",
+   "This finding has an uncomfortable implication for anyone who hopes to change by willpower alone. Resolving to eat less or to read more is a matter of intention, but the old habit is tied to the old context, and so it reasserts itself as soon as attention lapses. People who succeed in changing their behaviour tend instead to alter their surroundings. They keep the biscuit tin out of sight, place the book on the pillow, or attach the new action to an existing routine, so that one cue now leads to a different response. Seen in this light, a habit is neither a vice nor a virtue in itself; it is an economy of the mind, freeing attention for matters that genuinely need it. The task is not to abolish habits but to arrange for good ones."
+  ],
+  "questions": [
+   {
+    "q": "Which is the most suitable title for the passage?",
+    "opts": [
+     "The Unlimited Power of Willpower",
+     "Why All Habits Are Harmful",
+     "Changing Habits by Changing Context",
+     "How Phones Shape Our Choices"
+    ],
+    "ans": "C",
+    "why": "Main idea: habits are cued by context, so successful change comes from altering surroundings.",
+    "lvl": "E"
+   },
+   {
+    "q": "According to psychologists, habitual behaviour is triggered mainly by:",
+    "opts": [
+     "A deliberate weighing of alternatives.",
+     "The place, the time and the preceding action.",
+     "The strength of a person's willpower.",
+     "The advice of friends and family."
+    ],
+    "ans": "B",
+    "why": "Detail: 'triggered less by intention than by context: the place, the time and the preceding action'.",
+    "lvl": "E"
+   },
+   {
+    "q": "A person who resolves to exercise every morning but changes nothing else in his routine is, according to the passage, most likely to:",
+    "opts": [
+     "Find the old routine returning as soon as his attention slips.",
+     "Find that exercise becomes automatic at once.",
+     "Lose all his other habits as well.",
+     "Succeed, since intention controls habitual behaviour."
+    ],
+    "ans": "A",
+    "why": "Inference: 'the old habit is tied to the old context, and so it reasserts itself as soon as attention lapses'.",
+    "lvl": "I"
+   },
+   {
+    "q": "The examples of the biscuit tin and the book on the pillow are given to show that:",
+    "opts": [
+     "Successful changers reshape their surroundings to support new behaviour.",
+     "Reading in bed is a harmful habit.",
+     "Willpower alone is enough to change behaviour.",
+     "Certain foods should be avoided at night."
+    ],
+    "ans": "A",
+    "why": "Purpose: they follow 'People who succeed in changing their behaviour tend instead to alter their surroundings'.",
+    "lvl": "I"
+   },
+   {
+    "q": "In the phrase \"an economy of the mind\", the word \"economy\" most nearly means:",
+    "opts": [
+     "Efficient saving of limited effort",
+     "Mean or miserly behaviour",
+     "A system of trade and money",
+     "The wealth of a nation"
+    ],
+    "ans": "A",
+    "why": "Vocabulary: a habit is an economy because it is 'freeing attention for matters that genuinely need it'.",
+    "lvl": "H"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "We tend to imagine memory as a kind of recording, stored somewhere in the brain and played back, more or less faithfully, when we need it. Research over several decades suggests a different picture. A memory, it appears, is rebuilt each time it is recalled, assembled from fragments and filled out with what seems likely, what we have since learned and what others have told us. In well-known experiments, people who watched a film of a minor road accident and were later asked how fast the cars were going when they 'smashed' into each other gave higher estimates than those asked about cars that 'hit' each other; some in the first group even recalled broken glass that had never appeared.",
+   "None of this means that memory is useless. For most purposes it serves us well, and its flexibility allows us to generalise from experience rather than drown in detail. But it does mean that confidence is a poor guide to accuracy. A witness may be entirely sincere and entirely wrong, and the act of repeatedly questioning someone can shape the very recollection being sought. Institutions that rely on testimony, such as courts and inquiries, have reason to treat memory with respect but not with blind trust, and to question witnesses in ways that do not supply the answers."
+  ],
+  "questions": [
+   {
+    "q": "The main idea of the passage is that:",
+    "opts": [
+     "Memory is an accurate recording that can be replayed at will.",
+     "Memory is reconstructed at each recall, so testimony must be handled with care.",
+     "Road accidents are usually misreported by the police.",
+     "Courts should stop relying on witnesses altogether."
+    ],
+    "ans": "B",
+    "why": "Main idea: 'A memory... is rebuilt each time it is recalled'; institutions should treat it 'with respect but not with blind trust'.",
+    "lvl": "I"
+   },
+   {
+    "q": "Participants asked about cars that 'smashed' into each other:",
+    "opts": [
+     "Refused to estimate the speed of the cars.",
+     "Gave lower speed estimates than the other group.",
+     "Recalled the film more accurately than the other group.",
+     "Gave higher speed estimates, and some recalled broken glass that was not there."
+    ],
+    "ans": "D",
+    "why": "Detail: they 'gave higher estimates' and 'some... even recalled broken glass that had never appeared'.",
+    "lvl": "E"
+   },
+   {
+    "q": "It can be inferred that a witness who is confident about what he saw:",
+    "opts": [
+     "Is probably lying deliberately.",
+     "Is almost always accurate.",
+     "May nevertheless give an inaccurate account.",
+     "Should not be allowed to testify."
+    ],
+    "ans": "C",
+    "why": "Inference: 'confidence is a poor guide to accuracy. A witness may be entirely sincere and entirely wrong'.",
+    "lvl": "I"
+   },
+   {
+    "q": "The author's attitude towards human memory is best described as:",
+    "opts": [
+     "Contemptuous: regarding it as worthless.",
+     "Uncritically admiring of its accuracy.",
+     "Despairing of any reliable knowledge of the past.",
+     "Measured: valuing its usefulness while warning against over-reliance."
+    ],
+    "ans": "D",
+    "why": "Tone: 'None of this means that memory is useless... it serves us well', yet it deserves 'respect but not... blind trust'.",
+    "lvl": "H"
+   },
+   {
+    "q": "As used in the passage, \"sincere\" in \"entirely sincere and entirely wrong\" means:",
+    "opts": [
+     "Polite and respectful in manner",
+     "Genuinely believing what one says",
+     "Factually correct in every detail",
+     "Serious and unsmiling"
+    ],
+    "ans": "B",
+    "why": "Vocabulary: the contrast with 'entirely wrong' shows sincerity concerns honest belief, not accuracy.",
+    "lvl": "H"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "Leadership is commonly pictured as an act of speaking: the general rallying troops, the chief executive announcing a strategy, the captain urging a tired team towards one last effort. These scenes are real, but they show only the visible half of the work. The less dramatic half consists of listening, and it is here that many capable leaders fail. Promotion tends to reward those who have answers, and by the time a person reaches the top of an organisation, the habit of supplying answers may have crowded out the habit of asking questions. Subordinates soon learn what the leader wishes to hear and begin to supply it.",
+   "Genuine listening is harder than it looks because it requires a leader to tolerate being contradicted, sometimes in public, by people of lower rank. It requires patience with hesitant speakers, who are often the ones closest to the problem, and a willingness to delay a decision until the relevant voices have been heard. Leaders who manage this gain more than information. They earn the confidence of people who feel their knowledge has been taken seriously, and that confidence becomes a reserve on which the organisation can draw in difficult times. A leader who only speaks may be obeyed; a leader who also listens is more likely to be followed."
+  ],
+  "questions": [
+   {
+    "q": "Which title best suits the passage?",
+    "opts": [
+     "The Neglected Half of Leadership",
+     "The Duties of Subordinates",
+     "Why Promotions Are Unfair",
+     "How to Deliver a Rousing Speech"
+    ],
+    "ans": "A",
+    "why": "Main idea: listening is 'the less dramatic half' of leadership, where 'many capable leaders fail'.",
+    "lvl": "E"
+   },
+   {
+    "q": "According to the passage, hesitant speakers are often:",
+    "opts": [
+     "The most senior people in the room.",
+     "Unwilling to do their work.",
+     "The least informed members of staff.",
+     "Those closest to the problem."
+    ],
+    "ans": "D",
+    "why": "Detail: 'patience with hesitant speakers, who are often the ones closest to the problem'.",
+    "lvl": "I"
+   },
+   {
+    "q": "The passage suggests that a leader who does not listen risks:",
+    "opts": [
+     "Being contradicted too often by juniors.",
+     "Taking decisions too slowly.",
+     "Losing the right to speak in public.",
+     "Receiving a distorted picture, as staff tell him only what he wants to hear."
+    ],
+    "ans": "D",
+    "why": "Inference: 'Subordinates soon learn what the leader wishes to hear and begin to supply it'.",
+    "lvl": "I"
+   },
+   {
+    "q": "The contrast between being \"obeyed\" and being \"followed\" in the last sentence distinguishes between:",
+    "opts": [
+     "Junior and senior ranks.",
+     "Military and civilian leadership.",
+     "Spoken and written instructions.",
+     "Compliance out of duty and support given willingly."
+    ],
+    "ans": "D",
+    "why": "Purpose/inference: listening earns 'the confidence of people', which goes beyond mere obedience.",
+    "lvl": "H"
+   },
+   {
+    "q": "The phrase \"crowded out\" most nearly means:",
+    "opts": [
+     "Hidden for a while",
+     "Encouraged",
+     "Displaced",
+     "Gathered together"
+    ],
+    "ans": "C",
+    "why": "Vocabulary: the habit of supplying answers has pushed aside the habit of asking questions.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "A modern office worker rarely spends more than a few minutes on a task before something interrupts it. A message arrives, a colleague leans over with a question, a reminder announces a meeting. Each interruption seems trivial, and most are answered within a minute. The real cost lies elsewhere. Studies of attention suggest that after a person switches away from a demanding task, it can take a considerable time to return to the depth of concentration that was lost, and that part of the mind remains occupied with the abandoned task even while it attends to the new one. A day broken into fragments may therefore be busy from morning to evening and yet produce little work of lasting value.",
+   "Organisations often treat this as a problem of individual discipline, urging employees to manage their time better. But the habits of a workplace are collective. If a reply within minutes is expected, no single worker can afford to switch off notifications without seeming negligent. Some firms have experimented with protected hours during which meetings are forbidden and messages need not be answered, and they report that difficult tasks are completed sooner. The lesson is not that communication is harmful, but that uninterrupted time is a resource, and like any resource it must be deliberately protected if it is not to be spent without notice."
+  ],
+  "questions": [
+   {
+    "q": "The passage is mainly about:",
+    "opts": [
+     "The hidden cost of interruptions and the need to protect focused time collectively.",
+     "The design of modern office buildings.",
+     "The rudeness of colleagues who interrupt one another.",
+     "The advantages of answering messages quickly."
+    ],
+    "ans": "A",
+    "why": "Main idea: interruptions have a 'real cost' and 'uninterrupted time is a resource' to be 'deliberately protected'.",
+    "lvl": "I"
+   },
+   {
+    "q": "According to studies of attention, after switching away from a demanding task:",
+    "opts": [
+     "Concentration returns at once.",
+     "The worker becomes more creative.",
+     "Part of the mind stays occupied with the abandoned task.",
+     "The worker forgets the task entirely."
+    ],
+    "ans": "C",
+    "why": "Detail: 'part of the mind remains occupied with the abandoned task even while it attends to the new one'.",
+    "lvl": "E"
+   },
+   {
+    "q": "Why, according to the passage, can a single worker not solve the problem alone?",
+    "opts": [
+     "Shared expectations of quick replies make individual withdrawal look negligent.",
+     "Notifications cannot be switched off on office devices.",
+     "Individual workers lack any time-management skills.",
+     "Managers forbid workers from working alone."
+    ],
+    "ans": "A",
+    "why": "Inference: 'the habits of a workplace are collective... no single worker can afford to switch off notifications without seeming negligent'.",
+    "lvl": "H"
+   },
+   {
+    "q": "The author's attitude towards workplace communication is that it:",
+    "opts": [
+     "Is irrelevant to the quality of work.",
+     "Is useful, but must be balanced against protected, uninterrupted time.",
+     "Should be as rapid and constant as possible.",
+     "Is harmful and should be largely abolished."
+    ],
+    "ans": "B",
+    "why": "Attitude: 'The lesson is not that communication is harmful, but that uninterrupted time is a resource'.",
+    "lvl": "I"
+   },
+   {
+    "q": "The word \"trivial\" in the passage most nearly means:",
+    "opts": [
+     "Of little importance",
+     "Rude",
+     "Difficult",
+     "Frequent"
+    ],
+    "ans": "A",
+    "why": "Vocabulary: each interruption 'seems trivial' because it is answered within a minute.",
+    "lvl": "E"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "For most of the history of agriculture, the farmer was also a plant breeder. At each harvest the best ears of grain, the plumpest pods and the most vigorous gourds were set aside as seed for the next season. Over centuries this patient selection produced thousands of local varieties, each adapted to a particular soil, rainfall and taste: a rice that tolerated brackish water near the coast, a millet that ripened before the monsoon failed, a bean that a certain festival required. These varieties were rarely the highest yielding, but they were dependable in the conditions that had shaped them.",
+   "The spread of commercial hybrid seed in the last century raised yields dramatically and fed growing populations, an achievement that should not be belittled. It also meant that many farmers stopped saving seed, since hybrids do not breed true, and that local varieties began to disappear from the fields. What is lost with them is not merely a curiosity of folk tradition but a store of genetic traits that breeders may one day need, when a new disease appears or the climate shifts. Seed banks preserve some of this inheritance in cold storage, but a seed kept in a vault does not go on adapting. That is why some agricultural scientists now work alongside farmers who still grow traditional varieties, treating their fields as living libraries rather than relics of a backward past."
+  ],
+  "questions": [
+   {
+    "q": "The passage is primarily concerned with:",
+    "opts": [
+     "The value of farmer-saved local crop varieties and the case for keeping them alive in fields.",
+     "The festivals associated with particular crops.",
+     "Methods of building cold-storage seed banks.",
+     "The superiority of hybrid seed over all traditional varieties."
+    ],
+    "ans": "A",
+    "why": "Main idea: local varieties hold traits 'breeders may one day need', and scientists now treat farmers' fields 'as living libraries'.",
+    "lvl": "I"
+   },
+   {
+    "q": "According to the passage, many farmers stopped saving seed because:",
+    "opts": [
+     "Seed banks supplied seed free of cost.",
+     "Local varieties were banned by law.",
+     "Traditional seeds could not be stored.",
+     "Hybrids do not breed true."
+    ],
+    "ans": "D",
+    "why": "Detail: 'many farmers stopped saving seed, since hybrids do not breed true'.",
+    "lvl": "E"
+   },
+   {
+    "q": "The limitation of seed banks implied in the passage is that:",
+    "opts": [
+     "They are too expensive for any country to maintain.",
+     "Their seeds lose all genetic value within a year.",
+     "They store only hybrid varieties.",
+     "Seeds stored in them do not continue to adapt to changing conditions."
+    ],
+    "ans": "D",
+    "why": "Inference: 'a seed kept in a vault does not go on adapting'.",
+    "lvl": "I"
+   },
+   {
+    "q": "The author's attitude towards hybrid seed is best described as:",
+    "opts": [
+     "Acknowledging its achievement while pointing out what it has cost.",
+     "Uncritically enthusiastic.",
+     "Indifferent to its effects.",
+     "Wholly hostile to its use."
+    ],
+    "ans": "A",
+    "why": "Tone: its achievement 'should not be belittled', yet it led local varieties to 'disappear from the fields'.",
+    "lvl": "H"
+   },
+   {
+    "q": "The word \"belittled\" most nearly means:",
+    "opts": [
+     "Reduced in physical size",
+     "Greatly exaggerated",
+     "Dismissed as unimportant",
+     "Copied without permission"
+    ],
+    "ans": "C",
+    "why": "Vocabulary: the achievement of feeding growing populations should not be made to seem small or unimportant.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "In many villages the most important institution is neither the panchayat office nor the temple but the milk collection centre. Twice a day, farmers who may own only one or two buffaloes bring their milk in steel cans, have it tested for fat content and receive a slip that records what they are owed. On their own, such producers would have little bargaining power: milk spoils within hours, and a farmer who must sell before evening is at the mercy of whichever trader arrives first. Pooled through a cooperative, however, their small quantities become a volume large enough to justify chilling plants, transport and processing, and the price is set by a transparent test rather than by haggling.",
+   "The cooperative model has its weaknesses. Elections to its committees can be captured by influential families, and payments are sometimes delayed when the larger federation faces difficulties. Yet its central idea remains powerful. It allows people who are individually weak in the market to act collectively without surrendering ownership of their animals or their land. The regular income it provides, arriving in small sums throughout the year rather than once at harvest, has made it especially valuable to women, who in many households care for the cattle and now see their labour converted into money."
+  ],
+  "questions": [
+   {
+    "q": "Which title best suits the passage?",
+    "opts": [
+     "The Decline of the Village Panchayat",
+     "Why Buffaloes Are Better Than Cows",
+     "Strength in Pooling: The Village Milk Cooperative",
+     "How to Test Milk for Fat Content"
+    ],
+    "ans": "C",
+    "why": "Main idea: pooling through a cooperative gives individually weak producers collective strength.",
+    "lvl": "E"
+   },
+   {
+    "q": "According to the passage, an individual milk producer has little bargaining power because:",
+    "opts": [
+     "Traders refuse to buy small quantities of milk.",
+     "Milk spoils within hours, so it must be sold quickly.",
+     "Buffalo milk has a low fat content.",
+     "The panchayat fixes the price of milk."
+    ],
+    "ans": "B",
+    "why": "Detail: 'milk spoils within hours, and a farmer who must sell before evening is at the mercy of whichever trader arrives first'.",
+    "lvl": "I"
+   },
+   {
+    "q": "Which of the following can be inferred about the women mentioned in the passage?",
+    "opts": [
+     "Work with cattle that once earned them nothing visible now brings them an income.",
+     "They control the elections to cooperative committees.",
+     "They prefer to be paid once a year at harvest.",
+     "They own most of the buffaloes in the village."
+    ],
+    "ans": "A",
+    "why": "Inference: women 'care for the cattle and now see their labour converted into money', implying it was not before.",
+    "lvl": "H"
+   },
+   {
+    "q": "The author's overall attitude towards the cooperative model is:",
+    "opts": [
+     "Entirely uncritical.",
+     "Doubtful that it benefits anyone.",
+     "Hostile, because of captured elections.",
+     "Favourable, while recognising its weaknesses."
+    ],
+    "ans": "D",
+    "why": "Tone: 'The cooperative model has its weaknesses. Yet its central idea remains powerful'.",
+    "lvl": "I"
+   },
+   {
+    "q": "In \"Elections to its committees can be captured by influential families\", \"captured\" means:",
+    "opts": [
+     "Postponed by",
+     "Recorded on film by",
+     "Brought under the control of",
+     "Imprisoned by"
+    ],
+    "ans": "C",
+    "why": "Vocabulary: influential families can come to dominate committee elections.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "When the sea begins to eat into a coast, the instinctive response is to build a wall. Concrete and boulders are piled along the shore, and for a time the houses behind them are safe. But a beach is not a fixed object; it is a moving body of sand, constantly carried away by storms and returned by gentler waves. A wall interrupts this exchange. Waves that once spent their energy running up a sloping beach now strike a vertical face and rebound, scouring the sand in front of the wall and often worsening erosion on the unprotected shore beyond its end. Within a few decades the beach the wall was meant to save may have vanished, leaving the wall standing in deep water and in need of ever more costly repair.",
+   "Coastal engineers have therefore grown cautious about hard defences, except where valuable structures leave no alternative. They increasingly favour approaches that work with natural processes: replenishing beaches with sand, protecting the dunes and vegetation that hold it in place, and, most difficult of all, keeping new construction back from the shifting line of the sea. Such measures demand patience and restraint from communities that want visible protection at once. Their merit is that they treat the coast as a system to be managed rather than an enemy to be fought."
+  ],
+  "questions": [
+   {
+    "q": "The main point of the passage is that:",
+    "opts": [
+     "Coastal communities should abandon the shore entirely.",
+     "Sea walls are the only reliable protection against storms.",
+     "Engineers have found no answer to coastal erosion.",
+     "Sea walls often worsen erosion, and working with natural coastal processes is wiser."
+    ],
+    "ans": "D",
+    "why": "Main idea: walls interrupt the movement of sand; engineers 'favour approaches that work with natural processes'.",
+    "lvl": "I"
+   },
+   {
+    "q": "According to the passage, when waves strike a vertical wall they:",
+    "opts": [
+     "Deposit extra sand at its base.",
+     "Lose all their energy harmlessly.",
+     "Rebound and scour the sand in front of it.",
+     "Flow gently up the beach."
+    ],
+    "ans": "C",
+    "why": "Detail: waves 'strike a vertical face and rebound, scouring the sand in front of the wall'.",
+    "lvl": "E"
+   },
+   {
+    "q": "The passage implies that keeping construction back from the sea is \"most difficult of all\" because it:",
+    "opts": [
+     "Is forbidden by most coastal laws.",
+     "Has never been attempted anywhere.",
+     "Requires communities to give up building close to the shore.",
+     "Needs very costly imported materials."
+    ],
+    "ans": "C",
+    "why": "Inference: such measures 'demand patience and restraint from communities that want visible protection at once'.",
+    "lvl": "I"
+   },
+   {
+    "q": "The phrase \"an enemy to be fought\" in the last sentence refers to the attitude behind:",
+    "opts": [
+     "Protecting dunes and vegetation.",
+     "Replenishing beaches with sand.",
+     "Managing the coast as a system.",
+     "Building hard defences such as sea walls."
+    ],
+    "ans": "D",
+    "why": "Inference: hard walls confront the sea, whereas the favoured measures 'treat the coast as a system to be managed'.",
+    "lvl": "H"
+   },
+   {
+    "q": "The word \"replenishing\" most nearly means:",
+    "opts": [
+     "Refilling",
+     "Fencing",
+     "Measuring",
+     "Draining"
+    ],
+    "ans": "A",
+    "why": "Vocabulary: beaches are restored by adding sand back to them.",
+    "lvl": "E"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "Fish in the open sea belong to no one until they are caught, and this simple fact lies at the heart of many fisheries' troubles. A fisherman who leaves young fish in the water so that they may grow and breed cannot be sure that he will be the one to benefit; a rival boat may simply catch them the next day. Each crew therefore has reason to take as much as it can, even when all of them can see that the stock is shrinking. Economists call such situations a tragedy of the commons, and the open ocean is perhaps its most familiar example.",
+   "The tragedy is not inevitable. Coastal communities in many parts of the world have long maintained customary rules: seasons when fishing stops, areas closed to nets, limits on the mesh size that lets small fish escape. The annual pause during the monsoon on India's western coast, when many fish breed, rests on a similar idea, though it is now enforced by law rather than by custom alone. Such rules work best when those who must obey them have had a hand in making them and can see that others are obeying too. Where enforcement is weak, or large trawlers from outside ignore the restrictions that local boats observe, trust collapses and the old race to the last fish resumes."
+  ],
+  "questions": [
+   {
+    "q": "Which title best suits the passage?",
+    "opts": [
+     "The Life Cycle of Ocean Fish",
+     "Why the Monsoon Ruins Fishing",
+     "The Commons at Sea and the Rules That Protect It",
+     "The Economics of Trawler Manufacture"
+    ],
+    "ans": "C",
+    "why": "Main idea: the open sea is a commons, but shared rules can prevent its tragedy.",
+    "lvl": "E"
+   },
+   {
+    "q": "According to the passage, the monsoon pause on India's western coast is based on the fact that:",
+    "opts": [
+     "Fish move to deeper water in the monsoon.",
+     "Fish prices fall sharply during the rains.",
+     "Many fish breed during that season.",
+     "Boats cannot be repaired during the rains."
+    ],
+    "ans": "C",
+    "why": "Detail: 'The annual pause during the monsoon on India's western coast, when many fish breed'.",
+    "lvl": "E"
+   },
+   {
+    "q": "Which situation would the author most likely see as another example of a 'tragedy of the commons'?",
+    "opts": [
+     "Villagers each grazing extra cattle on a shared pasture until the grass is exhausted.",
+     "A farmer overworking his own private field.",
+     "A cooperative fixing milk prices by a fat test.",
+     "A government selling a forest to a company."
+    ],
+    "ans": "A",
+    "why": "Inference: the tragedy arises when no one owns a shared resource, so each user takes as much as he can despite visible decline.",
+    "lvl": "H"
+   },
+   {
+    "q": "The author mentions customary rules mainly to show that:",
+    "opts": [
+     "Fishing should be banned throughout the year.",
+     "Coastal communities are hostile to outsiders.",
+     "The tragedy of the commons can be avoided through shared restraint.",
+     "Custom is always stronger than law."
+    ],
+    "ans": "C",
+    "why": "Purpose: they follow 'The tragedy is not inevitable'.",
+    "lvl": "I"
+   },
+   {
+    "q": "The word \"inevitable\" most nearly means:",
+    "opts": [
+     "Unforgivable",
+     "Invisible",
+     "Unavoidable",
+     "Intended"
+    ],
+    "ans": "C",
+    "why": "Vocabulary: the tragedy is not certain to happen, as customary rules show.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "Children invent games long before anyone teaches them rules. A ball, a wall and a patch of open ground are enough; the rules are agreed, argued over and changed as the game goes on, and the point of playing is simply to go on playing. Organised sport takes this impulse and gives it structure: fixed rules, referees, leagues, coaches and, at the highest level, professional careers. The structure brings real benefits. It allows skill to be measured, rewards discipline and lets millions share the drama of a contest they could never play themselves.",
+   "Something can be lost in the process, however. When sport for the young is organised mainly as a pathway to selection, the child who is not chosen may conclude that sport is not for him at all, and give it up at the age when the habit of activity matters most. Practice becomes a duty to be completed rather than a pleasure to be sought, and the measure of success becomes the trophy rather than the game. None of this is an argument against coaching or competition. It is an argument for keeping, alongside the academy and the stadium, open spaces and unstructured hours in which anyone may play badly, cheerfully and for no reason beyond the enjoyment of it."
+  ],
+  "questions": [
+   {
+    "q": "The passage mainly argues that:",
+    "opts": [
+     "Organised sport has real benefits, but space for free, unstructured play must also be kept.",
+     "Only professional sport deserves public support.",
+     "Coaching and competition harm young players.",
+     "Organised sport should be replaced by children's games."
+    ],
+    "ans": "A",
+    "why": "Main idea: the structure 'brings real benefits', yet the author argues 'for keeping... open spaces and unstructured hours'.",
+    "lvl": "I"
+   },
+   {
+    "q": "Which of the following is NOT mentioned as a benefit of organised sport?",
+    "opts": [
+     "It lets millions share the drama of a contest.",
+     "It guarantees a professional career to every participant.",
+     "It allows skill to be measured.",
+     "It rewards discipline."
+    ],
+    "ans": "B",
+    "why": "Detail: the three benefits listed are measuring skill, rewarding discipline and sharing drama; careers come only 'at the highest level'.",
+    "lvl": "I"
+   },
+   {
+    "q": "According to the passage, a child who is not selected may:",
+    "opts": [
+     "Win more trophies in other sports.",
+     "Demand that the rules be changed.",
+     "Give up physical activity at an age when the habit matters most.",
+     "Become a better coach in later life."
+    ],
+    "ans": "C",
+    "why": "Inference/detail: the child 'may conclude that sport is not for him at all, and give it up at the age when the habit of activity matters most'.",
+    "lvl": "I"
+   },
+   {
+    "q": "The author's attitude towards coaching and competition is best described as:",
+    "opts": [
+     "Opposing them as harmful to children.",
+     "Praising them as the only purpose of sport.",
+     "Indifferent to their effects on the young.",
+     "Accepting them, while warning against making selection their chief aim."
+    ],
+    "ans": "D",
+    "why": "Tone: 'None of this is an argument against coaching or competition', but against sport 'organised mainly as a pathway to selection'.",
+    "lvl": "H"
+   },
+   {
+    "q": "The word \"impulse\" in the passage most nearly means:",
+    "opts": [
+     "Sudden injury",
+     "Cash reward",
+     "Natural urge",
+     "Written rule"
+    ],
+    "ans": "C",
+    "why": "Vocabulary: organised sport takes the children's spontaneous urge to play and gives it structure.",
+    "lvl": "E"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "Fitness has come to be associated with special places and special clothing: the gymnasium with its machines, the running track, the class that meets at six in the morning. These have their uses, but they can obscure a simpler truth. For most of human history people were active not because they exercised but because their lives required it. They walked to fields and markets, carried water, ground grain and climbed hills. Physical activity was woven into the day rather than added to it as a separate task.",
+   "Many people today spend their waking hours seated, at a desk, in a vehicle or before a screen, and then try to compensate with an hour of vigorous effort. The hour is worth having, but it may not undo the effects of the remaining sedentary day. A growing body of opinion holds that the small movements of daily life matter more than was once assumed: climbing stairs instead of taking the lift, walking to the shop, standing up every half hour, doing household chores by hand. Such activity is unglamorous and earns no medals, but it has the advantage of being sustainable, since it demands no fees, no equipment and no special motivation. The aim, perhaps, is not to become an athlete but to recover a little of the ordinary movement that modern convenience has quietly taken away."
+  ],
+  "questions": [
+   {
+    "q": "Which title best suits the passage?",
+    "opts": [
+     "Choosing the Right Gymnasium",
+     "Why Exercise Is a Waste of Time",
+     "A History of Athletics",
+     "Movement Woven into the Day"
+    ],
+    "ans": "D",
+    "why": "Main idea: ordinary daily movement, once 'woven into the day', deserves to be recovered.",
+    "lvl": "E"
+   },
+   {
+    "q": "According to the passage, for most of human history people were active because:",
+    "opts": [
+     "They wished to win medals.",
+     "They attended exercise classes.",
+     "They were advised to by physicians.",
+     "Their lives required it."
+    ],
+    "ans": "D",
+    "why": "Detail: 'people were active not because they exercised but because their lives required it'.",
+    "lvl": "E"
+   },
+   {
+    "q": "The author suggests that an hour of vigorous exercise after a seated day:",
+    "opts": [
+     "Fully cancels the effects of sitting.",
+     "Is useless and should be avoided.",
+     "Is more sustainable than daily movement.",
+     "Is worth having but may not be enough by itself."
+    ],
+    "ans": "D",
+    "why": "Inference: 'The hour is worth having, but it may not undo the effects of the remaining sedentary day'.",
+    "lvl": "I"
+   },
+   {
+    "q": "The phrase \"modern convenience has quietly taken away\" suggests that:",
+    "opts": [
+     "Convenience has made people more active.",
+     "Modern conveniences have been banned.",
+     "The loss of everyday movement happened gradually and largely unnoticed.",
+     "People deliberately chose to stop moving."
+    ],
+    "ans": "C",
+    "why": "Inference/tone: 'quietly' implies the change crept in without people noticing.",
+    "lvl": "H"
+   },
+   {
+    "q": "The word \"sedentary\" most nearly means:",
+    "opts": [
+     "Spent mostly sitting",
+     "Tiring",
+     "Healthy",
+     "Irregular"
+    ],
+    "ans": "A",
+    "why": "Vocabulary: people 'spend their waking hours seated, at a desk, in a vehicle or before a screen'.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "A newspaper that never prints a correction is not a newspaper that never makes mistakes. Reporting is done in haste, from sources who may be confused, partial or simply wrong, and even careful journalists misread figures, misspell names and misattribute quotations. The question is not whether errors occur but how they are handled once discovered. A publication that corrects its mistakes openly, in a place where readers will see them, signals that it values accuracy above its own reputation for infallibility. Paradoxically, this frankness tends to increase rather than diminish public trust.",
+   "The digital age has made the problem both easier and harder. An online article can be amended within minutes, but it can also be amended silently, so that readers who saw the first version never learn that it was wrong. Meanwhile the original error may already have been copied, shared and quoted far beyond the publisher's reach. Responsible outlets now note at the foot of an article what was changed and when, and some maintain public records of their corrections. Such practices may seem a small matter of housekeeping. They are, in fact, part of the bargain between the press and its readers: the press asks to be believed, and in return it must show that it takes the trouble to be right, and to say so when it was not."
+  ],
+  "questions": [
+   {
+    "q": "The central idea of the passage is that:",
+    "opts": [
+     "Openly correcting errors is essential to the credibility of the press.",
+     "Online journalism is less accurate than print.",
+     "Journalists should never rely on sources.",
+     "Newspapers that print corrections are careless."
+    ],
+    "ans": "A",
+    "why": "Main idea: open correction 'tends to increase rather than diminish public trust' and is 'part of the bargain between the press and its readers'.",
+    "lvl": "I"
+   },
+   {
+    "q": "According to the passage, a problem particular to online articles is that they can be:",
+    "opts": [
+     "Read only by a small audience.",
+     "Corrected only after several weeks.",
+     "Printed only once a day.",
+     "Amended silently, so earlier readers never learn of the error."
+    ],
+    "ans": "D",
+    "why": "Detail: 'it can also be amended silently, so that readers who saw the first version never learn that it was wrong'.",
+    "lvl": "E"
+   },
+   {
+    "q": "The author would most likely regard an outlet that quietly edits errors without any notice as:",
+    "opts": [
+     "Following the best modern practice.",
+     "Failing in its obligation to its readers.",
+     "Protecting its readers from confusion.",
+     "Doing a harmless piece of housekeeping."
+    ],
+    "ans": "B",
+    "why": "Inference: responsible outlets 'note... what was changed and when'; the press must 'say so when it was not' right.",
+    "lvl": "I"
+   },
+   {
+    "q": "The author calls the effect of open corrections \"paradoxical\" because:",
+    "opts": [
+     "Corrections make newspapers more expensive.",
+     "One would expect admitting mistakes to reduce trust, yet it increases it.",
+     "Readers rarely notice corrections.",
+     "Corrections are usually wrong themselves."
+    ],
+    "ans": "B",
+    "why": "Inference: 'Paradoxically, this frankness tends to increase rather than diminish public trust'.",
+    "lvl": "H"
+   },
+   {
+    "q": "The word \"infallibility\" most nearly means:",
+    "opts": [
+     "Impartiality",
+     "Inability to be wrong",
+     "Speed of reporting",
+     "Popularity"
+    ],
+    "ans": "B",
+    "why": "Vocabulary: the reputation of never making mistakes, which open correction gives up.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "Not long ago, millets such as ragi, jowar and bajra were dismissed in many Indian cities as the food of the poor, to be replaced by polished rice and refined wheat as soon as a family could afford them. The change was understandable. White rice and soft wheat bread were quicker to cook, easier to digest for those unused to coarse grains, and carried the prestige of prosperity. Government procurement and distribution, which favoured rice and wheat for decades, reinforced the shift, and in many regions farmers turned land once sown with millets to more profitable crops.",
+   "Opinion has since begun to turn. Millets are now praised for their fibre and minerals, and for the modest demands they make on the farmer: many grow on poor soils with little water and tolerate heat that would wither other cereals. Recipes once kept by grandmothers are reappearing in restaurants and packaged foods. The revival is welcome, but it carries a certain irony. A grain that was abandoned because it signalled poverty is being rediscovered partly because it now signals discernment, and the price of some millet products in city shops would surprise the farmers who grow them. If the revival is to last, it will need to reach ordinary kitchens and fields, and not remain a fashion for those who can afford to follow fashions."
+  ],
+  "questions": [
+   {
+    "q": "Which title best suits the passage?",
+    "opts": [
+     "Cooking Techniques for Coarse Grains",
+     "The Return of the Humble Grain",
+     "Why Rice Is Healthier Than Millets",
+     "The Failure of Government Procurement"
+    ],
+    "ans": "B",
+    "why": "Main idea: millets, once dismissed, are being revived.",
+    "lvl": "E"
+   },
+   {
+    "q": "According to the passage, white rice and wheat replaced millets partly because they:",
+    "opts": [
+     "Were cheaper than millets in every region.",
+     "Were quicker to cook and carried the prestige of prosperity.",
+     "Contained more fibre and minerals.",
+     "Grew on poorer soils with less water."
+    ],
+    "ans": "B",
+    "why": "Detail: they 'were quicker to cook, easier to digest... and carried the prestige of prosperity'.",
+    "lvl": "I"
+   },
+   {
+    "q": "The \"irony\" mentioned in the passage is that:",
+    "opts": [
+     "Grandmothers refuse to share their recipes.",
+     "Millets grow well only where water is plentiful.",
+     "Farmers now earn more from millets than anyone else.",
+     "A grain once rejected as a sign of poverty is now valued as a sign of refined taste."
+    ],
+    "ans": "D",
+    "why": "Inference: 'abandoned because it signalled poverty... rediscovered partly because it now signals discernment'.",
+    "lvl": "I"
+   },
+   {
+    "q": "The author's chief concern about the millet revival is that it:",
+    "opts": [
+     "May remain limited to affluent consumers instead of reaching ordinary households and farmers.",
+     "Is based on false claims about nutrition.",
+     "Will force farmers to stop growing millets.",
+     "Will make rice and wheat disappear entirely."
+    ],
+    "ans": "A",
+    "why": "Attitude: it must 'reach ordinary kitchens and fields, and not remain a fashion for those who can afford to follow fashions'.",
+    "lvl": "H"
+   },
+   {
+    "q": "The word \"discernment\" most nearly means:",
+    "opts": [
+     "Carelessness",
+     "Refined judgement",
+     "Hunger",
+     "Poverty"
+    ],
+    "ans": "B",
+    "why": "Vocabulary: millets now signal good taste, the opposite of their earlier association with poverty.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "How can we tell a scientific theory from a merely confident opinion? One influential answer is that a scientific theory must take a risk. It must forbid certain things from happening, so that if those things are observed, the theory is shown to be false. The claim that all metals expand when heated is scientific in this sense: a single metal that contracted under heat would refute it. By contrast, a theory that can explain every possible outcome, whatever happens, has not thereby proved its strength. It has revealed that it says nothing definite about the world.",
+   "This criterion, usually called falsifiability, has a curious consequence. No number of confirming observations can establish a general theory beyond doubt, since the next observation might be the exception; yet one well-founded contrary observation can overturn it. Science, on this view, advances not by piling up proofs but by surviving attempts at refutation. Critics have pointed out that working scientists rarely abandon a theory at the first awkward result. They suspect their instruments, adjust auxiliary assumptions and wait for the anomaly to be explained, and sometimes they are right to do so. Even so, the central insight endures. A theory earns our trust not by being impossible to challenge but by having been exposed to challenge and having, so far, withstood it."
+  ],
+  "questions": [
+   {
+    "q": "The passage is mainly about:",
+    "opts": [
+     "The idea that a scientific theory must be open to refutation and earns trust by surviving tests.",
+     "The impossibility of any scientific knowledge.",
+     "Why scientists distrust their instruments.",
+     "The physical properties of heated metals."
+    ],
+    "ans": "A",
+    "why": "Main idea: falsifiability; 'A theory earns our trust... by having been exposed to challenge and having, so far, withstood it'.",
+    "lvl": "I"
+   },
+   {
+    "q": "Which example does the passage give of a scientific claim?",
+    "opts": [
+     "Every possible outcome can be explained.",
+     "All metals expand when heated.",
+     "Confirming observations prove a theory.",
+     "Instruments are always reliable."
+    ],
+    "ans": "B",
+    "why": "Detail: 'The claim that all metals expand when heated is scientific in this sense'.",
+    "lvl": "E"
+   },
+   {
+    "q": "The author would regard a theory that can explain every possible outcome as:",
+    "opts": [
+     "Falsified by a single observation.",
+     "Proven beyond doubt.",
+     "The strongest kind of scientific theory.",
+     "Lacking definite content, rather than being especially strong."
+    ],
+    "ans": "D",
+    "why": "Inference: such a theory 'has not thereby proved its strength. It has revealed that it says nothing definite'.",
+    "lvl": "H"
+   },
+   {
+    "q": "The critics mentioned in the passage point out that:",
+    "opts": [
+     "In practice, scientists rarely discard a theory at the first contrary result.",
+     "Falsifiability makes every theory unscientific.",
+     "Scientific instruments never make errors.",
+     "Confirming observations can prove a theory beyond doubt."
+    ],
+    "ans": "A",
+    "why": "Detail: 'working scientists rarely abandon a theory at the first awkward result'.",
+    "lvl": "I"
+   },
+   {
+    "q": "The word \"auxiliary\" in \"adjust auxiliary assumptions\" most nearly means:",
+    "opts": [
+     "Purely mathematical",
+     "Supporting or secondary",
+     "False and misleading",
+     "Central and essential"
+    ],
+    "ans": "B",
+    "why": "Vocabulary: scientists adjust the subsidiary assumptions around a theory rather than its core.",
+    "lvl": "H"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "A map that showed every pebble and blade of grass would be as large as the country it described, and therefore useless. Its value lies precisely in what it leaves out. Scientific models share this character. An economist's model of a market, a climatologist's model of the atmosphere, or a physicist's picture of a gas as countless tiny colliding balls all simplify the world deliberately, ignoring features judged irrelevant to the question at hand. The model of a gas as bouncing balls is false in many respects, yet it predicts how pressure changes with temperature remarkably well.",
+   "The danger arises when the simplification is forgotten. A model built to answer one question may be pressed into service for another for which its omissions are crucial, and its users, impressed by its past successes, may mistake the map for the territory. Many failures of forecasting, in economics especially, have been traced not to bad mathematics but to assumptions that were reasonable in ordinary times and disastrous in unusual ones. The remedy is not to abandon models, without which no complex system could be studied at all, but to use them with an awareness of their boundaries. A good scientist asks not only what a model predicts, but what it was designed to ignore."
+  ],
+  "questions": [
+   {
+    "q": "Which title best suits the passage?",
+    "opts": [
+     "Models, Maps and Their Limits",
+     "Why Economists Cannot Do Mathematics",
+     "The Physics of Colliding Balls",
+     "How to Draw an Accurate Map"
+    ],
+    "ans": "A",
+    "why": "Main idea: models, like maps, are useful because they simplify, but their limits must be remembered.",
+    "lvl": "E"
+   },
+   {
+    "q": "The model of a gas as bouncing balls is mentioned as an example of a model that:",
+    "opts": [
+     "Is accurate in every detail.",
+     "Is used mainly by economists.",
+     "Is false in many respects yet predicts well.",
+     "Has failed in every application."
+    ],
+    "ans": "C",
+    "why": "Detail: it 'is false in many respects, yet it predicts how pressure changes with temperature remarkably well'.",
+    "lvl": "I"
+   },
+   {
+    "q": "To \"mistake the map for the territory\" means to:",
+    "opts": [
+     "Draw a map larger than the country it shows.",
+     "Refuse to use any maps.",
+     "Lose one's way while travelling.",
+     "Treat a simplified representation as if it were reality itself."
+    ],
+    "ans": "D",
+    "why": "Inference: users 'impressed by its past successes' forget 'the simplification'.",
+    "lvl": "H"
+   },
+   {
+    "q": "According to the passage, many failures of economic forecasting have been traced to:",
+    "opts": [
+     "A shortage of computers.",
+     "Deliberate fraud by forecasters.",
+     "Bad mathematics.",
+     "Assumptions that suited ordinary times but failed in unusual ones."
+    ],
+    "ans": "D",
+    "why": "Detail: 'not to bad mathematics but to assumptions that were reasonable in ordinary times and disastrous in unusual ones'.",
+    "lvl": "I"
+   },
+   {
+    "q": "The author's attitude towards scientific models is best described as:",
+    "opts": [
+     "Indifferent to how they are used.",
+     "Appreciative of their usefulness but alert to their limits.",
+     "Contemptuous, since all models are false.",
+     "Uncritically trusting of their predictions."
+    ],
+    "ans": "B",
+    "why": "Tone: 'The remedy is not to abandon models... but to use them with an awareness of their boundaries'.",
+    "lvl": "H"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "The traveller of earlier centuries set out with little more than a letter of introduction and a vague idea of the road. Delays were expected, routes changed with the weather, and much of what was seen had not been seen before by anyone the traveller knew. Today a journey can be planned to the hour. Reviews tell us where to eat, photographs show us in advance what each monument will look like, and a phone in the pocket ensures that we need never be lost. Few would wish to give up these conveniences, which have made travel safer and open to far more people than ever before.",
+   "Yet a journey fully known in advance risks becoming a kind of verification: we go to confirm that the place matches its picture. The encounters that travellers most often remember, by contrast, are the unplanned ones, such as the conversation with a stranger on a delayed train, the festival stumbled upon in a small town, or the meal in a house where no menu existed. These cannot be booked, only allowed for. The thoughtful traveller therefore leaves some of the day unscheduled and some of the map blank, not out of carelessness but as a deliberate act of openness. To travel well is not merely to arrive where one intended, but to be willing, now and then, to arrive somewhere one did not."
+  ],
+  "questions": [
+   {
+    "q": "The main idea of the passage is that:",
+    "opts": [
+     "Earlier travellers were careless and ill-prepared.",
+     "Travel is safer today than ever before.",
+     "Modern planning has real value, but leaving room for the unplanned enriches travel.",
+     "Modern travel conveniences should be abandoned."
+    ],
+    "ans": "C",
+    "why": "Main idea: few would give up conveniences, yet 'the thoughtful traveller... leaves some of the day unscheduled'.",
+    "lvl": "I"
+   },
+   {
+    "q": "Which of the following is given as an example of a memorable unplanned encounter?",
+    "opts": [
+     "A guided tour of a famous monument.",
+     "A festival stumbled upon in a small town.",
+     "A hotel room booked months ahead.",
+     "A photograph taken at a famous viewpoint."
+    ],
+    "ans": "B",
+    "why": "Detail: 'the festival stumbled upon in a small town'.",
+    "lvl": "E"
+   },
+   {
+    "q": "By calling a fully planned journey \"a kind of verification\", the author implies that such travellers:",
+    "opts": [
+     "Write reviews for other travellers.",
+     "Go mainly to confirm what they already expect to see.",
+     "Prove that earlier travellers were wrong.",
+     "Check the accuracy of their travel documents."
+    ],
+    "ans": "B",
+    "why": "Inference: 'we go to confirm that the place matches its picture'.",
+    "lvl": "H"
+   },
+   {
+    "q": "The author's attitude towards modern travel conveniences is:",
+    "opts": [
+     "Appreciative, but cautious about relying on them entirely.",
+     "Wholly hostile.",
+     "Entirely uncritical.",
+     "Indifferent."
+    ],
+    "ans": "A",
+    "why": "Tone: they 'made travel safer and open to far more people', yet a fully known journey 'risks becoming a kind of verification'.",
+    "lvl": "I"
+   },
+   {
+    "q": "The word \"deliberate\" in \"a deliberate act of openness\" most nearly means:",
+    "opts": [
+     "Careless",
+     "Slow",
+     "Accidental",
+     "Intentional"
+    ],
+    "ans": "D",
+    "why": "Vocabulary: contrasted with 'not out of carelessness'; the blank map is chosen on purpose.",
+    "lvl": "I"
+   }
+  ]
+ },
+ {
+  "paras": [
+   "Elections are the most visible moment of a democracy, and the long queues outside polling booths are rightly celebrated. But a citizen who votes once in five years and attends to public affairs at no other time has exercised only a small part of the role. Between elections, the decisions that most affect daily life are taken in municipal councils, village assemblies, school committees and government offices, often in meetings that few citizens attend and through documents that few read. Where the public is absent, those with organised interests, whether contractors, landlords or particular lobbies, are not.",
+   "Active citizenship asks more. It includes knowing who one's representatives are and what they have done, attending a ward or gram sabha meeting, using the right to information, and joining with neighbours to raise a common grievance. None of this requires exceptional virtue, but it does require time and a degree of confidence that many people, burdened by work and wary of officialdom, lack. A healthy democracy therefore depends not only on the conscientiousness of individuals but on institutions that make participation practical: meetings held at convenient hours, notices in plain language, and officials who treat questions as a right rather than an annoyance. Democracy, in this sense, is less an event than a habit, and habits must be cultivated."
+  ],
+  "questions": [
+   {
+    "q": "Which title best suits the passage?",
+    "opts": [
+     "Why Officials Dislike Questions",
+     "A History of the Gram Sabha",
+     "The Mechanics of the Polling Booth",
+     "Democracy Between Elections"
+    ],
+    "ans": "D",
+    "why": "Main idea: citizenship must continue between elections, where most decisions are taken.",
+    "lvl": "E"
+   },
+   {
+    "q": "According to the passage, when the public is absent from local decision-making:",
+    "opts": [
+     "Officials take no decisions at all.",
+     "Elections are held earlier than planned.",
+     "Those with organised interests, such as contractors and landlords, are still present.",
+     "Meetings are cancelled for lack of attendance."
+    ],
+    "ans": "C",
+    "why": "Detail: 'Where the public is absent, those with organised interests... are not'.",
+    "lvl": "I"
+   },
+   {
+    "q": "The passage suggests that many people do not participate actively mainly because they:",
+    "opts": [
+     "Are forbidden from attending meetings.",
+     "Are uninterested in public affairs.",
+     "Believe voting is unimportant.",
+     "Lack time and confidence, not because they lack virtue."
+    ],
+    "ans": "D",
+    "why": "Inference: participation 'does not require exceptional virtue, but it does require time and a degree of confidence that many people... lack'.",
+    "lvl": "I"
+   },
+   {
+    "q": "The author mentions \"meetings held at convenient hours\" and \"notices in plain language\" in order to show that:",
+    "opts": [
+     "Citizens should write the notices themselves.",
+     "Officials are mainly to blame for every problem.",
+     "Institutions can make participation practical for ordinary people.",
+     "Meetings should be held only at night."
+    ],
+    "ans": "C",
+    "why": "Purpose: they illustrate 'institutions that make participation practical'.",
+    "lvl": "I"
+   },
+   {
+    "q": "The statement \"Democracy... is less an event than a habit\" means that democracy:",
+    "opts": [
+     "Happens automatically once a constitution exists.",
+     "Depends on continuing participation, not only on periodic voting.",
+     "Consists chiefly of election day celebrations.",
+     "Is a tradition that cannot be changed."
+    ],
+    "ans": "B",
+    "why": "Inference: contrasts the 'event' of elections with ongoing civic practice that 'must be cultivated'.",
+    "lvl": "H"
+   }
+  ]
+ }
+]

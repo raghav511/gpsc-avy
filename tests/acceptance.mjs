@@ -25,7 +25,7 @@ const DATA = JSON.parse(fs.readFileSync(path.join(ROOT, 'content/data/sets.json'
 const byId = Object.fromEntries(DATA.sets.map(s => [s.id, s]));
 const NOTE_TS = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/meta.json'), 'utf8')).notes.map(n => n.t);
 const QUIZ = {}; for (const t of NOTE_TS) QUIZ['quiz-topic' + t] = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/sets/quiz-topic' + t + '.json'), 'utf8'));
-fs.readdirSync(path.join(ROOT, 'data/sets')).filter(f => /^(compd|grd\d|lrd\d)/.test(f)).forEach(f => { const s = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/sets', f), 'utf8')); byId[s.id] = s; });
+fs.readdirSync(path.join(ROOT, 'data/sets')).filter(f => /^(compd|grd\d|lrd\d|gkq\d|cpd\d)/.test(f)).forEach(f => { const s = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/sets', f), 'utf8')); byId[s.id] = s; });
 Object.assign(byId, QUIZ);
 
 let pass = 0, fail = 0; const failures = [];
@@ -109,7 +109,7 @@ const expectName = (id) => {
   return s.set.split(':')[0];
 };
 await section('2a. every set, level and drill card opens the matching test', async () => {
-  const lists = [['#/tests', 25, s => !s.hidden && !s.drill && !s.lvlset && s.id.startsWith('set')], ['#/tests/level', 9, s => s.lvlset], ['#/drills/gk', 6, s => s.id.startsWith('gkd')], ['#/drills/en', 52, s => s.id === 'end1' || s.id === 'end2' || /^grd\d+$/.test(s.id)], ['#/drills/lr', 50, s => /^lrd\d+$/.test(s.id)], ['#/drills/comp', 12, s => s.id === 'end3' || s.id === 'end4' || s.id.startsWith('compd')]];
+  const lists = [['#/tests', 25, s => !s.hidden && !s.drill && !s.lvlset && s.id.startsWith('set')], ['#/tests/level', 9, s => s.lvlset], ['#/drills/gk', 56, s => s.id.startsWith('gkd') || /^gkq\d+$/.test(s.id)], ['#/drills/en', 52, s => s.id === 'end1' || s.id === 'end2' || /^grd\d+$/.test(s.id)], ['#/drills/lr', 50, s => /^lrd\d+$/.test(s.id)], ['#/drills/comp', 62, s => s.id === 'end3' || s.id === 'end4' || s.id.startsWith('compd') || /^cpd\d+$/.test(s.id)]];
   for (const [h, n, pred] of lists) {
     await open(h);
     const cards = await page.$$eval('a.row[href^="#/test/"]', as => as.map(a => ({ id: a.getAttribute('href').slice(7), title: a.querySelector('.ttl').textContent })));
@@ -320,7 +320,7 @@ await section('5. Revise incorrect shows exactly the wrong answers', async () =>
   }
   await open('#/study/wrong/pdfs');
   ok(await page.locator('.row.pdf:has-text("Level tests")').count() === 1, 'PDFs sub-chip lists the source PDF');
-  await open('#/study/wrong'); await page.click('#wtest'); await page.waitForSelector('#rq .qt');
+  await open('#/study/wrong'); await page.click('#wtest'); await page.click('#mfGo'); await page.waitForSelector('#rq .qt');
   ok((await hash()).startsWith('#/test/custom-'), 'practise wrong answers as a test');
 });
 
@@ -536,7 +536,7 @@ await section('8. PWA basics, search, tap targets', async () => {
   ok(man.display === 'standalone' && man.theme_color && man.icons.some(i => i.purpose === 'maskable' && i.sizes === '512x512'), 'manifest');
   ok((await page.request.get(BASE + 'sw.js')).ok(), 'service worker file');
   const idx = await (await page.request.get(BASE + 'data/index.json')).body();
-  ok(idx.length < 40 * 1024, 'index.json under 40 KB', String(idx.length));
+  ok(idx.length < 64 * 1024, 'index.json under 64 KB', String(idx.length));
   await open('#/search?q=ledum');
   await page.waitForSelector('#sr .row, #sr details', { timeout: 8000 });
   ok(await page.locator('#sr .row[href^="#/study/topic"]').count() > 0, 'search finds notes');

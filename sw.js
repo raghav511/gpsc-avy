@@ -1,5 +1,5 @@
 // GPSCavy service worker. The version is stamped by tools/build.py from a hash of the shell and data files.
-const V = 'gpscavy-9efef9e283';
+const V = 'gpscavy-20d1f73cfa';
 // The sandbox website (…/gpsc-avy-staging/) shares the browser's cache storage with the real app: keep its files apart.
 const CV = (self.registration.scope.indexOf('-staging/') > -1 ? 'stg' : 'gps') + V.slice(3);
 const SHELL = ['./', 'index.html', 'js/app.js', 'js/core.js', 'js/runner.js', 'js/study.js', 'manifest.webmanifest',

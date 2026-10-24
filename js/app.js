@@ -4,11 +4,11 @@ import {
   H, loadAttempts, saveAttempts, findAttempt, cleanAttempt, grade, tokens, listInProgress, loadState, stateKey, remaining, stats, weakest,
   DRILL_FOR, wrongList, customs, saveCustom, deleteCustom, toast, hideToast, sheet, closeSheet, sheetOpen, ICON, navHtml, topbar, bar, lvlChip,
   SECS, SEC, LV, LVL, TOPIC_NAMES, prefetchSet, findDef, CKEY, lsDel, NOTE_TOPICS, hasNotes, topBtns, refreshTopBtns, UI, setSaved, isSaved, savedAll, mergeSaved, cleared, addCleared, delCleared, mergeCleared, removeAttempts
-} from './core.js?v=gpscavy-9efef9e283';
-import { today as thoughtToday } from './thought.js?v=gpscavy-9efef9e283';
-import * as G from './account.js?v=gpscavy-9efef9e283';
-import { fetchBlob } from './vault.js?v=gpscavy-9efef9e283';
-import * as L from './licence.js?v=gpscavy-9efef9e283';
+} from './core.js?v=gpscavy-20d1f73cfa';
+import { today as thoughtToday } from './thought.js?v=gpscavy-20d1f73cfa';
+import * as G from './account.js?v=gpscavy-20d1f73cfa';
+import { fetchBlob } from './vault.js?v=gpscavy-20d1f73cfa';
+import * as L from './licence.js?v=gpscavy-20d1f73cfa';
 
 const app = $('#app');
 let cur = null;          // current screen {hash, unmount, onPop}
@@ -17,8 +17,8 @@ const scrolls = new Map();
 let runnerMod = null, studyMod = null;
 // A lazily loaded module can come from a newer app version than the one already running; if it does not fit, reload once.
 const safeImport = u => import(u).catch(e => { try { if (!sessionStorage.getItem('gpscavy-reimport')) { sessionStorage.setItem('gpscavy-reimport', '1'); location.reload(); } } catch (x) { } throw e; });
-const loadRunner = () => runnerMod || (runnerMod = safeImport('./runner.js?v=gpscavy-9efef9e283'));
-const loadStudy = () => studyMod || (studyMod = safeImport('./study.js?v=gpscavy-9efef9e283'));
+const loadRunner = () => runnerMod || (runnerMod = safeImport('./runner.js?v=gpscavy-20d1f73cfa'));
+const loadStudy = () => studyMod || (studyMod = safeImport('./study.js?v=gpscavy-20d1f73cfa'));
 
 // ---------- routing ----------
 export function parse(h) {
@@ -145,7 +145,7 @@ document.addEventListener('click', e => {
     hideToast(); setTimeout(() => URL.revokeObjectURL(u), 120000);
   }).catch(err => { if (win) win.close(); if (err && err.code === 'locked') go('#/pay?back=' + encodeURIComponent(location.hash)); else toast('Could not open the PDF. Check your connection and try again.', null, 5000); });
 });
-export const api = { go, back, parse, parentOf, testParent, render, openDownload, openUpload, loadRunner, loadStudy };
+export const api = { go, back, parse, parentOf, testParent, render, openDownload, openUpload, loadRunner, loadStudy, openMistakes: (sec, t) => openMistakes(sec, t) };
 
 // Links: same-document hash links navigate through the router so every screen gets a history entry.
 document.addEventListener('click', e => {
@@ -169,10 +169,10 @@ document.addEventListener('pointerdown', pf, { passive: true });
 // ---------- helpers ----------
 const practice = () => IDX.sets.filter(s => s.num);
 const levelSets = () => IDX.sets.filter(s => s.lvlset);
-const gkDrills = () => IDX.sets.filter(s => s.id.startsWith('gkd'));
+const gkDrills = () => IDX.sets.filter(s => s.id.startsWith('gkd') || /^gkq\d+$/.test(s.id));
 const enDrills = () => IDX.sets.filter(s => s.id === 'end1' || s.id === 'end2' || /^grd\d+$/.test(s.id));
 const lrDrills = () => IDX.sets.filter(s => /^lrd\d+$/.test(s.id));
-const compDrills = () => IDX.sets.filter(s => s.id === 'end3' || s.id === 'end4' || s.id.startsWith('compd'));
+const compDrills = () => IDX.sets.filter(s => s.id === 'end3' || s.id === 'end4' || s.id.startsWith('compd') || /^cpd\d+$/.test(s.id));
 function attemptsOf(id) { return H.filter(a => a.set === id); }
 function bestOf(id) { const m = attemptsOf(id); if (!m.length) return null; return m.reduce((b, a) => (a.score > b.score ? a : b), m[0]); }
 const RESET_ICON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>';
@@ -256,14 +256,15 @@ function homeScreen() {
     '<main class="pad stack home">' +
     '<section class="hero"><div><p class="hk">Exam on Sunday, 1 November</p><p class="hd">' + (dl === 0 ? 'Exam day' : dl + (dl === 1 ? ' day left' : ' days left')) + '</p><p class="hs">60 marks · 75 minutes · 5 sections</p></div>' +
     '<a class="badge" href="#/progress" aria-label="Last score ' + (last ? last.score : '–') + ' of ' + (last ? last.total : 60) + ', see progress"><small>Last score</small><b>' + (last ? last.score : '–') + '</b><small>of ' + (last ? last.total : 60) + '</small></a></section>' +
-    streakCard() + thoughtCard() +
+    streakCard() + '<div id="mfx"></div>' + thoughtCard() +
     '<div id="a2hs"></div>' + resume +
     '<div class="two"><a class="big dark" href="#/test/' + nextMock() + '" data-pf="' + nextMock() + '"><b>Full mock</b><small>60 Q · 75 min</small></a><a class="big sun" href="#/custom"><b>Pick subjects</b><small>custom test</small></a></div>' +
     '<section class="card"><div class="ch"><h2 class="label">Your accuracy by section</h2><a class="lnk" href="#/progress">All progress</a></div><div id="acc" class="acc"><p class="sub">Loading…</p></div></section>' +
     '<section class="card today"><span class="ic ic-core">' + ICON.book + '</span><span class="rt"><span class="ttl">Today\'s read: Topic ' + tday + ' ' + tnames[tday] + '</span><span class="sub">then a quick-check quiz · <a href="#/test/quiz-topic' + tday + '">Quiz</a></span></span><a class="lnk" href="#/study/topic' + tday + '">Open</a></section>' +
     '</main>' + navHtml('home');
   installHint();
-  getKeys().then(() => { if (cur && cur.hash === '#/') fillAcc($('#acc'), true); });
+  // the mistakes card needs the answer keys to know which answers were wrong
+  getKeys().then(() => { if (!cur || cur.hash !== '#/') return; fillAcc($('#acc'), true); const m = $('#mfx'); if (m) { m.outerHTML = mistakesCard(); bindMistakes(app); } });
 }
 function accRows(s, showBest) {
   return SECS.map(k => {
@@ -278,6 +279,73 @@ function fillAcc(el, home) {
   const s = stats(), w = weakest(s);
   el.innerHTML = accRows(s, !home) + (w ? (home ? '<p class="sub">Weakest: ' + SEC[w].long + '. <a class="lnk" href="' + DRILL_FOR[w][0] + '">Practise ' + DRILL_FOR[w][1] + '</a></p>'
     : '<a class="wide sun" href="' + DRILL_FOR[w][0] + '">Practise weakest: ' + DRILL_FOR[w][1] + '</a>') : '');
+}
+// ---------- practise your mistakes, by subject and core topic ----------
+const MF_ORDER = ['core', 'gk', 'gram', 'comp', 'lr'];
+function mistakeGroups() {
+  const wl = wrongList(), by = {}, tp = {};
+  wl.forEach(w => { by[w.sec] = (by[w.sec] || 0) + 1; if (w.sec === 'core' && w.topic) tp[w.topic] = (tp[w.topic] || 0) + 1; });
+  const topics = Object.keys(tp).map(Number).sort((a, b) => tp[b] - tp[a] || a - b).map(t => [t, tp[t]]);
+  return { wl, by, topics, n: wl.length };
+}
+const mfChip = (k, n) => '<button type="button" class="schip2 mfc" style="background:var(--c-' + k + '-s);color:var(--c-' + k + '-i);border-color:transparent" data-mf="' + k + '">' + SEC[k].name + ' · ' + n + '</button>';
+function mistakesCard() {
+  const g = mistakeGroups(); if (!g.n) return '';
+  // a small box; tap it to open the subjects and the practise button
+  return '<details class="card mfix"><summary><span class="ic ic-core" aria-hidden="true">' + g.n + '</span><span class="rt"><span class="ttl">Fix your mistakes</span><span class="sub">' + g.n + ' question' + (g.n === 1 ? '' : 's') + ' to practise again</span></span><span class="chev" aria-hidden="true">' + ICON.chev + '</span></summary>' +
+    '<div class="stack8 mfb"><p class="sub">Get one right and it leaves the list. <a class="lnk" href="#/study/wrong">See all</a></p>' +
+    '<div class="mfcs">' + MF_ORDER.filter(k => g.by[k]).map(k => mfChip(k, g.by[k])).join('') + '</div>' +
+    '<button type="button" class="wide pri" data-mf="all">Practise all ' + g.n + '</button></div></details>';
+}
+function mistakesSection() {
+  const g = mistakeGroups();
+  if (!g.n) return '<section class="card"><h2 class="label">Incorrect answers by subject and topic</h2><p class="sub">Nothing to fix yet. Questions you get wrong in any test show here, so you can practise them again.</p></section>';
+  const pr = (k, t) => '<button type="button" class="mfp' + (t ? '' : ' main') + '" data-mf="' + k + '"' + (t ? ' data-t="' + t + '"' : '') + '>Practise</button>';
+  const rows = MF_ORDER.filter(k => g.by[k]).map(k =>
+    '<div class="row"><span class="num s-' + k + '-b">' + g.by[k] + '</span><span class="rt"><span class="ttl">' + SEC[k].long + '</span><span class="sub">' + (k === 'core' && g.topics.length ? g.topics.length + ' topic' + (g.topics.length === 1 ? '' : 's') + ' · most in Topic ' + g.topics[0][0] : 'wrong so far') + '</span></span>' + pr(k) + '</div>' +
+    (k === 'core' ? g.topics.map(([t, n]) => '<div class="row mft"><span class="num s-core-b">' + n + '</span><span class="rt"><span class="ttl">Topic ' + t + ' · ' + TOPIC_NAMES[t] + '</span></span>' + pr('core', t) + '</div>').join('') : '')).join('');
+  return '<section class="card stack8"><h2 class="label">Incorrect answers by subject and topic</h2><div class="list flat">' + rows + '</div><button type="button" class="wide pri" data-mf="all">Practise all ' + g.n + ' mistakes</button></section>';
+}
+function bindMistakes(root) { root.querySelectorAll('[data-mf]').forEach(b => b.onclick = () => openMistakes(b.dataset.mf, b.dataset.t ? +b.dataset.t : 0)); }
+function openMistakes(sec, topic) {
+  const g = mistakeGroups(); if (!g.n) return;
+  // what can be ticked: subjects for "all", topics for core, nothing for one other subject
+  const items = sec === 'all' ? MF_ORDER.filter(k => g.by[k]).map(k => [k, SEC[k].long, g.by[k]])
+    : sec === 'core' ? g.topics.map(([t, n]) => [String(t), 'Topic ' + t + ' · ' + TOPIC_NAMES[t], n]) : [];
+  const on = new Set(items.map(i => i[0]).filter(k => !topic || k === String(topic)));
+  let howMany = 'all', mode = 'learn';
+  const pick = () => g.wl.filter(w => sec === 'all' ? on.has(w.sec) : w.sec === sec && (sec !== 'core' || !items.length || on.has(String(w.topic))));
+  const title = sec === 'all' ? 'All your mistakes' : SEC[sec].long;
+  const sh = sheet('<h2 class="h2">' + esc(title) + ' · <span id="mfN"></span> wrong</h2>' +
+    (items.length ? '<p class="sub">Tick what to practise.</p>' + items.map(i => '<label class="chk"><input type="checkbox" data-k="' + i[0] + '"' + (on.has(i[0]) ? ' checked' : '') + '><span class="mfl">' + esc(i[1]) + '</span><b>' + i[2] + '</b></label>').join('') : '') +
+    '<h3 class="label">How many</h3><div class="seg" role="group" aria-label="How many questions" id="mfHow"></div>' +
+    '<h3 class="label">How</h3><div class="seg" role="group" aria-label="How to practise"><button type="button" data-mode="learn" class="on" aria-pressed="true">Learn: answer after each</button><button type="button" data-mode="exam" aria-pressed="false">Timed test</button></div>' +
+    '<button type="button" class="wide pri" id="mfGo"></button><button type="button" class="wide" data-close>Cancel</button>', { label: 'Practise your mistakes' });
+  sh.classList.add('stack8');
+  const draw = () => {
+    const n = pick().length, opts = [10, 25].filter(x => x < n).map(x => [String(x), String(x)]).concat([['all', n > 60 ? 'Newest 60' : 'All ' + n]]);
+    if (!opts.some(o => o[0] === howMany)) howMany = 'all';
+    sh.querySelector('#mfN').textContent = n;
+    sh.querySelector('#mfHow').innerHTML = opts.map(o => '<button type="button" data-how="' + o[0] + '" class="' + (howMany === o[0] ? 'on' : '') + '" aria-pressed="' + (howMany === o[0]) + '">' + o[1] + '</button>').join('');
+    const k = howMany === 'all' ? Math.min(n, 60) : +howMany;
+    const go = sh.querySelector('#mfGo'); go.disabled = !n; go.textContent = n ? 'Start ' + k + ' question' + (k === 1 ? '' : 's') : 'Tick at least one';
+  };
+  sh.addEventListener('change', e => { const c = e.target.closest('input[data-k]'); if (!c) return; if (c.checked) on.add(c.dataset.k); else on.delete(c.dataset.k); draw(); });
+  sh.addEventListener('click', e => {
+    const h = e.target.closest('[data-how]'); if (h) { howMany = h.dataset.how; draw(); return; }
+    const m = e.target.closest('[data-mode]');
+    if (m) { mode = m.dataset.mode; sh.querySelectorAll('[data-mode]').forEach(b => { b.classList.toggle('on', b === m); b.setAttribute('aria-pressed', b === m); }); return; }
+    if (e.target.closest('#mfGo')) {
+      const list = pick(); if (!list.length) return;
+      const k = howMany === 'all' ? Math.min(list.length, 60) : +howMany;
+      const refs = list.slice(0, k).map(w => [w.ref, w.sec]).sort((a, b) => ['comp', 'gram', 'gk', 'lr', 'core'].indexOf(a[1]) - ['comp', 'gram', 'gk', 'lr', 'core'].indexOf(b[1]));
+      const id = 'custom-' + Date.now().toString(36);
+      const nm = 'My mistakes' + (sec === 'all' ? '' : ' · ' + (sec === 'core' && on.size === 1 ? 'Topic ' + [...on][0] : SEC[sec].name));
+      saveCustom({ id, name: nm, minutes: Math.max(3, Math.round(refs.length * 1.25)), mode, refs, saved: false, createdAt: Date.now() });
+      closeSheet(); go('#/test/' + id + '?go=1');
+    }
+  });
+  draw();
 }
 // Today's practice and the run of practice days, so a daily habit is easy to see
 function streakCard() {
@@ -368,9 +436,9 @@ async function testsScreen(r) {
         levelSets().filter(s => s.lvlset === l).map(s => setRow(s, { badge: s2 => s2.name.replace(/\D+/g, ''), meta: (s2, st, b) => mixText(s2.mix) + (st ? ' · in progress' : b ? ' · best ' + b.score + '/' + b.total : '') })).join('') + '</div>').join('');
   } else if (tab === 'drills') {
     body = '<div class="list">' +
-      drillCard('#/drills/gk', 'GK', 'gk', 'GK drills', gkDrills().length + ' drills · 25 questions each · 15 min') +
+      drillCard('#/drills/gk', 'GK', 'gk', 'GK drills', gkDrills().length + ' drills · easy, intermediate and hard') +
       drillCard('#/drills/en', 'Gr', 'gram', 'English Grammar drills', enDrills().length + ' drills · easy, intermediate and hard') +
-      drillCard('#/drills/comp', 'Rc', 'comp', 'English Comprehension drills', compDrills().length + ' drills · real GPSC passages · 25 min') +
+      drillCard('#/drills/comp', 'Rc', 'comp', 'English Comprehension drills', compDrills().length + ' drills · easy, intermediate and hard') +
       drillCard('#/drills/lr', 'LR', 'lr', 'Logical Reasoning drills', lrDrills().length + ' drills · easy, intermediate and hard') + '</div>';
   } else if (tab === 'mine') {
     const cs = Object.values(customs()).filter(c => c.saved).sort((a, b) => b.createdAt - a.createdAt);
@@ -399,20 +467,23 @@ export function attRow(a) {
 async function drillsScreen(r) {
   const k = r.path[1];
   let title, sub, list, tone, badge, sec, extra = '';
-  if (k === 'gk') { title = 'GK drills'; sec = 'gk'; list = gkDrills(); sub = list.length + ' drills · 25 questions each · 15 minutes'; badge = s => 'G' + s.id.slice(3); }
+  if (k === 'gk') { title = 'GK drills'; sec = 'gk'; list = gkDrills(); sub = list.length + ' drills · 10 questions each, plus 6 longer topic drills'; badge = s => s.id.startsWith('gkq') ? s.id.slice(3) : 'T' + s.id.slice(3); }
   else if (k === 'en') { title = 'Grammar drills'; sec = 'gram'; list = enDrills(); sub = list.length + ' drills · 10 questions each, plus 2 longer ones'; badge = s => s.id.startsWith('grd') ? s.id.slice(3) : 'E' + s.id.slice(3); }
   else if (k === 'lr') { title = 'Reasoning drills'; sec = 'lr'; list = lrDrills(); sub = list.length + ' drills · 10 questions each · 12 minutes'; badge = s => s.id.slice(3); }
-  else if (k === 'comp') { title = 'Comprehension drills'; sec = 'comp'; list = compDrills(); sub = list.length + ' drills · 25 questions each · 25 minutes'; badge = s => s.id.startsWith('compd') ? 'P' + s.id.slice(5) : 'E' + s.id.slice(3); }
+  else if (k === 'comp') { title = 'Comprehension drills'; sec = 'comp'; list = compDrills(); sub = list.length + ' drills · two passages each, plus longer passage drills'; badge = s => s.id.startsWith('cpd') ? s.id.slice(3) : s.id.startsWith('compd') ? 'P' + s.id.slice(5) : 'E' + s.id.slice(3); }
   else { go('#/tests/drills', true); return; }
-  const name = s => s.id === 'end1' ? 'Grammar drill 1' : s.id === 'end2' ? 'Grammar drill 2' : s.id === 'end3' ? 'Comprehension drill 1' : s.id === 'end4' ? 'Comprehension drill 2' : s.id.startsWith('gkd') ? 'GK drill ' + s.id.slice(3) : s.name;
+  const name = s => s.id === 'end1' ? 'Long grammar drill 1' : s.id === 'end2' ? 'Long grammar drill 2' : s.id === 'end3' ? 'Long comprehension drill 1' : s.id === 'end4' ? 'Long comprehension drill 2' : s.id.startsWith('gkd') ? 'GK topic drill ' + s.id.slice(3) : s.name;
   const meta = (s, st, b) => (s.short || s.core || '') + ' · ' + s.n + ' Q · ' + s.min + ' min' + (st ? ' · in progress' : b ? ' · best ' + b.score + '/' + b.total : '');
   // 25% easy, 50% intermediate, 25% hard: filter by level
-  const lvf = r.q.l || 'all', hasLv = list.some(s => /^(grd|lrd)/.test(s.id));
+  const lvf = r.q.l || 'all', hasLv = list.some(s => /^(grd|lrd|gkq|cpd)\d/.test(s.id));
   if (hasLv && lvf !== 'all') list = list.filter(s => s.level === lvf);
   const lvchips = hasLv ? '<div class="chips" role="group" aria-label="Filter by level">' + [['all', 'All'], ['easy', 'Easy'], ['intermediate', 'Intermediate'], ['hard', 'Hard']].map(c => '<a class="lchip' + (lvf === c[0] ? ' on' : '') + '" href="#/drills/' + k + (c[0] === 'all' ? '' : '?l=' + c[0]) + '" data-replace="1" aria-pressed="' + (lvf === c[0]) + '">' + c[1] + '</a>').join('') + '</div>' : '';
-  const rows = list.map(s => setRow(s, { badge, badgeCls: 's-' + sec + '-b', name, meta, tone: 'pg-' + sec }));
-  let html = rows.join('');
-  if (k === 'comp') html = rows.slice(0, 2).join('') + '</div><h2 class="label">Passage drills from the 25 mock sets</h2><div class="list">' + rows.slice(2).join('');
+  // the 10-question drills first, then the older, longer ones under their own heading
+  const short = s => /^(grd|lrd|gkq|cpd)\d/.test(s.id);
+  const row = s => setRow(s, { badge, badgeCls: 's-' + sec + '-b', name, meta, tone: 'pg-' + sec });
+  const longer = lvf === 'all' ? list.filter(s => !short(s)) : [];
+  let html = list.filter(short).map(row).join('');
+  if (longer.length) html += '</div><h2 class="label">' + (k === 'comp' ? 'Longer passage drills (25 questions)' : 'Longer drills (25 questions)') + '</h2><div class="list">' + longer.map(row).join('');
   app.innerHTML = topbar(title, sub) + '<main class="pad stack">' + lvchips + '<div class="list">' + html + '</div>' +
     (k === 'lr' ? '<a class="lnk" href="#/study/cheat/reasoning">Read the Reasoning cheat sheet first</a>' : '<a class="lnk" href="#/study/' + (k === 'en' ? 'cheat/grammar' : k) + '">Read the ' + (k === 'gk' ? 'GK playbook' : k === 'en' ? 'Grammar cheat sheet' : 'English playbook') + ' first</a>') + '</main>' + navHtml('tests');
 }
@@ -546,6 +617,7 @@ async function progressScreen() {
   const lv = ['E', 'I', 'H'].map(k => { const b = s.lvl[k]; const p = b && b.n ? Math.round(b.c / b.n * 100) : null; return '<div class="arow"><span>' + lvlChip(k) + '</span>' + bar(p || 0, 'l-' + k) + '<b>' + (p == null ? '–' : p + '%') + '</b>' + (b ? '<small>' + b.c + ' of ' + b.n + ' right</small>' : '') + '</div>'; }).join('');
   document.getElementById('pm').innerHTML =
     '<div class="tiles">' + tiles + '</div>' +
+    mistakesSection() +
     '<section class="card"><h2 class="label">Score in each full mock, oldest first</h2>' + trend(full) + '</section>' +
     '<section class="card"><h2 class="label">Accuracy by section, all attempts</h2><div class="acc" id="pacc"></div></section>' +
     '<section class="card"><h2 class="label">By difficulty</h2><div class="acc">' + lv + '</div></section>' +
@@ -554,6 +626,7 @@ async function progressScreen() {
     '<section class="card"><h2 class="label">Recent attempts</h2><div class="list flat cv">' + (H.length ? H.slice(0, 30).map(attRow).join('') : '<p class="empty">No attempts yet.</p>') + '</div>' + (H.length > 30 ? '<a class="lnk" href="#/tests/mine">All ' + H.length + ' attempts</a>' : '') + '</section>' +
     syncCard();
   fillAcc($('#pacc'), false);
+  bindMistakes($('#pm'));
 }
 function trend(full) {
   const pts = full.slice().reverse().slice(-14);
@@ -921,8 +994,8 @@ function openSettings() {
   const sgo = el.querySelector('#stOutGo'); if (sgo) sgo.onclick = () => { G.signOut(); refreshTopBtns(); toast('Signed out. Your progress is still on this device.'); openSettings(); };
   const cp = el.querySelector('#stCopy'); if (cp) cp.onclick = () => copyText(settings.syncUrl, 'Sync link copied. Paste it in GPSCavy on your other device: Settings, Connect sync.');
   const off = el.querySelector('#stOff'); if (off) off.onclick = () => { delete settings.syncUrl; UI.syncErr = false; saveSettings(); refreshTopBtns(); toast('Sync disconnected on this device. Your progress here is kept.'); openSettings(); };
-  el.querySelector('#stKey').onclick = () => safeImport('./ai.js?v=gpscavy-9efef9e283').then(m => m.keySheet(openSettings));
-  safeImport('./ai.js?v=gpscavy-9efef9e283').then(m => {
+  el.querySelector('#stKey').onclick = () => safeImport('./ai.js?v=gpscavy-20d1f73cfa').then(m => m.keySheet(openSettings));
+  safeImport('./ai.js?v=gpscavy-20d1f73cfa').then(m => {
     const a = m.summary(), t = el.querySelector('#stAi'), kd = el.querySelector('#stKeyDel'); if (!t) return;
     t.textContent = a.text; el.querySelector('#stKey').textContent = a.on ? 'Change AI or model' : 'Set up AI';
     kd.hidden = !a.on; kd.onclick = () => { m.removeKey(); toast('API key removed from this device.'); openSettings(); };
@@ -986,7 +1059,7 @@ function aiTab() {
   t.addEventListener('pointerdown', e => { sy = e.clientY; moved = false; startTop = t.getBoundingClientRect().top + t.offsetHeight / 2; t.setPointerCapture && t.setPointerCapture(e.pointerId); });
   t.addEventListener('pointermove', e => { if (!sy) return; const d = e.clientY - sy; if (Math.abs(d) > 8) moved = true; if (moved) place((startTop + d) / innerHeight); });
   t.addEventListener('pointerup', e => { if (moved) { settings.aiY = parseFloat(t.style.top) / innerHeight; saveSettings(); } sy = 0; });
-  t.addEventListener('click', e => { if (moved) { moved = false; e.preventDefault(); return; } safeImport('./ai.js?v=gpscavy-9efef9e283').then(m => m.menu(t)); });
+  t.addEventListener('click', e => { if (moved) { moved = false; e.preventDefault(); return; } safeImport('./ai.js?v=gpscavy-20d1f73cfa').then(m => m.menu(t)); });
   document.body.appendChild(t);
   // Never cover content: look at what lies under the tab and slide it to the nearest clear spot in the margin.
   const FREE = 'html,body,#app,main,.pad,.notes,#nb,.ns,.nb,.stack';
