@@ -3,8 +3,8 @@
 import {
   $, SC, esc, fmt, day, idle, getIndex, getKeys, getSet, setInfo, KEYS, H, findAttempt, addAttempt, removeAttempt, grade, tokens,
   loadState, stateKey, lsSet, lsDel, remaining, toast, hideToast, sheet, closeSheet, ICON, topbar, bar, lvlChip, navHtml,
-  SECS, SEC, LV, LVL, L5, TOPIC_NAMES, customs, saveCustom, findDef, NOTE_TOPICS, hasNotes
-} from './core.js?v=gpscavy-f9e5c38e34';
+  SECS, SEC, LV, LVL, L5, TOPIC_NAMES, customs, saveCustom, findDef, NOTE_TOPICS, hasNotes, saveBtn
+} from './core.js?v=gpscavy-c9216f32da';
 
 const app = $('#app');
 let API = null;
@@ -386,6 +386,7 @@ async function reviewScreen(at, r, me) {
   try { set = await getSet(at.set); } catch (e) { app.querySelector('main').innerHTML = '<div class="card"><p>The questions for this attempt are not available.</p></div>'; return; }
   const g = grade(at.set, at.answers) || { rows: set.questions.map(q => ({ n: q.n, a: at.answers[q.n], st: !at.answers[q.n] ? 'skip' : at.answers[q.n] === q.ans ? 'ok' : 'bad' })) };
   const flags = at.flags || {};
+  const refOf = {}; g.rows.forEach(x => (refOf[x.n] = x.ref || (set.refs && set.refs[x.n - 1]) || at.set + ':' + x.n));
   const f = r.q.f || 'all', sf = r.q.s || 'all';
   const st = {}; g.rows.forEach(x => (st[x.n] = x.st));
   const match = q => (f === 'all' || (f === 'flag' ? flags[q.n] : st[q.n] === f)) && (sf === 'all' || q.sec === sf);
@@ -401,7 +402,7 @@ async function reviewScreen(at, r, me) {
     let pass = '';
     if (q.passage && q.passage !== lastP && set.passages[q.passage]) { const p = set.passages[q.passage]; pass = '<details class="passage"><summary>Show ' + esc(p.title.toLowerCase()) + '</summary><div>' + p.paras.map(t => '<p>' + esc(t) + '</p>').join('') + '</div></details>'; }
     lastP = q.passage || null;
-    return '<article class="rev"><div class="qh"><b>Q' + q.n + '</b><span class="pill ' + (s === 'ok' ? 'pill-done">Right' : s === 'bad' ? 'pill-bad">Wrong' : 'pill-skip">Skipped') + '</span>' + (flags[q.n] ? '<span class="pill pill-flag">Flagged</span>' : '') + lvTag(q) + secTag(q) + '</div>' + pass +
+    return '<article class="rev"><div class="qh"><b>Q' + q.n + '</b><span class="pill ' + (s === 'ok' ? 'pill-done">Right' : s === 'bad' ? 'pill-bad">Wrong' : 'pill-skip">Skipped') + '</span>' + (flags[q.n] ? '<span class="pill pill-flag">Flagged</span>' : '') + lvTag(q) + secTag(q) + saveBtn(q.ref || refOf[q.n] || at.set + ':' + q.n, q.sec) + '</div>' + pass +
       '<p class="qt">' + esc(q.q) + '</p><ol class="ro">' + optsOf(q).map((t, i) => { const L = L5[i]; const c = L === q.ans ? 'right' : L === a ? 'mine' : ''; if (i === 4 && L !== q.ans && L !== a) return ''; return '<li class="' + c + '"><span class="key">' + L + '</span><span>' + esc(t) + '</span><em>' + (L === q.ans ? (L === a ? 'Correct, your answer' : 'Correct answer') : L === a ? 'Your answer' : '') + '</em></li>'; }).join('') + '</ol>' +
       '<p class="why"><b>Why ' + q.ans + ':</b> ' + esc(q.why) + '</p>' + (hasNotes(q.topic) ? '<a class="lnk" href="#/study/topic' + q.topic + '">Read Topic ' + q.topic + ' notes</a>' : '') + '</article>';
   }).join('');

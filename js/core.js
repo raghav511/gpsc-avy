@@ -197,6 +197,24 @@ export function weakest(st) {
 export const DRILL_FOR = { comp: ['#/drills/comp', 'Comprehension drills'], gram: ['#/drills/en', 'Grammar drills'], gk: ['#/drills/gk', 'GK drills'], lr: ['#/custom?sec=lr', 'a Reasoning test'], core: ['#/study/core', 'the core notes'] };
 
 // Wrong answers across attempts: latest answer per question decides (get it right later and it leaves the list).
+// Saved questions (bookmarks): ref ('set:n', the question's home set) → {at, sec, off?}. A removed one keeps a dated
+// 'off' entry so a sync from another device does not bring it back.
+export const SAVEDK = 'gpscavy-saved-v1';
+export const savedAll = () => lsGet(SAVEDK, {}) || {};
+export const savedList = () => Object.entries(savedAll()).filter(([, v]) => !v.off).sort((a, b) => b[1].at.localeCompare(a[1].at)).map(([ref, v]) => ({ ref, sec: v.sec, at: v.at }));
+export const isSaved = ref => { const v = savedAll()[ref]; return !!(v && !v.off); };
+export function setSaved(ref, sec, on) { const m = savedAll(); m[ref] = on ? { at: new Date().toISOString(), sec } : { at: new Date().toISOString(), sec, off: true }; lsSet(SAVEDK, m); }
+export function mergeSaved(other) {
+  if (!other || typeof other !== 'object') return 0;
+  const m = savedAll(); let n = 0;
+  for (const [ref, v] of Object.entries(other)) { if (!v || !v.at) continue; if (!m[ref] || m[ref].at < v.at) { if (!v.off && (!m[ref] || m[ref].off)) n++; m[ref] = v; } }
+  lsSet(SAVEDK, m); return n;
+}
+export function saveBtn(ref, sec) {
+  const on = isSaved(ref);
+  return '<button type="button" class="savb' + (on ? ' on' : '') + '" data-save="' + esc(ref) + '" data-sec="' + esc(sec) + '" aria-pressed="' + on + '" aria-label="' + (on ? 'Saved for revision. Tap to remove' : 'Save this question for revision') + '">' + ICON.star + '<span>' + (on ? 'Saved' : 'Save') + '</span></button>';
+}
+
 export function wrongList() {
   const seen = new Map();
   H.forEach(a => { // H is newest first
@@ -253,6 +271,7 @@ export const ICON = {
   up: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4M7 9l5-5 5 5"/><path d="M5 20h14"/></svg>',
   close: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
   grid: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg>',
+  star: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>',
   flag: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg>',
   share: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg>',
   plus: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
@@ -278,12 +297,12 @@ export function topbar(title, sub, opts) {
 // (labels on wide screens, icons on phones and iPad portrait; always icons beside a page title).
 export const UI = { syncing: false, syncErr: false };
 export function syncState() {
-  if (!settings.syncUrl) return 'off';
+  if (!settings.syncUrl && !settings.account) return 'off';
   if (UI.syncErr) return 'err';
   const ls = settings.lastSync;
   return ls && ls.what === 'sync' && Date.now() - Date.parse(ls.at) < 600000 ? 'ok' : 'on';
 }
-const SYNC_TXT = { off: 'Sync progress, not connected', err: 'Sync progress, last try failed', ok: 'Synced', on: 'Sync progress' };
+const SYNC_TXT = { off: 'Sync progress, not signed in', err: 'Sync progress, last try failed', ok: 'Synced', on: 'Sync progress' };
 export function topBtns(compact) {
   const st = syncState();
   return '<div class="tbtns' + (compact ? ' cpt' : '') + '">' +

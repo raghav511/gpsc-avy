@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="gps-v" content="gpscavy-f9e5c38e34">
+<meta name="gps-v" content="gpscavy-c9216f32da">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>GPSCavy · GPSC CBRT Homoeopathic Physician</title>
 <meta name="description" content="Mock tests, drills, notes and progress for the Goa PSC CBRT for Homoeopathic Physician, 1 November 2026. Works offline.">
@@ -22,7 +22,7 @@
 <meta name="format-detection" content="telephone=no">
 <link rel="preload" href="fonts/jakarta-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="data/index.json" as="fetch" crossorigin>
-<link rel="modulepreload" href="js/core.js?v=gpscavy-f9e5c38e34">
+<link rel="modulepreload" href="js/core.js?v=gpscavy-c9216f32da">
 <style>
 @font-face{font-family:'Plus Jakarta Sans';font-style:normal;font-weight:400 800;font-display:swap;src:url(fonts/jakarta-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 @font-face{font-family:'Tiro Devanagari Sanskrit';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/tiro-deva-subset.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CFF,U+200C-200D,U+25CC,U+A8E0-A8FF}
@@ -280,7 +280,30 @@ body[data-screen=runner] #toast,body[data-screen=custom] #toast{bottom:calc(96px
 .sbtn{min-height:44px;padding:0 14px;border:0;border-radius:12px;background:var(--acc);color:#422006;font-weight:800;font-size:.9rem}
 .rbar{height:5px;background:#312e81;position:absolute;left:0;right:0;bottom:-5px}.rbar i{display:block;height:100%;background:var(--acc);transform-origin:0 50%;transform:scaleX(0);transition:transform .2s}
 .rq{padding:16px 16px calc(100px + var(--sb));max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
-.qh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.qn{font-size:.85rem;font-weight:700;color:var(--muted);margin-right:auto}
+.qh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}/* Paid access: pay screen, admin screen, locks */
+.pay .h2,.adm .h2{font:800 1.05rem var(--ui)}
+.pay .note,.adm .note{background:var(--acc-soft);color:var(--acc-ink);border-radius:14px;padding:10px 14px;font-weight:600;font-size:.9rem;display:flex;gap:8px;align-items:center}
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.plan{display:grid;gap:2px;text-align:left;min-height:64px;padding:10px 14px;border-radius:16px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.plan b{font:800 1rem var(--ui)}.plan span{font-size:.85rem;color:var(--muted)}
+.plan.on{border:2px solid var(--pri);background:var(--pri-soft)}.plan.on span{color:var(--pri-ink)}
+.upi{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:center}
+.qr{width:168px;height:168px;background:#fff;border-radius:12px;padding:6px;box-sizing:border-box}.qr svg{width:100%;height:100%;display:block}
+.upid{font-size:1.05rem;word-break:break-all}
+@media (max-width:420px){.upi{grid-template-columns:1fr;justify-items:center;text-align:center}.upi .two{width:100%}}
+.pend{border:2px solid var(--acc)}
+.urow{display:grid;gap:6px}.uh{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}.uh b{word-break:break-all}
+.plrow{display:grid;grid-template-columns:minmax(0,1fr) 72px 84px 44px;gap:6px;align-items:center}
+.chk{display:flex;gap:12px;align-items:center;min-height:44px;cursor:pointer}.chk input{width:22px;height:22px;flex:none;accent-color:var(--pri)}
+.fld{display:grid;gap:4px}
+.code{font:700 1rem ui-monospace,Menlo,monospace;letter-spacing:.04em}.code.big{font-size:1.15rem}
+.vrow{min-height:56px}
+@media (min-width:700px){.adm .stack8:has(>.chk){display:grid;grid-template-columns:1fr 1fr;column-gap:16px}.adm .stack8>.ch{grid-column:1/-1}}
+#frSave{position:sticky;bottom:calc(var(--navh,64px) + 12px);box-shadow:var(--shadow)}
+a.locked{position:relative}a.locked .lk{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:var(--acc-soft);color:var(--acc-ink);display:flex;align-items:center;justify-content:center}
+.row.locked .lk{position:static;margin-left:auto;flex:none}
+.streak{display:flex;gap:14px;align-items:center}.stk{flex:none;display:grid;justify-items:center;min-width:72px;padding:8px;border-radius:16px;background:var(--acc-soft);color:var(--acc-ink)}.stk b{font:800 1.6rem/1 var(--ui)}.stk span{font-size:.72rem;font-weight:700;text-align:center}.stg{flex:1;min-width:0;display:grid;gap:6px}.stg .ttl{font-weight:800}.trk.grn i{background:var(--grn)}
+.savb{margin-left:auto;display:inline-flex;align-items:center;gap:6px;min-height:44px;min-width:44px;padding:0 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--muted);font:700 .8rem var(--ui);cursor:pointer}.savb.on{border-color:var(--acc);background:var(--acc-soft);color:var(--acc-ink)}.savb.on svg{fill:currentColor}.qn{font-size:.85rem;font-weight:700;color:var(--muted);margin-right:auto}
 .qt{font-size:1.12rem;font-weight:600;line-height:1.45}
 .opts{display:flex;flex-direction:column;gap:10px}
 .opt{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;padding:10px 14px;border-radius:16px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:500 1rem/1.35 var(--ui);text-align:left;transition:transform .12s,background-color .12s,border-color .12s}
@@ -435,6 +458,8 @@ body[data-screen=study] .nfoot~.bnav{display:none}
 .pb .rule{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start}.pb .rule .n{font:800 1.4rem var(--ui);color:var(--laterite);line-height:1}
 .pb .bars{display:flex;flex-direction:column;gap:7px}
 .pb .bar{display:grid;grid-template-columns:1fr 3rem;gap:4px 10px;align-items:center;font-size:.88rem}.pb .bar .lab{grid-column:1/-1}
+.pb .bar a.lab{display:flex;align-items:flex-end;min-height:40px;padding-top:6px}
+.today .lnk{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
 .pb .bar .track{height:12px;background:var(--card2);border-radius:6px;overflow:hidden}.pb .bar .fill{height:100%;background:var(--sea)}.pb .bar .fill.st{background:var(--laterite)}.pb .bar .pct{text-align:right;font-variant-numeric:tabular-nums}
 .pb .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);margin-top:10px}
 .pb .sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:5px}
@@ -471,7 +496,7 @@ body[data-screen=study] .nfoot~.bnav{display:none}
   .fab-wrap{max-width:560px}
   .pad.home{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
   .pad.home>*{min-width:0}
-  .pad.home>.hero,.pad.home>#a2hs,.pad.home>.resume,.pad.home>.two{grid-column:1/-1}
+  .pad.home>.hero,.pad.home>.streak,.pad.home>#a2hs,.pad.home>.resume,.pad.home>.two{grid-column:1/-1}
   .pad.home>.card:not(.today):not(.sync){grid-row:span 2}
   .list:not(.flat){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
   .list:not(.flat)>*{min-width:0}
@@ -557,6 +582,14 @@ body.noscroll #aitab,html.zoomed #aitab,body[data-screen=print] #aitab{display:n
 @media (max-width:560px){.aimodel select{flex:1 1 100%}.aimodel .btn{flex:1 1 100%;min-height:40px}}
 .aivia{margin-top:6px;font:600 .7rem var(--ui);color:var(--muted)}
 button[hidden]{display:none!important}
+.gbtn{background:#fff;color:#1f1f1f;border:1.5px solid #747775;gap:10px}.gbtn:disabled{opacity:.7}
+.gnote{font-size:.8rem}
+body[data-screen=welcome] #aitab{display:none}
+.welcome{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:calc(var(--st,0px) + 24px) max(16px,env(safe-area-inset-right)) 32px max(16px,env(safe-area-inset-left));background:radial-gradient(120% 80% at 50% 0%,var(--pri-soft),var(--bg) 60%)}
+.wcard{width:100%;max-width:440px;display:grid;gap:12px;background:var(--card);border-radius:24px;padding:24px 20px;box-shadow:var(--shadow)}
+.wcard h1{font:800 1.5rem/1.25 var(--ui);letter-spacing:-.01em;text-wrap:balance}
+.wb{display:flex;align-items:center;gap:10px}.wb>span:last-child{display:grid}.wb small{color:var(--muted);font-size:.8rem}
+.wlist{margin:0;padding-left:20px;display:grid;gap:4px;color:var(--ink2)}
 .row2:has(>[hidden]){grid-template-columns:1fr}
 
 /* App shell: the page itself never scrolls, so iOS/Android toolbars and rubber-band bounce cannot drag the
@@ -650,6 +683,6 @@ body.noscroll #app{overflow:hidden}
   });
 })();
 </script>
-<script type="module" src="js/app.js?v=gpscavy-f9e5c38e34"></script>
+<script type="module" src="js/app.js?v=gpscavy-c9216f32da"></script>
 </body>
 </html>

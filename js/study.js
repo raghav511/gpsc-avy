@@ -1,12 +1,12 @@
 // Study: library with subject chips, notes reader with quick-check quizzes, playbooks, PDFs, Revise incorrect, past papers, search.
 import {
   $, $$, SC, esc, day, idle, getIndex, getMeta, getKeys, getSet, getText, getSearch, setInfo, IDX, META, H, wrongList, tokens,
-  settings, saveSettings, saveCustom, toast, sheet, ICON, topbar, navHtml, lvlChip, SEC, TOPIC_NAMES, loadAttempts, NOTE_TOPICS, hasNotes, topBtns
-} from './core.js?v=gpscavy-f9e5c38e34';
+  settings, saveSettings, saveCustom, toast, sheet, ICON, topbar, navHtml, lvlChip, SEC, TOPIC_NAMES, loadAttempts, NOTE_TOPICS, hasNotes, topBtns, saveBtn, savedList
+} from './core.js?v=gpscavy-c9216f32da';
 
 const app = $('#app');
 let API = null;
-const CHIPS = [['all', 'All'], ['core', 'Core'], ['gk', 'GK'], ['gram', 'English Grammar'], ['comp', 'English Comprehension'], ['pdfs', 'PDFs'], ['wrong', 'Revise incorrect']];
+const CHIPS = [['all', 'All'], ['core', 'Core'], ['gk', 'GK'], ['gram', 'English Grammar'], ['comp', 'English Comprehension'], ['pdfs', 'PDFs'], ['wrong', 'Revise incorrect'], ['saved', 'Saved']];
 const WSUB = [['all', 'All'], ['core', 'Core'], ['gk', 'GK'], ['comp', 'English comprehension'], ['gram', 'English grammar'], ['pdfs', 'PDFs']];
 const TCOL = { 1: 'comp', 2: 'gram', 3: 'lr', 4: 'ind', 5: 'core', 6: 'ind', 7: 'lr', 8: 'gk', 9: 'gram', 10: 'comp' };
 
@@ -29,7 +29,7 @@ async function library(chip, sub, r, me) {
   await getKeys();
   if (me.hash !== location.hash) return;
   const wl = wrongList();
-  const chips = CHIPS.map(c => '<a role="tab" class="fchip' + (c[0] === 'wrong' ? ' wrongc' : '') + (chip === c[0] ? ' on' : '') + '" aria-selected="' + (chip === c[0]) + '" href="#/study' + (c[0] === 'all' ? '' : '/' + c[0]) + '" data-replace="1">' + c[1] + (c[0] === 'wrong' ? ' · ' + wl.length : '') + '</a>').join('');
+  const chips = CHIPS.map(c => '<a role="tab" class="fchip' + (c[0] === 'wrong' ? ' wrongc' : '') + (chip === c[0] ? ' on' : '') + '" aria-selected="' + (chip === c[0]) + '" href="#/study' + (c[0] === 'all' ? '' : '/' + c[0]) + '" data-replace="1">' + c[1] + (c[0] === 'wrong' ? ' · ' + wl.length : c[0] === 'saved' ? ' · ' + savedList().length : '') + '</a>').join('');
   const show = k => chip === 'all' || chip === k;
   let body = '';
   if (show('core')) {
@@ -48,12 +48,42 @@ async function library(chip, sub, r, me) {
   if (chip === 'all') body += '<h2 class="label">More</h2><div class="list">' + row('#/study/playbook/english', 'En', 's-comp-b', 'English Playbook (full)', 'Comprehension and grammar, with a 13-day plan') + row('#/study/papers', 'QP', 's-lr-b', 'Past GPSC question papers', META.papers.length + ' papers on the GPSC site') + row('#/study/pdfs', 'PDF', 's-ind-b', 'Printable PDFs', META.pdfs.length + ' files to print or share on WhatsApp') + '</div>';
   if (chip === 'pdfs') body += '<h2 class="label">Printable PDFs to share on WhatsApp</h2><div class="list">' + META.pdfs.map(pdfRow).join('') + '</div>';
   if (chip === 'wrong') body += await wrongBody(wl, sub, me);
+  if (chip === 'saved') body += await savedBody();
   app.innerHTML = '<div class="ptop"><header class="ph"><h1>Study</h1>' + topBtns() + '</header><div class="ptabs"><div class="chips" role="tablist" aria-label="Subjects">' + chips + '</div></div></div>' +
     '<main class="pad stack"><form class="sbox" role="search" id="sf"><span aria-hidden="true">' + ICON.search + '</span><input type="search" name="q" placeholder="Search notes: Ledum, PCOD, IMR…" aria-label="Search notes, questions and sets" enterkeyhint="search"></form>' +
     body + '</main>' + navHtml('study');
   bindPdf(app);
+  const onc = app.querySelector('.ptabs .fchip.on'); if (onc && onc.scrollIntoView) onc.scrollIntoView({ block: 'nearest', inline: 'center' });
   $('#sf').onsubmit = e => { e.preventDefault(); const q = e.target.q.value.trim(); if (q) API.go('#/search?q=' + encodeURIComponent(q)); };
   const wa = $('#wtest'); if (wa) wa.onclick = () => practiseWrong(wa.dataset.sub);
+  const sa = $('#stest'); if (sa) sa.onclick = () => practiseRefs(savedList().slice(0, 60).map(x => [x.ref, x.sec]), 'Saved questions');
+}
+// ---------- Saved questions ----------
+async function savedBody() {
+  const list = savedList();
+  let h = '<p class="sub">Questions you saved with the star in a review or in Revise incorrect. Tap the star again to remove one.</p>';
+  if (!list.length) return h + '<p class="empty">Nothing saved yet. After a test, open the review and tap <b>Save</b> on any question you want to come back to.</p>';
+  const ids = Array.from(new Set(list.map(x => x.ref.slice(0, x.ref.lastIndexOf(':')))));
+  const sets = {};
+  await Promise.all(ids.map(id => getSet(id).then(s => (sets[id] = s)).catch(() => { })));
+  h += '<button type="button" class="wide pri" id="stest">' + (list.length === 1 ? 'Practise it as a test' : 'Practise these ' + Math.min(list.length, 60) + ' as a test') + '</button><div class="rlist">';
+  h += list.map(x => {
+    const sid = x.ref.slice(0, x.ref.lastIndexOf(':')), n = +x.ref.slice(x.ref.lastIndexOf(':') + 1), s = sets[sid];
+    const q = s && s.questions[n - 1]; if (!q) return '';
+    const opts = q.opts.concat(['None of the above']);
+    return '<article class="rev"><div class="qh">' + (q.lvl ? lvlChip(q.lvl) : '') + '<span class="chip s-' + q.sec + '-c">' + esc(q.sec === 'core' && q.topic ? 'Topic ' + q.topic + ' · ' + TOPIC_NAMES[q.topic] : SEC[q.sec].name) + '</span><span class="sub">Saved ' + day(x.at) + '</span>' + saveBtn(x.ref, q.sec) + '</div>' +
+      '<p class="qt">' + esc(q.q) + '</p><ol class="ro">' + opts.slice(0, q.ans === 'E' ? 5 : 4).map((t, i) => '<li class="' + ('ABCDE'[i] === q.ans ? 'right' : '') + '"><span class="key">' + 'ABCDE'[i] + '</span><span>' + esc(t) + '</span></li>').join('') + '</ol>' +
+      '<details class="why"><summary>Why</summary><p>' + esc(q.why) + '</p></details>' + (hasNotes(q.topic) ? '<a class="lnk" href="#/study/topic' + q.topic + '">Read Topic ' + q.topic + ' notes</a>' : '') + '</article>';
+  }).join('') + '</div>';
+  return h;
+}
+function practiseRefs(pairs, name) {
+  if (!pairs.length) return;
+  const order = ['comp', 'gram', 'gk', 'lr', 'core'];
+  const refs = pairs.slice().sort((a, b) => order.indexOf(a[1]) - order.indexOf(b[1]));
+  const id = 'custom-' + Date.now().toString(36);
+  saveCustom({ id, name, minutes: Math.max(3, Math.round(refs.length * 1.25)), mode: 'learn', refs, saved: false, createdAt: Date.now() });
+  API.go('#/test/' + id + '?go=1');
 }
 const kbTxt = kb => kb > 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb + ' KB';
 const pdfUrl = f => 'content/pdfs/' + encodeURIComponent(f);
@@ -122,12 +152,12 @@ async function wrongBody(wl, sub, me) {
     return h + (ps.length ? '<div class="list">' + ps.map(p => pdfRow(Object.assign({}, p, { name: p.name + ' · ' + per.get(p.f) + ' wrong' }))).join('') + '</div>' : '<p class="empty">These wrong answers came from tests that have no PDF.</p>');
   }
   if (!list.length) return h + '<p class="empty">No incorrect answers in this group.</p>';
-  h += '<button type="button" class="wide pri" id="wtest" data-sub="' + sub + '">Practise these ' + Math.min(list.length, 60) + ' as a test</button><div class="rlist">';
+  h += '<button type="button" class="wide pri" id="wtest" data-sub="' + sub + '">' + (list.length === 1 ? 'Practise it as a test' : 'Practise these ' + Math.min(list.length, 60) + ' as a test') + '</button><div class="rlist">';
   h += list.map(w => {
     const sid = w.ref.slice(0, w.ref.lastIndexOf(':')), n = +w.ref.slice(w.ref.lastIndexOf(':') + 1), s = sets[sid];
     const q = s && s.questions[n - 1]; if (!q) return '';
     const opts = q.opts.concat(['None of the above']);
-    return '<article class="rev"><div class="qh">' + (q.lvl ? lvlChip(q.lvl) : '') + '<span class="chip s-' + q.sec + '-c">' + esc(q.sec === 'core' && q.topic ? 'Topic ' + q.topic + ' · ' + TOPIC_NAMES[q.topic] : SEC[q.sec].name) + '</span><span class="sub">' + esc((setInfo(w.set) || { name: w.set.startsWith('custom-') ? 'Custom test' : w.set }).name) + ' · ' + day(w.when) + '</span></div>' +
+    return '<article class="rev"><div class="qh">' + (q.lvl ? lvlChip(q.lvl) : '') + '<span class="chip s-' + q.sec + '-c">' + esc(q.sec === 'core' && q.topic ? 'Topic ' + q.topic + ' · ' + TOPIC_NAMES[q.topic] : SEC[q.sec].name) + '</span><span class="sub">' + esc((setInfo(w.set) || { name: w.set.startsWith('custom-') ? 'Custom test' : w.set }).name) + ' · ' + day(w.when) + '</span>' + saveBtn(w.ref, w.sec) + '</div>' +
       '<p class="qt">' + esc(q.q) + '</p><p class="yo"><span class="bad">You: ' + w.a + '. ' + esc(opts['ABCDE'.indexOf(w.a)] || '') + '</span><span class="good">Answer: ' + q.ans + '. ' + esc(opts['ABCDE'.indexOf(q.ans)]) + '</span></p>' +
       '<details class="why"><summary>Why</summary><p>' + esc(q.why) + '</p></details>' + (hasNotes(q.topic) ? '<a class="lnk" href="#/study/topic' + q.topic + '">Read Topic ' + q.topic + ' notes</a>' : '') + '</article>';
   }).join('') + '</div>';
@@ -205,7 +235,7 @@ async function notesScreen(t, r, me) {
   me.unmount = () => { scEl.removeEventListener('scroll', onScroll); clearTimeout(saveT); saveSettings(); };
   $('#nFs').onclick = () => { settings.fs = settings.fs >= 1.25 ? 1 : (settings.fs || 1) >= 1.12 ? 1.25 : 1.12; nb.style.setProperty('--fs', settings.fs); saveSettings(); };
   $('#nPdf').onclick = () => pdfSheet(t);
-  $('#nShare').onclick = () => import('./runner.js?v=gpscavy-f9e5c38e34').then(m => m.shareLink(location.href.split('#')[0] + '#/study/topic' + t, 'Topic ' + t + ' notes: ' + n.title));
+  $('#nShare').onclick = () => import('./runner.js?v=gpscavy-c9216f32da').then(m => m.shareLink(location.href.split('#')[0] + '#/study/topic' + t, 'Topic ' + t + ' notes: ' + n.title));
   if (r.q.h) requestAnimationFrame(() => { const el = document.getElementById(r.q.h); if (el) { const s = el.closest('.ns'); if (s) s.classList.remove('closed'); SC().scrollTo(0, el.getBoundingClientRect().top + SC().scrollTop - tocH()); } });
 }
 function openZoom(img) {

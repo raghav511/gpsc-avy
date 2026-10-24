@@ -1,7 +1,7 @@
 // GPSCavy service worker. The version is stamped by tools/build.py from a hash of the shell and data files.
-const V = 'gpscavy-f9e5c38e34';
+const V = 'gpscavy-c9216f32da';
 const SHELL = ['./', 'index.html', 'js/app.js', 'js/core.js', 'js/runner.js', 'js/study.js', 'manifest.webmanifest',
-  'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png', 'fonts/jakarta-latin.woff2', 'fonts/inter-latin.woff2', 'fonts/tiro-deva-subset.woff2', 'js/thought.js', 'js/ai.js',
+  'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png', 'fonts/jakarta-latin.woff2', 'fonts/inter-latin.woff2', 'fonts/tiro-deva-subset.woff2', 'js/thought.js', 'js/ai.js', 'js/account.js', 'js/config.js', 'js/licence.js',
   'data/index.json', 'data/meta.json', 'data/keys.json'];
 
 self.addEventListener('install', e => {

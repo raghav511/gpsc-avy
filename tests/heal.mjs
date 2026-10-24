@@ -26,7 +26,7 @@ async function fresh() {
   const ctx = await browser.newContext(opts); const p = await ctx.newPage(); const errs = [];
   p.on('pageerror', e => errs.push(e.message));
   await p.goto(BASE + '#/');
-  await p.evaluate(a => { localStorage.setItem('gpsc-cbrt-history-v1', a); localStorage.setItem('gpscavy-ai-v1', JSON.stringify({ key: 'AIzaKEEP0123456789abcdefghijklmn' })); localStorage.setItem('gpscavy-settings-v1', '{"a2hs":1}'); }, ATT);
+  await p.evaluate(a => { localStorage.setItem('gpsc-cbrt-history-v1', a); localStorage.setItem('gpscavy-ai-v1', JSON.stringify({ key: 'AIzaKEEP0123456789abcdefghijklmn' })); localStorage.setItem('gpscavy-settings-v1', '{"a2hs":1,"welcomed":1}'); }, ATT);
   await p.waitForFunction(() => navigator.serviceWorker && navigator.serviceWorker.controller, null, { timeout: 30000 }).catch(() => { });
   await p.reload(); await p.waitForFunction(() => window.__gpsBooted, null, { timeout: 30000 });
   return { ctx, p, errs };

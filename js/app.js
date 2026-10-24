@@ -3,9 +3,11 @@ import {
   $, $$, SC, esc, fmt, day, daysLeft, idle, lsGet, lsSet, settings, saveSettings, getIndex, getMeta, getKeys, getPool, setInfo, IDX, KEYS,
   H, loadAttempts, saveAttempts, findAttempt, cleanAttempt, grade, tokens, listInProgress, loadState, stateKey, remaining, stats, weakest,
   DRILL_FOR, wrongList, customs, saveCustom, deleteCustom, toast, hideToast, sheet, closeSheet, sheetOpen, ICON, navHtml, topbar, bar, lvlChip,
-  SECS, SEC, LV, LVL, TOPIC_NAMES, prefetchSet, findDef, CKEY, lsDel, NOTE_TOPICS, hasNotes, topBtns, refreshTopBtns, UI
-} from './core.js?v=gpscavy-f9e5c38e34';
-import { today as thoughtToday } from './thought.js?v=gpscavy-f9e5c38e34';
+  SECS, SEC, LV, LVL, TOPIC_NAMES, prefetchSet, findDef, CKEY, lsDel, NOTE_TOPICS, hasNotes, topBtns, refreshTopBtns, UI, setSaved, isSaved, savedAll, mergeSaved
+} from './core.js?v=gpscavy-c9216f32da';
+import { today as thoughtToday } from './thought.js?v=gpscavy-c9216f32da';
+import * as G from './account.js?v=gpscavy-c9216f32da';
+import * as L from './licence.js?v=gpscavy-c9216f32da';
 
 const app = $('#app');
 let cur = null;          // current screen {hash, unmount, onPop}
@@ -14,8 +16,8 @@ const scrolls = new Map();
 let runnerMod = null, studyMod = null;
 // A lazily loaded module can come from a newer app version than the one already running; if it does not fit, reload once.
 const safeImport = u => import(u).catch(e => { try { if (!sessionStorage.getItem('gpscavy-reimport')) { sessionStorage.setItem('gpscavy-reimport', '1'); location.reload(); } } catch (x) { } throw e; });
-const loadRunner = () => runnerMod || (runnerMod = safeImport('./runner.js?v=gpscavy-f9e5c38e34'));
-const loadStudy = () => studyMod || (studyMod = safeImport('./study.js?v=gpscavy-f9e5c38e34'));
+const loadRunner = () => runnerMod || (runnerMod = safeImport('./runner.js?v=gpscavy-c9216f32da'));
+const loadStudy = () => studyMod || (studyMod = safeImport('./study.js?v=gpscavy-c9216f32da'));
 
 // ---------- routing ----------
 export function parse(h) {
@@ -92,7 +94,11 @@ async function render(restore) {
   const [a, b] = r.path;
   document.body.dataset.screen = a || 'home';
   try {
-    if (!a) homeScreen(r);
+    if (a === 'pay') { await L.payScreen(app, { back: r.q.back || '#/' }); return; }
+    if (a === 'admin') { await L.adminScreen(app); return; }
+    if (L.enabled() && !L.canHash(r.hash)) { await L.payScreen(app, { locked: true, back: r.hash, title: 'Unlock this' }); return; }
+    if (!a && showWelcome()) welcomeScreen();
+    else if (!a) homeScreen(r);
     else if (a === 'tests') await testsScreen(r);
     else if (a === 'drills') await drillsScreen(r);
     else if (a === 'custom') { r.restore = restore; await customScreen(r); }
@@ -105,9 +111,23 @@ async function render(restore) {
     app.innerHTML = topbar('Not found', '') + '<main class="pad"><div class="card"><p>This page could not be opened. ' + esc(e.message || '') + '</p><p><a class="btn pri" href="#/">Go home</a></p></div></main>' + navHtml('');
   }
   if (me !== cur) return;
+  markLocked();
   const y = restore ? scrolls.get(r.hash) : 0;
   SC().scrollTo(0, y || 0);
 }
+// A small lock on links to things that need a plan (decided by the owner's free list)
+function markLocked() {
+  if (!L.enabled() || L.hasPaid()) return;
+  app.querySelectorAll('a[href^="#/"]').forEach(a => { if (!L.canHash(a.getAttribute('href')) && !a.querySelector('.lk')) { a.classList.add('locked'); a.insertAdjacentHTML('beforeend', '<span class="lk" aria-label="Needs a plan">' + L.lockIcon + '</span>'); } });
+}
+// PDFs follow the same rule: a topic's PDF goes with its notes, the rest with "Printable PDFs"
+document.addEventListener('click', e => {
+  if (!L.enabled() || L.hasPaid()) return;
+  const a = e.target.closest('a[href*="content/pdfs/"], [data-share]'); if (!a) return;
+  const f = decodeURIComponent(a.getAttribute('href') || a.dataset.share || '');
+  const m = /Topic-(\d+)-/.exec(f), item = m ? 'notes:' + m[1] : 'pdfs';
+  if (!L.canOpen(item)) { e.preventDefault(); e.stopPropagation(); closeSheet(true); go('#/pay?back=' + encodeURIComponent(location.hash)); }
+}, true);
 export const api = { go, back, parse, parentOf, testParent, render, openDownload, openUpload, loadRunner, loadStudy };
 
 // Links: same-document hash links navigate through the router so every screen gets a history entry.
@@ -189,7 +209,7 @@ function homeScreen() {
     '<main class="pad stack home">' +
     '<section class="hero"><div><p class="hk">Exam on Sunday, 1 November</p><p class="hd">' + (dl === 0 ? 'Exam day' : dl + (dl === 1 ? ' day left' : ' days left')) + '</p><p class="hs">60 marks · 75 minutes · 5 sections</p></div>' +
     '<a class="badge" href="#/progress" aria-label="Last score ' + (last ? last.score : '–') + ' of ' + (last ? last.total : 60) + ', see progress"><small>Last score</small><b>' + (last ? last.score : '–') + '</b><small>of ' + (last ? last.total : 60) + '</small></a></section>' +
-    thoughtCard() +
+    streakCard() + thoughtCard() +
     '<div id="a2hs"></div>' + resume +
     '<div class="two"><a class="big dark" href="#/test/' + nextMock() + '" data-pf="' + nextMock() + '"><b>Full mock</b><small>60 Q · 75 min</small></a><a class="big sun" href="#/custom"><b>Pick subjects</b><small>custom test</small></a></div>' +
     '<section class="card"><div class="ch"><h2 class="label">Your accuracy by section</h2><a class="lnk" href="#/progress">All progress</a></div><div id="acc" class="acc"><p class="sub">Loading…</p></div></section>' +
@@ -212,6 +232,19 @@ function fillAcc(el, home) {
   el.innerHTML = accRows(s, !home) + (w ? (home ? '<p class="sub">Weakest: ' + SEC[w].long + '. <a class="lnk" href="' + DRILL_FOR[w][0] + '">Practise ' + DRILL_FOR[w][1] + '</a></p>'
     : '<a class="wide sun" href="' + DRILL_FOR[w][0] + '">Practise weakest: ' + DRILL_FOR[w][1] + '</a>') : '');
 }
+// Today's practice and the run of practice days, so a daily habit is easy to see
+function streakCard() {
+  if (!H.length) return '';
+  const days = new Set(H.map(a => new Date(a.submittedAt).toDateString()));
+  const d = new Date(); let run = 0;
+  if (!days.has(d.toDateString())) d.setDate(d.getDate() - 1); // today not done yet: the run still counts up to yesterday
+  while (days.has(d.toDateString())) { run++; d.setDate(d.getDate() - 1); }
+  const today = new Date().toDateString();
+  const q = H.filter(a => new Date(a.submittedAt).toDateString() === today).reduce((m, a) => m + Object.keys(a.answers || {}).length, 0);
+  const goal = 60, pct = Math.min(100, Math.round(q / goal * 100));
+  return '<section class="card streak" aria-label="Daily practice"><div class="stk"><b>' + run + '</b><span>day' + (run === 1 ? '' : 's') + ' in a row</span></div>' +
+    '<div class="stg"><span class="ttl">' + (q >= goal ? 'Daily goal done: ' + q + ' questions today' : q + ' of ' + goal + ' questions today') + '</span>' + bar(pct, q >= goal ? 'grn' : '') + '<span class="sub">' + (q >= goal ? 'Well done. Revise your mistakes next.' : run && !days.has(today) ? 'Practise today to keep your run going.' : 'One full mock a day is the goal.') + '</span></div></section>';
+}
 function thoughtCard() {
   const t = thoughtToday(), [en, by] = t.saying, [sa, src, mean] = t.shloka;
   const date = new Date(t.day * 86400000).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
@@ -228,11 +261,20 @@ function syncCard() {
     '<button type="button" class="wide grn" data-act="sync">' + ICON.sync + '<span>Sync progress</span></button></section>';
 }
 document.addEventListener('click', e => {
+  const sv = e.target.closest('[data-save]');
+  if (sv) {
+    const ref = sv.dataset.save, on = !isSaved(ref);
+    setSaved(ref, sv.dataset.sec, on);
+    document.querySelectorAll('[data-save="' + CSS.escape(ref) + '"]').forEach(x => { x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); x.setAttribute('aria-label', on ? 'Saved for revision. Tap to remove' : 'Save this question for revision'); x.lastChild.textContent = on ? 'Saved' : 'Save'; });
+    toast(on ? 'Saved. Find it in Study, Saved.' : 'Removed from Saved.', null, 2500);
+    return;
+  }
   const b = e.target.closest('[data-act]'); if (!b) return;
   const act = b.dataset.act;
   if (act === 'down') openDownload();
   else if (act === 'up') openUpload();
-  else if (act === 'sync') openSync();
+  else if (act === 'sync') { if (settings.syncUrl || G.signedIn()) syncNow(false); else openSignIn(); }
+  else if (act === 'signin') openSignIn();
   else if (act === 'update') updateApp(b);
   else if (act === 'settings') openSettings();
   else if (act === 'meaning') { const m = $('#tmean'), on = m.hidden; m.hidden = !on; b.setAttribute('aria-expanded', on); b.textContent = on ? 'Hide meaning' : 'Meaning'; }
@@ -514,7 +556,7 @@ export function progressFile() {
     summary: { attempts: H.length, best },
     attempts: H.map(a => { const o = { id: a.id, set: a.set, setName: a.setName, score: a.score, total: a.total, wrong: a.wrong, skipped: a.skipped, usedMs: a.usedMs, auto: a.auto, submittedAt: a.submittedAt, answers: a.answers };
       if (a.flags) o.flags = a.flags; if (a.mode) o.mode = a.mode; if (a.set.startsWith('custom-')) o.def = a.def || findDef(a.set); return o; }),
-    inProgress, customTests: cs
+    inProgress, customTests: cs, saved: savedAll()
   };
 }
 const fname = () => 'GPSC-progress-' + new Date().toISOString().slice(0, 10) + '.json';
@@ -631,34 +673,105 @@ const HUB_RE = /^https:\/\/script\.google(usercontent)?\.com\/macros\/s\/[\w-]+\
 const sig = () => H.length + ':' + (H[0] ? H[0].id + H[0].submittedAt : '') + ':' + listInProgress().map(st => st.set + (st.savedAt || 0)).join(',');
 function setSyncBusy(on) { syncing = on; UI.syncing = on; refreshTopBtns(); }
 function syncText(m) { const el = $('#syncMsg'); if (el) el.innerHTML = m; }
+// One sync round with the owner's Apps Script hub (a sync link).
+async function hubRound() {
+  const res = await fetch(settings.syncUrl, { method: 'POST', body: JSON.stringify({ progress: progressFile() }), headers: { 'Content-Type': 'text/plain;charset=utf-8' }, redirect: 'follow' });
+  const o = await res.json();
+  if (!o || !o.ok || !o.progress) throw new Error((o && o.error) || 'bad reply');
+  await Promise.all([getKeys(), getIndex()]);
+  const plan = planMerge(o.progress);
+  applyMerge(plan, 'sync');
+  mergeSaved(o.progress.saved);
+  settings.hubCount = (o.progress.attempts || []).length;
+  return { added: plan.add.length, fresh: plan.add.length + plan.replace.length + plan.prog.length + plan.done.length };
+}
+// One sync round with the student's own Google Drive: read, merge in (nothing is ever removed), write back the union.
+async function driveRound() {
+  const { id, data } = await G.readDrive();
+  let added = 0, fresh = 0;
+  if (data && Array.isArray(data.attempts)) {
+    await Promise.all([getKeys(), getIndex()]);
+    const plan = planMerge(data);
+    applyMerge(plan, 'sync');
+    mergeSaved(data.saved);
+    added = plan.add.length; fresh = plan.add.length + plan.replace.length + plan.prog.length + plan.done.length;
+  }
+  await G.writeDrive(id, progressFile());
+  return { added, fresh };
+}
 export async function syncNow(quiet) {
-  const url = settings.syncUrl;
-  if (!url) { if (!quiet) openSync(); return null; }
+  const hub = !!settings.syncUrl, drive = G.signedIn();
+  if (!hub && !drive) { if (!quiet) openSignIn(); return null; }
   if (syncing) return null;
   if (quiet && navigator.onLine === false) return null;
+  // Google's one-hour pass has run out: a tap on Sync signs in again (a second, no password); automatic syncs wait
+  if (drive && !G.token() && !hub) { if (!quiet) G.signIn({ silent: true, then: 'sync' }); else refreshTopBtns(); return null; }
   setSyncBusy(true);
   try {
-    const res = await fetch(url, { method: 'POST', body: JSON.stringify({ progress: progressFile() }), headers: { 'Content-Type': 'text/plain;charset=utf-8' }, redirect: 'follow' });
-    const o = await res.json();
-    if (!o || !o.ok || !o.progress) throw new Error((o && o.error) || 'bad reply');
-    await Promise.all([getKeys(), getIndex()]);
-    const plan = planMerge(o.progress);
-    const fresh = plan.add.length + plan.replace.length + plan.prog.length + plan.done.length;
-    applyMerge(plan, 'sync');
+    let added = 0, fresh = 0;
+    if (hub) { const r = await hubRound(); added += r.added; fresh += r.fresh; }
+    if (drive && G.token()) { const r = await driveRound(); added += r.added; fresh += r.fresh; }
     lastSig = sig();
-    UI.syncErr = false; settings.lastSync = { at: new Date().toISOString(), what: 'sync' }; settings.hubCount = (o.progress.attempts || []).length; saveSettings();
-    const msg = 'Synced. ' + (plan.add.length ? plan.add.length + (plan.add.length === 1 ? ' attempt' : ' attempts') + ' added from your other devices. ' : 'Nothing new from other devices. ') + H.length + ' attempts on this device.';
+    UI.syncErr = false; settings.lastSync = { at: new Date().toISOString(), what: 'sync' }; saveSettings();
+    const msg = 'Synced. ' + (added ? added + (added === 1 ? ' attempt' : ' attempts') + ' added from your other devices. ' : 'Nothing new from other devices. ') + H.length + (H.length === 1 ? ' attempt' : ' attempts') + ' on this device.';
     if (fresh && document.body.dataset.screen !== 'runner' && !sheetOpen()) render();
-    if (!quiet || plan.add.length) toast(msg, null, 4200);
+    if (!quiet || added) toast(msg, null, 4200);
     syncText(esc(msg));
     return msg;
   } catch (e) {
+    if (e.code === 'expired') { if (!quiet) G.signIn({ silent: true, then: 'sync' }); return null; }
     UI.syncErr = navigator.onLine !== false;
-    const m = navigator.onLine === false ? 'You are offline. Your progress is safe on this device and will sync when you are back online.' : 'Could not reach your sync folder. Your progress is safe on this device; try again in a minute.';
+    const m = navigator.onLine === false ? 'You are offline. Your progress is safe on this device and will sync when you are back online.'
+      : drive && !hub ? 'Could not reach your Google Drive. Your progress is safe on this device; try again in a minute.'
+      : 'Could not reach your sync folder. Your progress is safe on this device; try again in a minute.';
     if (!quiet) toast(m, null, 5000);
     syncText(esc(m));
     return null;
   } finally { setSyncBusy(false); }
+}
+
+// ---------- Sign in with Google: the start page, a sheet, and coming back from Google ----------
+const GNOTE = 'Your progress is saved in a private app folder in <b>your own Google Drive</b>. Only GPSCavy on your devices can open it; nobody else, not even the app\'s maker, can see it.';
+const GBTN = '<svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.2l7.9 6.2C12.5 13.6 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.6c0-1.6-.1-3.1-.4-4.6H24v9h12.4c-.5 2.9-2.2 5.3-4.6 6.9l7.4 5.8c4.3-4 6.9-9.9 6.9-17.1z"/><path fill="#FBBC05" d="M10.6 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.2C1 16.6 0 20.2 0 24s1 7.4 2.7 10.8l7.9-6.2z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.4-5.8c-2.1 1.4-4.8 2.3-8.5 2.3-6.2 0-11.5-4.1-13.4-9.8l-7.9 6.2C6.6 42.6 14.6 48 24 48z"/></svg>';
+function signInForm(id) {
+  return '<label class="ailab" for="' + id + 'E">Your Gmail address</label>' +
+    '<input id="' + id + 'E" class="inp" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="you@gmail.com"' + (settings.account && settings.account.email ? ' value="' + esc(settings.account.email) + '"' : '') + '>' +
+    '<button type="button" class="wide gbtn" id="' + id + 'Go">' + GBTN + '<span>Continue with Google</span></button>' +
+    '<p class="sub gnote">' + GNOTE + ' Google asks for your password or a code on its own page.</p>' +
+    '<p class="err" id="' + id + 'Err" hidden></p>';
+}
+function wireSignIn(id, back) {
+  const go = $('#' + id + 'Go'); if (!go) return;
+  go.onclick = () => {
+    const e = ($('#' + id + 'E').value || '').trim(), err = $('#' + id + 'Err');
+    if (e && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) { err.hidden = false; err.textContent = 'That is not an email address. Leave it empty to choose your account on Google\'s page.'; return; }
+    if (!navigator.onLine) { err.hidden = false; err.textContent = 'You are offline. Connect to the internet to sign in.'; return; }
+    go.disabled = true; go.lastChild.textContent = 'Opening Google…';
+    try { G.signIn({ email: e, back: back || location.hash || '#/', then: 'sync' }); } catch (x) { go.disabled = false; go.lastChild.textContent = 'Continue with Google'; err.hidden = false; err.textContent = 'Google sign-in is not set up in this copy of the app yet.'; }
+  };
+}
+export function openSignIn() {
+  if (!G.configured()) { openSyncSetup(); return; }
+  sheet('<div class="shh"><h2>Sync your progress</h2><button type="button" class="ib" data-close aria-label="Close">' + ICON.close + '</button></div>' +
+    '<p>Sign in with Google to keep your progress safe and carry on from any phone, iPad or computer.</p>' + signInForm('gs') +
+    '<details class="other"><summary>Other ways</summary><div class="two"><button type="button" class="btn grn-o" data-act="down">' + ICON.down + '<span>Backup file</span></button><button type="button" class="btn grn-o" data-act="up">' + ICON.up + '<span>Restore file</span></button></div>' +
+    '<button type="button" class="lnk" id="gsLink">Use a sync link instead</button></details>', { label: 'Sync your progress' });
+  wireSignIn('gs');
+  $('#gsLink').onclick = () => { closeSheet(true); openSyncSetup(); };
+}
+// First start on a new device: sign in, or carry on without
+const showWelcome = () => !window.__gpscTest && G.configured() && !G.signedIn() && !settings.syncUrl && !settings.welcomed && !H.length && !listInProgress().length;
+function welcomeScreen() {
+  document.body.dataset.screen = 'welcome';
+  app.innerHTML = '<main class="welcome"><div class="wcard">' +
+    '<div class="brand wb"><span class="logo" aria-hidden="true">G</span><span><b>GPSCavy</b><small>Homoeopathic Physician · CBRT</small></span></div>' +
+    '<h1>Practise for the GPSC CBRT, on every device</h1>' +
+    '<ul class="wlist"><li>25 full mocks, level tests and drills</li><li>Illustrated core notes and quick quizzes</li><li>Your progress on your phone, iPad and computer</li></ul>' +
+    signInForm('gw') +
+    '<button type="button" class="wide sec" id="gwSkip">Use without signing in</button>' +
+    '<p class="sub">Without signing in, your progress stays on this device. You can sign in later from Settings.</p></div></main>';
+  wireSignIn('gw', '#/');
+  $('#gwSkip').onclick = () => { settings.welcomed = 1; saveSettings(); render(); };
 }
 function pushOnLeave() {
   const url = settings.syncUrl;
@@ -712,13 +825,23 @@ export function openOther() { openDownload(); }
 const appVersion = () => { const m = document.querySelector('meta[name="gps-v"]'); return m ? m.content.replace('gpscavy-', '') : 'dev'; };
 function openSettings() {
   const ls = settings.lastSync, fs = settings.fs || 1;
-  const st = !settings.syncUrl ? 'Not connected on this device.' : 'Connected. ' + (ls && ls.what === 'sync' ? 'Last synced ' + esc(day(ls.at)) + ' at ' + esc(new Date(ls.at).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' })) + '.' : 'Not synced yet.');
+  const when = ls && ls.what === 'sync' ? 'Last synced ' + esc(day(ls.at)) + ' at ' + esc(new Date(ls.at).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' })) + '.' : 'Not synced yet.';
+  const st = !settings.syncUrl ? 'Not connected on this device.' : 'Connected. ' + when;
+  const acct = G.signedIn() ? '<section class="sset"><div class="ssh"><span class="ic ic-grn">' + ICON.sync + '</span><span class="rt"><span class="ttl">Signed in as ' + esc(G.account().email || 'your Google account') + '</span><span class="sub" id="stSync">Progress is kept in a private app folder in your own Google Drive. ' + when + '</span></span></div>' +
+      '<div class="two"><button type="button" class="btn grn" id="stSyncGo">Sync now</button><button type="button" class="btn sec" id="stOut">Sign out</button></div>' +
+      '<p class="sub" id="stOutQ" hidden>Signing out keeps your progress on this device and in your Drive. <button type="button" class="lnk" id="stOutGo">Sign out now</button></p></section>'
+    : G.configured() ? '<section class="sset"><div class="ssh"><span class="ic ic-grn">' + ICON.sync + '</span><span class="rt"><span class="ttl">Sync progress</span><span class="sub" id="stSync">Not signed in: your progress is only on this device. Sign in with Google to keep it in your own Drive and use it on all your devices.</span></span></div>' +
+      '<button type="button" class="wide gbtn" data-act="signin">' + GBTN + '<span>Sign in with Google</span></button></section>' : '';
+  const link = settings.syncUrl || !G.configured();
+  const lc = L.lic(), paidTxt = !L.enabled() ? '' : L.isOwner() ? 'You are the owner: you have full access.' : L.hasPaid() ? 'Full access' + (lc && lc.plan ? ': ' + esc(lc.plan) : '') + (lc && lc.expires ? ', until ' + esc(day(lc.expires)) : '') + '.' : lc && lc.status === 'pending' ? 'Waiting for your payment to be confirmed.' : 'Free part only. Choose a plan to unlock everything.';
+  const plus = !L.enabled() ? '' : '<section class="sset"><div class="ssh"><span class="ic ic-amb">' + L.lockIcon + '</span><span class="rt"><span class="ttl">' + (L.isOwner() ? 'Paid access' : 'Your plan') + '</span><span class="sub">' + paidTxt + '</span></span></div>' +
+    (L.isOwner() ? '<a class="wide pri" href="#/admin" data-close>Requests, plans, free content and vouchers</a>' : L.hasPaid() ? '' : '<a class="wide pri" href="#/pay" data-close>See plans or use a voucher</a>') + '</section>';
   const sz = [[1, 'Normal'], [1.12, 'Large'], [1.25, 'Larger']];
   const el = sheet('<div class="shh"><h2>Settings</h2><button type="button" class="ib" data-close aria-label="Close">' + ICON.close + '</button></div>' +
-    '<section class="sset"><div class="ssh"><span class="ic ic-grn">' + ICON.sync + '</span><span class="rt"><span class="ttl">Sync progress</span><span class="sub" id="stSync">' + st + '</span></span></div>' +
-    '<div class="two"><button type="button" class="btn grn" id="stSyncGo">' + (settings.syncUrl ? 'Sync now' : 'Connect sync') + '</button>' +
+    acct + plus + (link ? '<section class="sset"><div class="ssh"><span class="ic ic-grn">' + ICON.sync + '</span><span class="rt"><span class="ttl">' + (G.configured() ? 'Sync link' : 'Sync progress') + '</span><span class="sub" id="stLinkSt">' + st + '</span></span></div>' +
+    '<div class="two"><button type="button" class="btn ' + (G.signedIn() ? 'sec' : 'grn') + '" id="stLinkGo">' + (settings.syncUrl ? 'Sync now' : 'Connect sync') + '</button>' +
     (settings.syncUrl ? '<button type="button" class="btn sec" id="stCopy">Copy sync link</button>' : '') + '</div>' +
-    (settings.syncUrl ? '<button type="button" class="lnk" id="stOff">Disconnect sync on this device</button>' : '') + '<input id="syncLink" class="inp" hidden readonly></section>' +
+    (settings.syncUrl ? '<button type="button" class="lnk" id="stOff">Disconnect sync on this device</button>' : '') + '<input id="syncLink" class="inp" hidden readonly></section>' : '') +
     '<section class="sset"><div class="ssh"><span class="ic ic-vio">✦</span><span class="rt"><span class="ttl">AI assistant</span><span class="sub" id="stAi">…</span></span></div>' +
     '<div class="two"><button type="button" class="btn sec" id="stKey">Choose AI and model</button><button type="button" class="btn sec" id="stKeyDel" hidden>Remove key</button></div></section>' +
     '<section class="sset"><div class="ssh"><span class="ic ic-core">Aa</span><span class="rt"><span class="ttl">Notes text size</span><span class="sub">For the study notes and playbooks.</span></span></div>' +
@@ -729,11 +852,15 @@ function openSettings() {
     '<div class="two"><button type="button" class="btn sec" data-act="update">' + ICON.upd + '<span>Update app</span></button><button type="button" class="btn sec" id="stFix">Repair app</button></div>' +
     '<p class="sub" id="stFixQ" hidden>Repair downloads a fresh copy of the app. Your progress, sync link, AI keys and reading places stay on this device. <button type="button" class="lnk" id="stFixGo">Repair now</button></p></section>',
     { label: 'Settings' });
-  el.querySelector('#stSyncGo').onclick = () => { if (!settings.syncUrl) { closeSheet(true); openSyncSetup(); return; } const s0 = el.querySelector('#stSync'); s0.textContent = 'Syncing…'; syncNow(false).then(m => { s0.textContent = m ? 'Connected. Last synced just now.' : 'Could not sync just now. Your progress is safe on this device.'; }); };
+  const runSync = (b, ok) => { const s0 = el.querySelector(b); s0.textContent = 'Syncing…'; syncNow(false).then(m => { s0.textContent = m ? ok : 'Could not sync just now. Your progress is safe on this device.'; }); };
+  const sg = el.querySelector('#stSyncGo'); if (sg) sg.onclick = () => runSync('#stSync', 'Progress is kept in a private app folder in your own Google Drive. Last synced just now.');
+  const lg = el.querySelector('#stLinkGo'); if (lg) lg.onclick = () => { if (!settings.syncUrl) { closeSheet(true); openSyncSetup(); return; } runSync('#stLinkSt', 'Connected. Last synced just now.'); };
+  const so = el.querySelector('#stOut'); if (so) so.onclick = () => { el.querySelector('#stOutQ').hidden = false; };
+  const sgo = el.querySelector('#stOutGo'); if (sgo) sgo.onclick = () => { G.signOut(); refreshTopBtns(); toast('Signed out. Your progress is still on this device.'); openSettings(); };
   const cp = el.querySelector('#stCopy'); if (cp) cp.onclick = () => copyText(settings.syncUrl, 'Sync link copied. Paste it in GPSCavy on your other device: Settings, Connect sync.');
   const off = el.querySelector('#stOff'); if (off) off.onclick = () => { delete settings.syncUrl; UI.syncErr = false; saveSettings(); refreshTopBtns(); toast('Sync disconnected on this device. Your progress here is kept.'); openSettings(); };
-  el.querySelector('#stKey').onclick = () => safeImport('./ai.js?v=gpscavy-f9e5c38e34').then(m => m.keySheet(openSettings));
-  safeImport('./ai.js?v=gpscavy-f9e5c38e34').then(m => {
+  el.querySelector('#stKey').onclick = () => safeImport('./ai.js?v=gpscavy-c9216f32da').then(m => m.keySheet(openSettings));
+  safeImport('./ai.js?v=gpscavy-c9216f32da').then(m => {
     const a = m.summary(), t = el.querySelector('#stAi'), kd = el.querySelector('#stKeyDel'); if (!t) return;
     t.textContent = a.text; el.querySelector('#stKey').textContent = a.on ? 'Change AI or model' : 'Set up AI';
     kd.hidden = !a.on; kd.onclick = () => { m.removeKey(); toast('API key removed from this device.'); openSettings(); };
@@ -797,7 +924,7 @@ function aiTab() {
   t.addEventListener('pointerdown', e => { sy = e.clientY; moved = false; startTop = t.getBoundingClientRect().top + t.offsetHeight / 2; t.setPointerCapture && t.setPointerCapture(e.pointerId); });
   t.addEventListener('pointermove', e => { if (!sy) return; const d = e.clientY - sy; if (Math.abs(d) > 8) moved = true; if (moved) place((startTop + d) / innerHeight); });
   t.addEventListener('pointerup', e => { if (moved) { settings.aiY = parseFloat(t.style.top) / innerHeight; saveSettings(); } sy = 0; });
-  t.addEventListener('click', e => { if (moved) { moved = false; e.preventDefault(); return; } safeImport('./ai.js?v=gpscavy-f9e5c38e34').then(m => m.menu(t)); });
+  t.addEventListener('click', e => { if (moved) { moved = false; e.preventDefault(); return; } safeImport('./ai.js?v=gpscavy-c9216f32da').then(m => m.menu(t)); });
   document.body.appendChild(t);
   // Never cover content: look at what lies under the tab and slide it to the nearest clear spot in the margin.
   const FREE = 'html,body,#app,main,.pad,.notes,#nb,.ns,.nb,.stack';
@@ -831,9 +958,24 @@ function aiTab() {
   later(300);
 }
 
+// Back from Google's page: say who is signed in and sync straight away
+async function afterGoogle(r) {
+  if (!r.ok) {
+    if (r.error === 'interaction_required' || r.error === 'login_required' || r.error === 'consent_required') { if (G.signedIn() || r.then === 'sync') G.signIn({ then: 'sync' }); return; } // the quick sign-in needs the student: show Google's page
+    toast(r.error === 'access_denied' ? 'Sign-in was cancelled. Your progress is safe on this device.' : r.error === 'scope' ? 'GPSCavy needs permission to keep its own file in your Google Drive. Sign in again and tick the box.' : 'Could not sign in just now. Try again.', null, 6000);
+    return;
+  }
+  try { if (!G.signedIn()) { const a = await G.whoAmI(); settings.welcomed = 1; saveSettings(); toast('Signed in as ' + a.email + '. Syncing…', null, 3000); } } catch (e) { }
+  if (L.enabled()) await L.refresh();
+  if (r.then === 'pay') { go('#/pay'); return; }
+  cur = null; render();
+  syncNow(false);
+}
+
 // ---------- boot ----------
 async function boot() {
   window.__gpsLoaded = true; // the boot guard in index.html: the code arrived, now loading the question index
+  const back = G.takeRedirect(); // coming back from Google's sign-in page
   loadAttempts();
   await getIndex();
   // Deep link opened fresh (e.g. from WhatsApp): put its parents under it so Back moves up a level instead of leaving the app.
@@ -852,6 +994,8 @@ async function boot() {
   await render();
   window.__gpsBooted = true; // only now: the first screen is on show
   if (window.__gpsOK) window.__gpsOK();
+  if (back) afterGoogle(back);
+  else if (L.enabled()) L.refresh().then(() => { if (!sheetOpen() && document.body.dataset.screen !== 'runner') { cur = null; render(); } });
   aiTab();
   if (/[?&]shared=1/.test(location.search) && 'caches' in window) {
     history.replaceState(history.state, '', location.pathname + (location.hash || '#/'));
