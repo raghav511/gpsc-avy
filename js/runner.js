@@ -4,7 +4,7 @@ import {
   $, SC, esc, fmt, day, idle, getIndex, getKeys, getSet, setInfo, KEYS, H, findAttempt, addAttempt, removeAttempt, grade, tokens,
   loadState, stateKey, lsSet, lsDel, remaining, toast, hideToast, sheet, closeSheet, ICON, topbar, bar, lvlChip, srcTag, navHtml,
   SECS, SEC, LV, LVL, L5, TOPIC_NAMES, customs, saveCustom, findDef, NOTE_TOPICS, hasNotes, saveBtn, addCleared, delCleared
-} from './core.js?v=gpscavy-e033a53e35';
+} from './core.js?v=gpscavy-9efef9e283';
 
 const app = $('#app');
 let API = null;
@@ -356,17 +356,25 @@ function resultScreen(at, me) {
   const lvN = ['E', 'I', 'H'].reduce((m, k) => m + (g.byLvl[k] ? g.byLvl[k].n : 0), 0);
   const lv = ['E', 'I', 'H'].filter(k => g.byLvl[k]).map(k => { const b = g.byLvl[k]; return '<div class="arow"><span>' + lvlChip(k) + '</span>' + bar(b.c / b.n * 100, 'l-' + k) + '<b>' + b.c + '/' + b.n + '</b><small>' + b.c + ' right · ' + b.w + ' wrong · ' + b.s + ' skipped</small></div>'; }).join('') +
     (lvN && lvN < g.total ? '<div class="arow"><span class="chip">Not tagged</span>' + bar(0) + '<b>' + (g.total - lvN) + '</b><small>questions without a difficulty tag</small></div>' : '');
-  const bands = [['General, EWS, ex-servicemen', 50], ['OBC, PwD, CFF', 45], ['SC, ST', 40]];
+  const bands = [['General, EWS, ex-servicemen', 50, 'General'], ['OBC, PwD, CFF', 45, 'OBC'], ['SC, ST', 40, 'SC/ST']];
+  const need = b => Math.ceil(g.total * b[1] / 100);
+  const met = bands.filter(b => g.score >= need(b)).reverse();
+  const verdict = met.length === bands.length ? ['pill-done', 'Above the pass mark for every category']
+    : met.length ? ['pill-skip', 'Above ' + met.map(b => b[2]).join(' and ') + ' · ' + (need(bands[0]) - g.score) + ' short of General']
+    : ['pill-bad', (need(bands[2]) - g.score) + ' short of the lowest pass mark'];
+  const pass = full ? '<div class="pass"><div class="pbar" role="img" aria-label="' + pct + '% against GPSC pass marks of 40, 45 and 50%"><i style="width:' + pct + '%"></i>' +
+    bands.map(b => '<span style="left:' + b[1] + '%"></span>').join('') + '</div>' +
+    '<p class="sub">Pass marks: ' + bands.slice().reverse().map(b => b[2] + ' ' + b[1] + '% (' + need(b) + ')').join(' · ') + '</p>' +
+    '<span class="pill ' + verdict[0] + '">' + verdict[1] + '</span></div>' : '';
   const wrongN = g.rows.filter(r => r.st === 'bad').length;
   const parent = API.testParent(at.set);
   app.innerHTML = topbar(at.setName, day(at.submittedAt) + (at.mode === 'learn' ? ' · learn mode' : '')) +
     '<main class="pad stack">' +
     '<section class="card score"><div class="ring" style="--p:' + pct + '"><div><b>' + g.score + '</b><small>of ' + g.total + '</small></div></div><div class="rt"><h2>' + head + '</h2>' +
-    '<p>' + pct + '% · ' + g.score + ' right · ' + g.wrong + ' wrong · ' + g.skipped + ' skipped</p><p class="sub">' + fmt(at.usedMs) + ' used' + (info && info.min ? ' of ' + info.min + ':00' : '') + (at.auto ? ' · time ran out' : '') + ' · no negative marking</p></div></section>' +
+    '<p>' + pct + '% · ' + g.score + ' right · ' + g.wrong + ' wrong · ' + g.skipped + ' skipped</p><p class="sub">' + fmt(at.usedMs) + ' used' + (info && info.min ? ' of ' + info.min + ':00' : '') + (at.auto ? ' · time ran out' : '') + ' · no negative marking</p></div>' + pass + '</section>' +
     '<div class="two"><a class="btn pri" href="#/review/' + encodeURIComponent(at.id) + (wrongN ? '?f=bad' : '') + '">Review answers</a><button type="button" class="btn amb" id="rw"' + (wrongN ? '' : ' disabled') + '>Retake wrong only' + (wrongN ? ' (' + wrongN + ')' : '') + '</button></div>' +
     '<section class="card"><h2 class="label">By section</h2><div class="acc">' + sec + '</div></section>' +
     (lv ? '<section class="card"><h2 class="label">By level</h2><div class="acc">' + lv + '</div></section>' : '') +
-    (full ? '<section class="card"><h2 class="label">Against GPSC qualifying marks</h2><div class="qm">' + bands.map(b => { const need = Math.ceil(60 * b[1] / 100); return '<div><span>' + b[0] + '</span><span class="sub">' + b[1] + '% (' + need + ')</span><span class="pill ' + (g.score >= need ? 'pill-done">Met' : 'pill-bad">Short by ' + (need - g.score)) + '</span></div>'; }).join('') + '</div></section>' : '') +
     '<div class="two"><a class="btn sec" href="' + parent + '">Back to tests</a><a class="btn sec" href="#/">Home</a></div>' +
     '<a class="wide ghost" href="#/test/' + esc(at.set) + '">Take this test again</a>' +
     '</main>' + navHtml('tests');
