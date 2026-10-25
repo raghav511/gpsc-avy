@@ -1,9 +1,9 @@
 // Study: library with subject chips, notes reader with quick-check quizzes, playbooks, PDFs, Revise incorrect, past papers, search.
-import { fetchBlob } from './vault.js?v=gpscavy-20d1f73cfa';
+import { fetchBlob } from './vault.js?v=gpscavy-90929d326a';
 import {
   $, $$, SC, esc, day, idle, getIndex, getMeta, getKeys, getSet, getText, getSearch, setInfo, IDX, META, H, wrongList, tokens,
   settings, saveSettings, saveCustom, toast, sheet, ICON, topbar, navHtml, lvlChip, srcTag, SEC, TOPIC_NAMES, loadAttempts, NOTE_TOPICS, hasNotes, topBtns, saveBtn, savedList
-} from './core.js?v=gpscavy-20d1f73cfa';
+} from './core.js?v=gpscavy-90929d326a';
 
 const app = $('#app');
 let API = null;
@@ -42,7 +42,8 @@ async function library(chip, sub, r, me) {
     const allPdf = META.pdfs.find(p => p.kind === 'notes');
     if (allPdf) body += '<h2 class="label">Core notes as PDF · to download or share</h2><div class="list">' + pdfRow(allPdf) + (chip === 'core' ? META.pdfs.filter(p => p.kind === 'topic').map(pdfRow).join('') : row('#/study/pdfs', 'PDF', 's-core-b', 'Each topic as its own PDF', '10 files, about 0.5 to 1.5 MB each')) + '</div>';
     if (chip === 'core') body += '<h2 class="label">Quick-check quizzes</h2><div class="list">' + META.notes.map(n => row('#/test/quiz-topic' + n.t, 'Q' + n.t, 's-core-b', 'Topic ' + n.t + ' quiz', n.quiz + ' questions from the notes · learn mode')).join('') + '</div>'  +
-      '<p class="sub">Every core topic is also mixed into the 25 mock sets. <a class="lnk" href="#/custom?sec=core&amp;topics=1,2,3,4">Practise topics 1–4</a></p>';
+      (IDX.sets.some(x => /^crd\d/.test(x.id)) ? '<div class="list">' + row('#/drills/core', IDX.sets.filter(x => /^crd\d/.test(x.id)).length, 's-core-b', 'Core subject drills', 'All 10 topics · easy, intermediate and hard · 10 questions each') + '</div>' : '') +
+      '<p class="sub">Every core topic is also mixed into the full mock sets. <a class="lnk" href="#/custom?sec=core&amp;topics=1,2,3,4">Practise topics 1–4</a></p>';
   }
   if (show('gk')) body += '<h2 class="label">General knowledge</h2><div class="list">' + row('#/study/playbook/gk', 'GK', 's-gk-b', 'GK Playbook', 'Goa and India GK: current affairs, Goa statehood, polity, days') + row('#/drills/gk', IDX.sets.filter(x => /^(gkd|gkq)\d/.test(x.id)).length, 's-gk-b', 'GK drills', 'Easy, intermediate and hard · 10 questions each') + '</div>';
   if (show('comp')) body += '<h2 class="label">English comprehension</h2><div class="list">' + row('#/study/playbook/english-comp', 'Rc', 's-comp-b', 'Reading a passage', 'English playbook: main idea, inference, tone, traps') + row('#/drills/comp', IDX.sets.filter(x => /^(end[34]|compd\d|cpd\d)/.test(x.id)).length, 's-comp-b', 'Comprehension drills', 'Two passages each · easy, intermediate and hard') + '</div>';
@@ -238,7 +239,7 @@ async function notesScreen(t, r, me) {
   me.unmount = () => { scEl.removeEventListener('scroll', onScroll); clearTimeout(saveT); saveSettings(); };
   $('#nFs').onclick = () => { settings.fs = settings.fs >= 1.25 ? 1 : (settings.fs || 1) >= 1.12 ? 1.25 : 1.12; nb.style.setProperty('--fs', settings.fs); saveSettings(); };
   $('#nPdf').onclick = () => pdfSheet(t);
-  $('#nShare').onclick = () => import('./runner.js?v=gpscavy-20d1f73cfa').then(m => m.shareLink(location.href.split('#')[0] + '#/study/topic' + t, 'Topic ' + t + ' notes: ' + n.title));
+  $('#nShare').onclick = () => import('./runner.js?v=gpscavy-90929d326a').then(m => m.shareLink(location.href.split('#')[0] + '#/study/topic' + t, 'Topic ' + t + ' notes: ' + n.title));
   if (r.q.h) requestAnimationFrame(() => { const el = document.getElementById(r.q.h); if (el) { const s = el.closest('.ns'); if (s) s.classList.remove('closed'); SC().scrollTo(0, el.getBoundingClientRect().top + SC().scrollTop - tocH()); } });
 }
 function openZoom(img) {

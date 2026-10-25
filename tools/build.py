@@ -49,6 +49,8 @@ def level_of(qs):
 def topic_of(s, q):
     if q['sec'] != 'core':
         return None
+    if q.get('topic'):
+        return q['topic']
     m = re.match(r'Topic (\d+)', q['why'])
     if m:
         return int(m.group(1))
@@ -271,7 +273,7 @@ def source_of(q):
 # questions of its own level. The bank (content/data/bank/<sec>.json) holds questions written for the drills; the
 # questions already in the practice sets are used as well (never changed), so the drills cover the whole bank.
 BANK_DRILLS = {'gram': ('grd', 'Grammar drill', 'English Grammar', 'Grammar', 12), 'lr': ('lrd', 'Reasoning drill', 'Logical Reasoning', 'Reasoning', 12),
-               'gk': ('gkq', 'GK drill', 'General Knowledge', 'GK', 8)}
+               'gk': ('gkq', 'GK drill', 'General Knowledge', 'GK', 8), 'core': ('crd', 'Core drill', 'Core subject', 'Core', 12)}
 DRILL_PLAN = ['E'] * 13 + ['I'] * 25 + ['H'] * 12
 LVNAME = {'E': 'easy', 'I': 'intermediate', 'H': 'hard'}
 
@@ -363,6 +365,75 @@ def comp_drills(sets):
     return out
 
 
+# ---------- 10 more full mocks (Practice Sets 26 to 35) from the question bank ----------
+# Only questions written for the bank (never the ones in Practice Sets 1 to 25), each used in one mock only.
+# Same pattern as the exam: comprehension 10 (two passages), grammar 5, GK 10, reasoning 10, core 25;
+# about 25% easy, 50% intermediate, 25% hard in every section.
+MOCK_PLAN = {'gram': (1, 3, 1), 'gk': (3, 5, 2), 'lr': (2, 5, 3), 'core': (6, 13, 6)}
+MOCK_SECS = [('comp', 'English (Comprehension)', 'Comprehension', 10), ('gram', 'English Grammar', 'Grammar', 5),
+             ('gk', 'General Knowledge / Current Affairs of India and Goa', 'GK and Current Affairs', 10),
+             ('lr', 'Logical Reasoning', 'Logical Reasoning', 10), ('core', 'Core: Full syllabus (Topics 1 to 10)', 'Full core syllabus', 25)]
+
+
+def bank_mocks(first=26, count=10):
+    def load(sec):
+        f = os.path.join(C, 'data', 'bank', sec + '.json')
+        return json.load(open(f, encoding='utf-8')) if os.path.exists(f) else []
+    rnd = random.Random('gpscavy-mocks')
+    pools = {}
+    for sec in MOCK_PLAN:
+        byl = {'E': [], 'I': [], 'H': []}
+        for q in load(sec):
+            byl[q.get('lvl') if q.get('lvl') in byl else 'I'].append(q)
+        for v in byl.values():
+            rnd.shuffle(v)
+        pools[sec] = byl
+    # core: spread the topics evenly inside each mock
+    for v in pools.get('core', {}).values():
+        v.sort(key=lambda q: rnd.random())
+    passages = load('comp')
+    rnd.shuffle(passages)
+    easyish = sorted(passages, key=lambda p: sum({'E': 0, 'I': 1, 'H': 2}.get(q['lvl'], 1) for q in p['questions']))
+    out = []
+    for m in range(count):
+        qs, pas = [], {}
+        # comprehension: one easier and one harder passage
+        if len(easyish) < 2:
+            break
+        two = [easyish.pop(0), easyish.pop(-1)]
+        for pi, p in enumerate(two, 1):
+            pas['p%d' % pi] = {'title': 'Passage %d' % pi, 'paras': p['paras']}
+            for q in p['questions'][:5]:
+                qs.append(dict({k: v for k, v in q.items() if k in ('q', 'opts', 'ans', 'why', 'lvl')}, sec='comp', passage='p%d' % pi))
+        ok = True
+        for sec, (e, i, h) in MOCK_PLAN.items():
+            pick = []
+            tcount = {}
+            for lv, n in (('E', e), ('I', i), ('H', h)):
+                for l2 in {'E': 'EIH', 'I': 'IEH', 'H': 'HIE'}[lv]:
+                    while n and pools[sec][l2]:
+                        pl = pools[sec][l2]
+                        # core: take from the topic this mock has least of, so all 10 topics are covered
+                        j = min(range(len(pl)), key=lambda x: (tcount.get(pl[x].get('topic'), 0), -x)) if sec == 'core' else len(pl) - 1
+                        q = pl.pop(j); tcount[q.get('topic')] = tcount.get(q.get('topic'), 0) + 1
+                        pick.append(q); n -= 1
+                if n:
+                    ok = False
+            if sec == 'core':
+                pick.sort(key=lambda q: q.get('topic', 0))
+            for q in pick:
+                qs.append(dict({k: v for k, v in q.items() if k in ('q', 'opts', 'ans', 'why', 'lvl', 'topic', 'src')}, sec=sec))
+        if not ok:
+            break
+        for n, q in enumerate(qs, 1):
+            q['n'] = n
+        num = first + m
+        out.append({'id': 'set%d' % num, 'set': 'Practice Set %d' % num, 'minutes': 75,
+                    'sections': [{'id': a, 'name': b, 'short': c, 'marks': d} for a, b, c, d in MOCK_SECS],
+                    'passages': pas, 'questions': qs, 'core': 'Full core syllabus', 'bankmock': True, 'dlevel': 'intermediate'})
+    return out
+
+
 def main():
     if os.path.isdir(OUT):
         shutil.rmtree(OUT)
@@ -403,7 +474,8 @@ def main():
                       'passages': passages, 'questions': qs, 'refs': refs})
 
     bank_sets = bank_drills(sets)
-    allsets = sets + compd + quizzes + bank_sets
+    mocks = bank_mocks()
+    allsets = sets + compd + quizzes + bank_sets + mocks
 
     # canonical question ids (dedupe by text + options) so a question repeated in a level test counts once
     canon = {}

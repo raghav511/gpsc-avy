@@ -1,10 +1,10 @@
 // Paid access. The owner's script (tools/licence/Code.gs, in the owner's Google Sheet) is the only judge of who has
 // paid, which plans exist and what is free; the app keeps the last answer so it also works offline.
 // Off (everything free, no pay screen) until LICENCE_URL and Google sign-in are both set up.
-import { $, esc, day, lsGet, lsSet, lsDel, toast, sheet, closeSheet, ICON, topbar, navHtml, IDX, META, getIndex, getMeta } from './core.js?v=gpscavy-20d1f73cfa';
-import { LICENCE_URL } from './config.js?v=gpscavy-20d1f73cfa';
-import * as G from './account.js?v=gpscavy-20d1f73cfa';
-import { forgetKeys } from './vault.js?v=gpscavy-20d1f73cfa';
+import { $, esc, day, lsGet, lsSet, lsDel, toast, sheet, closeSheet, ICON, topbar, navHtml, IDX, META, getIndex, getMeta } from './core.js?v=gpscavy-90929d326a';
+import { LICENCE_URL } from './config.js?v=gpscavy-90929d326a';
+import * as G from './account.js?v=gpscavy-90929d326a';
+import { forgetKeys } from './vault.js?v=gpscavy-90929d326a';
 
 const LKEY = 'gpscavy-licence';
 export const enabled = () => !!LICENCE_URL && G.configured() && !window.__gpscTest; // the test suites check screens, not payment
@@ -95,7 +95,7 @@ export async function payScreen(app, opts) {
     const chk = $('#pyChk'); if (chk) chk.onclick = async () => { chk.disabled = true; chk.textContent = 'Checking…'; await refresh(); if (hasPaid()) { toast('Approved. Welcome to GPSCavy.'); location.hash = back; } else draw(lic()); };
     if (!l || !$('#pySend') && !$('#pyRedeem')) return;
     let plan = (l.plans || [])[0];
-    const qr = () => { const box = $('#pyQr'); if (!box || !plan) return; const link = upiLink(l, plan); $('#pyApp').href = link; import('./qr.js?v=gpscavy-20d1f73cfa').then(m => { const q = m.default(0, 'M'); q.addData(link); q.make(); box.innerHTML = q.createSvgTag({ cellSize: 4, margin: 2, scalable: true }); }).catch(() => { box.textContent = ''; }); };
+    const qr = () => { const box = $('#pyQr'); if (!box || !plan) return; const link = upiLink(l, plan); $('#pyApp').href = link; import('./qr.js?v=gpscavy-90929d326a').then(m => { const q = m.default(0, 'M'); q.addData(link); q.make(); box.innerHTML = q.createSvgTag({ cellSize: 4, margin: 2, scalable: true }); }).catch(() => { box.textContent = ''; }); };
     document.querySelectorAll('.plan').forEach(b => b.onclick = () => { document.querySelectorAll('.plan').forEach(x => { x.classList.toggle('on', x === b); x.setAttribute('aria-checked', x === b); }); plan = l.plans[+b.dataset.i]; qr(); });
     qr();
     const cp = $('#pyCopy'); if (cp) cp.onclick = () => { try { navigator.clipboard.writeText(l.upi).then(() => toast('UPI ID copied')); } catch (e) { } };
@@ -161,7 +161,7 @@ export async function adminScreen(app) {
     const grp = (title, items) => items.length ? '<section class="card stack8"><div class="ch"><h2 class="h2">' + esc(title) + '</h2><button type="button" class="lnk" data-all>All / none</button></div>' + items.map(([k, label]) => '<label class="chk"><input type="checkbox" data-k="' + esc(k) + '"' + (on.has(k) ? ' checked' : '') + '><span>' + esc(label) + '</span></label>').join('') + '</section>' : '';
     const of = re => sets.filter(s => re.test(s.id)).map(s => ['set:' + s.id, s.name]);
     return '<p class="sub">Tick what people can open without paying. Everything else shows the pay screen. Changes reach everyone within a minute.</p>' +
-      grp('Full mocks', of(/^set/)) + grp('Level tests', of(/^lvl/)) + grp('Drills', of(/^(gkd|end|compd)/)) + grp('Grammar drills', of(/^grd\d/)) + grp('Reasoning drills', of(/^lrd\d/)) + grp('Topic quizzes', of(/^quiz/)) +
+      grp('Full mocks', of(/^set/)) + grp('Level tests', of(/^lvl/)) + grp('Drills', of(/^(gkd|end|compd)/)) + grp('GK drills', of(/^gkq\d/)) + grp('Grammar drills', of(/^grd\d/)) + grp('Comprehension drills', of(/^cpd\d/)) + grp('Reasoning drills', of(/^lrd\d/)) + grp('Core drills', of(/^crd\d/)) + grp('Topic quizzes', of(/^quiz/)) +
       grp('Study notes', ((META && META.notes) || []).map(n => ['notes:' + n.t, 'Topic ' + n.t + ': ' + n.title + ' (and its PDF)'])) +
       grp('Playbooks', [['playbook:gk', 'GK Playbook'], ['playbook:english', 'English Playbook']]) +
       grp('Cheat sheets', [['cheat:grammar', 'English grammar cheat sheet'], ['cheat:reasoning', 'Logical reasoning cheat sheet']]) +
